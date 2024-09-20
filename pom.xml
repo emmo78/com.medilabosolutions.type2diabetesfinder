@@ -30,7 +30,7 @@
 	</properties>
 	
 	<modules>
-		<module></module>
+		<module>patientservice</module>
 	</modules>
 
 	<dependencies>
