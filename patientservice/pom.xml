@@ -10,7 +10,7 @@
 	</parent>
 	<artifactId>patientservice</artifactId>
 	<name>patientService</name>
-	<description>micor API REST service for patient CRUD</description>
+	<description>API REST microservice for patient CRUD</description>
 
 	<dependencies>
 		<dependency>
