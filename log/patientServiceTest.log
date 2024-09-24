@@ -1,0 +1,52 @@
+16:13:36.379 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT]: PatientRepositoryIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:13:36.540 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.medilabosolutions.type2diabetesfinder.patientservice.PatientServiceApplication for test class com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT
+16:13:36.756 [main] INFO  o.s.b.d.r.RestartApplicationListener - Restart disabled due to context in which it is running
+16:13:37.029 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+16:13:37.067 [main] INFO  c.m.t.p.r.PatientRepositoryIT - Starting PatientRepositoryIT using Java 17.0.7 with PID 1776 (started by omorel in C:\Users\omorel\Dev\mediLaboSolutions\type2DiabetesFinder\patientservice)
+16:13:37.068 [main] DEBUG c.m.t.p.r.PatientRepositoryIT - Running with Spring Boot v3.3.3, Spring v6.1.12
+16:13:37.069 [main] INFO  c.m.t.p.r.PatientRepositoryIT - The following 1 profile is active: "mytest"
+16:13:37.219 [main] WARN  o.s.c.i.s.PathMatchingResourcePatternResolver - Failed to resolve directory [URL [file:]] as URI: java.io.IOException: Invalid URI [file:]
+16:13:38.718 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+16:13:38.897 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 138 ms. Found 1 JPA repository interface.
+16:13:40.272 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+16:13:40.913 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:patientservice_test user=SA
+16:13:40.917 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+16:13:41.226 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+16:13:41.438 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+16:13:41.565 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+16:13:42.440 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+16:13:44.851 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+16:13:44.972 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+16:13:45.341 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+16:13:47.583 [main] INFO  c.m.t.p.r.PatientRepositoryIT - Started PatientRepositoryIT in 10.836 seconds (process running for 12.597)
+16:13:49.121 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT$savePatientTests]: savePatientTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:13:49.128 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.medilabosolutions.type2diabetesfinder.patientservice.PatientServiceApplication for test class com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT$savePatientTests
+16:13:49.626 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+16:13:49.635 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+16:13:49.646 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+16:16:39.201 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT]: PatientRepositoryIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:16:39.324 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.medilabosolutions.type2diabetesfinder.patientservice.PatientServiceApplication for test class com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT
+16:16:39.497 [main] INFO  o.s.b.d.r.RestartApplicationListener - Restart disabled due to context in which it is running
+16:16:39.722 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+16:16:39.750 [main] INFO  c.m.t.p.r.PatientRepositoryIT - Starting PatientRepositoryIT using Java 17.0.7 with PID 23300 (started by omorel in C:\Users\omorel\Dev\mediLaboSolutions\type2DiabetesFinder\patientservice)
+16:16:39.751 [main] DEBUG c.m.t.p.r.PatientRepositoryIT - Running with Spring Boot v3.3.3, Spring v6.1.12
+16:16:39.751 [main] INFO  c.m.t.p.r.PatientRepositoryIT - The following 1 profile is active: "mytest"
+16:16:39.892 [main] WARN  o.s.c.i.s.PathMatchingResourcePatternResolver - Failed to resolve directory [URL [file:]] as URI: java.io.IOException: Invalid URI [file:]
+16:16:40.701 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+16:16:40.872 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 140 ms. Found 1 JPA repository interface.
+16:16:42.159 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+16:16:42.736 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:patientservice_test user=SA
+16:16:42.741 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+16:16:43.136 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+16:16:43.318 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+16:16:43.477 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+16:16:44.439 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+16:16:46.462 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+16:16:46.564 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+16:16:46.930 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+16:16:49.286 [main] INFO  c.m.t.p.r.PatientRepositoryIT - Started PatientRepositoryIT in 9.779 seconds (process running for 11.315)
+16:16:50.663 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT$savePatientTests]: savePatientTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:16:50.669 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.medilabosolutions.type2diabetesfinder.patientservice.PatientServiceApplication for test class com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepositoryIT$savePatientTests
+16:16:50.995 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+16:16:51.001 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+16:16:51.009 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

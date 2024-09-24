@@ -1,0 +1,35 @@
+18:07:58.343 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+18:07:58.398 [restartedMain] INFO  c.m.t.p.PatientServiceApplication - Starting PatientServiceApplication using Java 17.0.9 with PID 16648 (E:\A_Yussuf\A_Home\A_En_Cours\OpenClassrooms_CDJ2E_20220422_20210608\Projet_9\mediLaboSolutions\type2diabetesfinder\patientservice\target\classes started by olivi in E:\A_Yussuf\A_Home\A_En_Cours\OpenClassrooms_CDJ2E_20220422_20210608\Projet_9\mediLaboSolutions\type2diabetesfinder)
+18:07:58.399 [restartedMain] DEBUG c.m.t.p.PatientServiceApplication - Running with Spring Boot v3.3.3, Spring v6.1.12
+18:07:58.400 [restartedMain] INFO  c.m.t.p.PatientServiceApplication - No active profile set, falling back to 1 default profile: "default"
+18:07:58.448 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+18:07:58.449 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+18:07:58.506 [restartedMain] WARN  o.s.c.i.s.PathMatchingResourcePatternResolver - Failed to resolve directory [URL [file:]] as URI: java.io.IOException: Invalid URI [file:]
+18:07:59.074 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+18:07:59.123 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 39 ms. Found 1 JPA repository interface.
+18:07:59.651 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 9090 (http)
+18:07:59.661 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9090"]
+18:07:59.664 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+18:07:59.664 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.28]
+18:07:59.714 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+18:07:59.714 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1265 ms
+18:07:59.739 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+18:07:59.915 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:1c1b59fa-76dc-44f6-93f4-a87d7670890d user=SA
+18:07:59.917 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+18:07:59.931 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:1c1b59fa-76dc-44f6-93f4-a87d7670890d'
+18:08:00.036 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+18:08:00.084 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+18:08:00.116 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+18:08:00.390 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+18:08:01.181 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+18:08:01.236 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+18:08:01.293 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+18:08:02.047 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+18:08:02.065 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9090"]
+18:08:02.082 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 9090 (http) with context path '/'
+18:08:02.092 [restartedMain] INFO  c.m.t.p.PatientServiceApplication - Started PatientServiceApplication in 4.069 seconds (process running for 4.939)
+18:08:08.476 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+18:08:08.480 [SpringApplicationShutdownHook] WARN  o.s.b.f.s.DisposableBeanAdapter - Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: La base de données est déjà fermée (pour désactiver la fermeture automatique à l'arrêt de la VM, ajoutez "; DB_CLOSE_ON_EXIT = FALSE" à l'URL db)
+Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
+18:08:08.480 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+18:08:08.482 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
