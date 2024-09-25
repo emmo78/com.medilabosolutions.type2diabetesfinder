@@ -54,7 +54,7 @@ public class PatientTest {
 
         //GIVEN
         patient = Patient.builder()
-                .id(1L)
+                .id(1)
                 .firstName(firstName)
                 .lastName("lastName")
                 .birthDate(LocalDate.of(1950,12,31))

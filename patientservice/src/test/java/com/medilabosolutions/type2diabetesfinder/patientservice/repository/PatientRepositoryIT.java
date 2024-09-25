@@ -68,7 +68,7 @@ public class PatientRepositoryIT {
 			Patient patientResult = patientRepository.saveAndFlush(patient);
 
 			//THEN
-			Optional<Long> idOpt = Optional.ofNullable(patientResult.getId());
+			Optional<Integer> idOpt = Optional.ofNullable(patientResult.getId());
 			assertThat(idOpt).isPresent();
 			idOpt.ifPresent(id -> assertThat(patientRepository.findById(id)).get().extracting(
 							Patient::getFirstName,
@@ -103,7 +103,7 @@ public class PatientRepositoryIT {
 					.phoneNumber("100-222-3333")
 					.build();
 
-			Long id = patientRepository.saveAndFlush(patient).getId();
+			Integer id = patientRepository.saveAndFlush(patient).getId();
 
 			Patient updatedPatient = Patient.builder()
 					.id(id)

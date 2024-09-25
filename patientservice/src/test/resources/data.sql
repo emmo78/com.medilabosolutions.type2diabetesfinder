@@ -1,5 +1,5 @@
 CREATE TABLE `patient` (
-  `Id` bigint NOT NULL AUTO_INCREMENT,
+  `Id` int NOT NULL AUTO_INCREMENT,
   `first_name` varchar(35) NOT NULL,
   `last_name` varchar(35) NOT NULL,
   `birth_date` date NOT NULL,
