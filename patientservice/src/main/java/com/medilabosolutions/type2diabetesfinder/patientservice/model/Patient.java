@@ -25,11 +25,12 @@ public class Patient {
 
     private static final long serialVersionUID = 1L;
 
+    //Integer.MAX_VALUE = 2 147 483 647
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "Id")
     @ToString.Include
-    private Long id;
+    private Integer id;
 
     @Column(name = "first_name")
     @NotBlank(message = "Firstname is mandatory")
