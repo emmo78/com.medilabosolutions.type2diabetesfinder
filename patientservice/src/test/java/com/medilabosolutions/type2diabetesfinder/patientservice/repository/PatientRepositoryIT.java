@@ -89,7 +89,7 @@ public class PatientRepositoryIT {
 
 		@Test
 		@Tag("PatientRepositoryIT")
-		@DisplayName("save test update user with same username should persist him")
+		@DisplayName("save test update patient")
 		public void saveTestUpdatePatientShouldPersistHim() {
 
 			//GIVEN
