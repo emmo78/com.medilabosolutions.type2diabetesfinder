@@ -23,97 +23,53 @@ public class PatientServiceImpl implements PatientService {
 	private final PatientRepository patientRepository;
 
 	@Override
-	public Patient createPatient(Patient patient) throws ResourceConflictException, UnexpectedRollbackException {
-		Patient createdPatient = null;
-		try {
-			if(patient.getId()!= null) {
-				throw new ResourceConflictException("Patient Id is not null");
-			}
-			// @Transactional is implemented by default on  repository methods
-			// here it is alone
-			createdPatient = patientRepository.save(patient);
-		} catch(ResourceConflictException rce) {
-			log.error("Patient={} : {}", patient, rce.toString());
-			throw new ResourceConflictException(rce.getMessage());
-		} catch(InvalidDataAccessApiUsageException | OptimisticLockingFailureException re) {
-			log.error("Patient={} : {}", patient, re.toString());
-			throw new UnexpectedRollbackException("Error while creating your profile");
-		} catch(Exception e) {
-			log.error("Patient={} : {}", patient, e.toString());
-			throw new UnexpectedRollbackException("Error while creating your profile");
+	public Patient createPatient(Patient patient) throws ResourceConflictException {
+		if(patient.getId()!= null) {
+			throw new ResourceConflictException("Patient Id is not null");
 		}
+		// @Transactional is implemented by default on  repository methods, here it is alone
+		// Throw InvalidDataAccessApiUsageException | OptimisticLockingFailureException
+		Patient createdPatient = patientRepository.save(patient);
 		log.info("Patient={} created and persisted",
 				createdPatient);
 		return createdPatient;
 	}
 
 	@Override
-	public Patient getPatient(Integer id) throws UnexpectedRollbackException {
-		Patient patient = null;
-		try {
-			// @Transactional is implemented by default on  repository methods
-			// here it is alone
-			patient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Registrered not found"));
-		} catch(ResourceNotFoundException | InvalidDataAccessApiUsageException re) {
-			log.error(re.toString());
-			throw new UnexpectedRollbackException("Error while getting your profile");
-		} catch (Exception e) {
-			log.error(e.toString());
-			throw new UnexpectedRollbackException("Error while getting your profile");
-		}
+	public Patient getPatient(Integer id) throws ResourceNotFoundException {
+		// @Transactional is implemented by default on  repository methods, here it is alone
+		// Throw ResourceNotFoundException | InvalidDataAccessApiUsageException
+		Patient	patient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 		log.info("Patient={} gotten",patient);
 		return patient;
 	}
 
 	@Override
-	public Patient updatePatient(Patient patient) throws UnexpectedRollbackException {
-		Patient updatedPatient = null;
-		try {
-			// @Transactional is implemented by default on  repository methods
-			// here it is alone
-			patientRepository.findById(patient.getId()).orElseThrow(() -> new ResourceNotFoundException("Patient not found for update"));
-			updatedPatient = patientRepository.save(patient);
-		} catch(InvalidDataAccessApiUsageException | OptimisticLockingFailureException | ResourceNotFoundException re) {
-			log.error("Patient={} : {}", patient, re.toString());
-			throw new UnexpectedRollbackException("Error while updating your profile");
-		} catch(Exception e) {
-			log.error("Patient={} : {}", patient, e.toString());
-			throw new UnexpectedRollbackException("Error while updating your profile");
+	public Patient updatePatient(Patient patient) throws ResourceNotFoundException {
+		// Throw InvalidDataAccessApiUsageException if null id
+		if (!patientRepository.existsById(patient.getId())) {
+			throw new ResourceNotFoundException("Patient not found for update");
 		}
+		// @Transactional is implemented by default on  repository methods here it is alone
+		// Throw InvalidDataAccessApiUsageException | OptimisticLockingFailureException
+		Patient updatedPatient = patientRepository.save(patient);
 		log.info("Patient={} updated and persisted", updatedPatient);
 		return updatedPatient;
 	}
 
 	@Override
-	public void deletePatient(Integer id) throws UnexpectedRollbackException {
-			try {
-				Patient patient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-				// @Transactional is implemented by default on  repository methods
-				// here it is alone
-				patientRepository.deleteById(id);
-			} catch(InvalidDataAccessApiUsageException | ResourceNotFoundException re) {
-				log.error(re.toString());
-				throw new UnexpectedRollbackException("Error while removing your profile");
-			} catch(Exception e) {
-				log.error(e.toString());
-				throw new UnexpectedRollbackException("Error while removing your profile");
-			}
-			log.info("Patient={} removed and deleted", id);
+	public void deletePatient(Integer id) {
+		// @Transactional is implemented by default on  repository methods here it is alone
+		// If the entity is not found in the persistence store it is silently ignored.
+		// Throw InvalidDataAccessApiUsageException
+		patientRepository.deleteById(id);
+		log.info("Patient={} removed and deleted", id);
 	}
 
 	@Override
-	public Page<Patient> getPatients(Pageable pageRequest) throws UnexpectedRollbackException{
-		Page<Patient> pagePatient = null;
-		try {
-			//throws NullPointerException if pageRequest is null
-			pagePatient = patientRepository.findAll(pageRequest);
-		} catch(NullPointerException npe) {
-			log.error(npe.toString());
-			throw new UnexpectedRollbackException("Error while getting Registrants");
-		} catch(Exception e) {
-			log.error(e.toString());
-			throw new UnexpectedRollbackException("Error while getting Registrants");
-		}
+	public Page<Patient> getPatients(Pageable pageRequest) throws NullPointerException {
+ 		//throws NullPointerException if pageRequest is null
+		Page<Patient> pagePatient = patientRepository.findAll(pageRequest);
 		log.info("page registrants number : {} of {}",
 				pagePatient.getNumber()+1,
 				pagePatient.getTotalPages());
