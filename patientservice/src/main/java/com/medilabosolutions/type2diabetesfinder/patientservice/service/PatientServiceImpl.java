@@ -59,7 +59,7 @@ public class PatientServiceImpl implements PatientService {
 
 	@Override
 	public void deletePatient(Integer id) {
-		// @Transactional is implemented by default on  repository methods here it is alone
+		// @Transactional is implemented by default on repository methods here it is alone
 		// If the entity is not found in the persistence store it is silently ignored.
 		// Throw InvalidDataAccessApiUsageException
 		patientRepository.deleteById(id);
