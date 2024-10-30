@@ -1,7 +1,9 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 
-import com.medilabosolutions.type2diabetesfinder.patientservice.exception.ResourceConflictException;
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
+import jakarta.validation.ConstraintViolationException;
+import org.apache.coyote.BadRequestException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -13,24 +15,29 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
  */
 public interface PatientService {
 
-
     /**
-     * Persist a patient
-     *
-     * @param patient with id null
-     * @return created patient
-     * @throws ResourceConflictException if id is not null
+     * Return all patients by pages
+     * @param pageRequest
+     * @return list of patients
+     * @throws NullPointerException  //if pageRequest is null
      */
-    Patient createPatient(Patient patient) throws ResourceConflictException;
+    Page<Patient> getPatients(Pageable pageRequest) throws NullPointerException;
 
     /**
      * Return patient from a given id
-     *
      * @param id:Integer
      * @return patient
-     * @throws ResourceNotFoundException;
+     * @throws ResourceNotFoundException
      */
     Patient getPatient(Integer id) throws ResourceNotFoundException;
+
+       /**
+     * Persist a patient
+     * @param patient with id null
+     * @return created patient with id not null
+     * @throws BadRequestException if id is not null
+     */
+    Patient createPatient(Patient patient) throws BadRequestException;
 
     /**
      * Update a patient
@@ -48,11 +55,4 @@ public interface PatientService {
      */
     void deletePatient(Integer id);
 
-    /**
-     * Return all patients
-     * @param pageRequest
-     * @return list of patients
-     * @throws NullPointerException
-     */
-    Page<Patient> getPatients(Pageable pageRequest) throws NullPointerException;
 }

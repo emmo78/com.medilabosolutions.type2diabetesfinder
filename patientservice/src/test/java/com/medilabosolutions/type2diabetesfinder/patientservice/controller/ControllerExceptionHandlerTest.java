@@ -1,13 +1,13 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.controller;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.error.ApiError;
-import com.medilabosolutions.type2diabetesfinder.patientservice.exception.ResourceConflictException;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestServiceImpl;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.metadata.ConstraintDescriptor;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,7 +40,7 @@ public class ControllerExceptionHandlerTest {
     @BeforeAll
     public void setUpForAllTests() {
         requestMock = new MockHttpServletRequest();
-        requestMock.setServerName("http://localhost:8080");
+        requestMock.setServerName("http://localhost:9090");
         requestMock.setRequestURI("/");
         requestMock.setMethod("GET");
         request = new ServletWebRequest(requestMock);
@@ -82,7 +82,7 @@ public class ControllerExceptionHandlerTest {
         ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.methodArgumentNotValidException(manve, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
-        //Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poseidoninc.poseidon.domain.User> com.poseidoninc.poseidon.controller.api.ApiUserController.createUser(java.util.Optional<com.poseidoninc.poseidon.domain.User>,org.springframework.web.context.request.WebRequest) throws org.springframework.web.bind.MethodArgumentNotValidException,com.poseidoninc.poseidon.exception.BadRequestException,org.springframework.dao.DataIntegrityViolationException,org.springframework.transaction.ResourceConflictException: [Field error in object 'User' on field 'password': rejected value [null]; codes []; arguments []; default message [Password is mandatory]]
+        //Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poseidoninc.poseidon.domain.User> com.poseidoninc.poseidon.controller.api.ApiUserController.createUser(java.util.Optional<com.poseidoninc.poseidon.domain.User>,org.springframework.web.context.request.WebRequest) throws org.springframework.web.bind.MethodArgumentNotValidException,com.poseidoninc.poseidon.exception.BadRequestException,org.springframework.dao.DataIntegrityViolationException,org.springframework.transaction.BadRequestException: [Field error in object 'User' on field 'password': rejected value [null]; codes []; arguments []; default message [Password is mandatory]]
         assertThat(responseEntity.getBody().getMessage()).contains("Validation failed", "createUser", "'User'", "'password'", "[Password is mandatory]");
     }*/
 
@@ -112,13 +112,13 @@ public class ControllerExceptionHandlerTest {
 
     @Test
     @Tag("ControllerExceptionHandlerTest")
-    @DisplayName("test resourceConflictException should return a Internal Server Error ResponseEntity")
-    public void resourceConflictExceptionTest() {
+    @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
+    public void badRequestExceptionTest() {
 
         //GIVEN
-        ResourceConflictException rce = new ResourceConflictException("Error while...");
+        BadRequestException bre = new BadRequestException("Error while...");
         //WHEN
-        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.resourceConflictException(rce, request);
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(bre, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
         assertThat(responseEntity.getBody().getMessage()).isEqualTo("Error while...");

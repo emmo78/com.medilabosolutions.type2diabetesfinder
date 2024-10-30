@@ -25,7 +25,7 @@ public class Patient {
 
     private static final long serialVersionUID = 1L;
 
-    //Integer.MAX_VALUE = 2 147 483 647
+    //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "Id")

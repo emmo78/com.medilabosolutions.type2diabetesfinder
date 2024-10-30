@@ -1,11 +1,11 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.controller;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.error.ApiError;
-import com.medilabosolutions.type2diabetesfinder.patientservice.exception.ResourceConflictException;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,13 +55,13 @@ public class ControllerExceptionHandler {
 
     /**
      * Handle UnexpectedRollBackException thrown by services
-     * @param rcex the UnexpectedRollBackException
+     * @param brex the UnexpectedRollBackException
      * @param request web request to log uri
      * @return return a Bad Request ResponseEntity with ApiError in body
      */
-    @ExceptionHandler(ResourceConflictException.class)
-    public ResponseEntity<ApiError> resourceConflictException(ResourceConflictException rcex, WebRequest request) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, rcex);
+    @ExceptionHandler({NullPointerException.class, BadRequestException.class})
+    public ResponseEntity<ApiError> badRequestException(Exception brex, WebRequest request) {
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, brex);
         log.error("{} : {} : {}",
                 requestService.requestToString(request),
                 ((ServletWebRequest) request).getHttpMethod(),

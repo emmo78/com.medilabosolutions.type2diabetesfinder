@@ -1,29 +1,26 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 
-import com.medilabosolutions.type2diabetesfinder.patientservice.exception.ResourceConflictException;
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepository;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.transaction.UnexpectedRollbackException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -35,7 +32,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class PatientServiceImplTest {
 
-
     @InjectMocks
     private PatientServiceImpl patientService;
 
@@ -43,230 +39,6 @@ public class PatientServiceImplTest {
     private PatientRepository patientRepository;
 
     private Patient patient;
-
-    @Nested
-    @Tag("createPatientTests")
-    @DisplayName("Tests for create patient")
-    class CreatePatientTests {
-
-        @BeforeEach
-        public void setUpForEachTest() {
-            patient = Patient.builder()
-                    .id(null)
-                    .firstName("Test")
-                    .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
-                    .genre("F")
-                    .address("1 Brookside St")
-                    .phoneNumber("100-222-3333")
-                    .build();
-        }
-
-        @AfterEach
-        public void unSetForEachTests() {
-            patientService = null;
-            patient = null;
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test createPatient should persist and return patient")
-        public void createPatientTestShouldPersistAndReturnPatient() {
-
-            //GIVEN
-            Patient patientExpected = Patient.builder()
-                    .id(1)
-                    .firstName("Test")
-                    .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
-                    .genre("F")
-                    .address("1 Brookside St")
-                    .phoneNumber("100-222-3333")
-                    .build();
-            when(patientRepository.save(any(Patient.class))).thenReturn(patientExpected);
-
-            //WHEN
-            Patient resultedPatient = patientService.createPatient(patient);
-
-            //THEN
-            assertThat(resultedPatient).extracting(
-                            Patient::getId,
-                            Patient::getFirstName,
-                            Patient::getLastName,
-                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                            Patient::getGenre,
-                            Patient::getAddress,
-                            Patient::getPhoneNumber)
-                    .containsExactly(
-                            1,
-                            "Test",
-                            "TestNone",
-                            "19661231",
-                            "F",
-                            "1 Brookside St",
-                            "100-222-3333");
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test createPatient should throw ResourceConflictException on Not Null Id")
-        public void createPatientTestShouldThrowsResourceConflictExceptionOnNotNullId() {
-
-            //GIVEN
-            patient.setId(1);
-
-            //WHEN
-            //THEN
-            assertThat(assertThrows(ResourceConflictException.class,
-                    () -> patientService.createPatient(patient))
-                    .getMessage()).isEqualTo("Patient Id is not null");
-        }
-    }
-
-    @Nested
-    @Tag("getPatientTests")
-    @DisplayName("Tests for getting patient")
-    class GetPatientTests {
-
-        @AfterEach
-        public void unSetForEachTests() {
-            patientService = null;
-            patient = null;
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test getPatient should return expected patient")
-        public void getPatientTestShouldReturnExpectedPatient() {
-
-            //GIVEN
-            patient = Patient.builder()
-                    .id(1)
-                    .firstName("Test")
-                    .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
-                    .genre("F")
-                    .address("1 Brookside St")
-                    .phoneNumber("100-222-3333")
-                    .build();
-            when(patientRepository.findById(anyInt())).thenReturn(Optional.of(patient));
-
-            //WHEN
-            Patient patientResult = patientService.getPatient(1);
-
-            //THEN
-            assertThat(patientResult).extracting(
-                            Patient::getId,
-                            Patient::getFirstName,
-                            Patient::getLastName,
-                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                            Patient::getGenre,
-                            Patient::getAddress,
-                            Patient::getPhoneNumber)
-                    .containsExactly(
-                            1,
-                            "Test",
-                            "TestNone",
-                            "19661231",
-                            "F",
-                            "1 Brookside St",
-                            "100-222-3333");
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test getPatient should throw ResourceNotFoundException")
-        public void getPatientTestShouldThrowsResourceNotFoundException() {
-            //GIVEN
-            when(patientRepository.findById(anyInt())).thenReturn(Optional.empty());
-
-            //WHEN
-            //THEN
-            assertThat(assertThrows(ResourceNotFoundException.class,
-                    () -> patientService.getPatient(1))
-                    .getMessage()).isEqualTo("Patient not found");
-        }
-    }
-
-    @Nested
-    @Tag("updatePatientTests")
-    @DisplayName("Tests for update patient")
-    class UpdatePatientTests {
-
-        @BeforeEach
-        public void setUpForEachTest() {
-            patient = Patient.builder()
-                    .id(1)
-                    .firstName("Test")
-                    .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
-                    .genre("F")
-                    .address("1 Brookside St")
-                    .phoneNumber("100-222-3333")
-                    .build();
-        }
-
-        @AfterEach
-        public void unSetForEachTests() {
-            patientService = null;
-            patient = null;
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test updatePatient should persist and return patient")
-        public void updatePatientTestShouldPersistAndReturnPatient() {
-
-            //GIVEN
-            Patient patientExpected = Patient.builder()
-                    .id(1)
-                    .firstName("TestUpdt")
-                    .lastName("TestNoneUpdt")
-                    .birthDate(LocalDate.of(1976,12,31))
-                    .genre("M")
-                    .address("10 Brookside St")
-                    .phoneNumber("200-222-3333")
-                    .build();
-            when(patientRepository.existsById(anyInt())).thenReturn(true);
-            when(patientRepository.save(any(Patient.class))).thenReturn(patientExpected);
-
-            //WHEN
-            Patient resultedPatient = patientService.updatePatient(patient);
-
-            //THEN
-            assertThat(resultedPatient).extracting(
-                            Patient::getId,
-                            Patient::getFirstName,
-                            Patient::getLastName,
-                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                            Patient::getGenre,
-                            Patient::getAddress,
-                            Patient::getPhoneNumber)
-                    .containsExactly(
-                            1,
-                            "TestUpdt",
-                            "TestNoneUpdt",
-                            "19761231",
-                            "M",
-                            "10 Brookside St",
-                            "200-222-3333");
-        }
-
-        @Test
-        @Tag("PatientServiceTest")
-        @DisplayName("test updatePatient should throw ResourceNotFoundException")
-        public void updatePatientTestShouldThrowsResourceNotFoundException() {
-
-            //GIVEN
-            when(patientRepository.existsById(anyInt())).thenReturn(false);
-
-            //WHEN
-            //THEN
-            assertThat(assertThrows(ResourceNotFoundException.class,
-                    () -> patientService.updatePatient(patient))
-                    .getMessage()).isEqualTo("Patient not found for update");
-        }
-    }
 
     @Nested
     @Tag("getPatientsTests")
@@ -369,6 +141,230 @@ public class PatientServiceImplTest {
             assertThrows(NullPointerException.class,
                     () -> patientService.getPatients(pageRequest))
                     .getMessage();
+        }
+    }
+
+    @Nested
+    @Tag("getPatientTests")
+    @DisplayName("Tests for getting patient")
+    class GetPatientTests {
+
+        @AfterEach
+        public void unSetForEachTests() {
+            patientService = null;
+            patient = null;
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test getPatient should return expected patient")
+        public void getPatientTestShouldReturnExpectedPatient() {
+
+            //GIVEN
+            patient = Patient.builder()
+                    .id(1)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966,12,31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+            when(patientRepository.findById(anyInt())).thenReturn(Optional.of(patient));
+
+            //WHEN
+            Patient patientResult = patientService.getPatient(1);
+
+            //THEN
+            assertThat(patientResult).extracting(
+                            Patient::getId,
+                            Patient::getFirstName,
+                            Patient::getLastName,
+                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            Patient::getGenre,
+                            Patient::getAddress,
+                            Patient::getPhoneNumber)
+                    .containsExactly(
+                            1,
+                            "Test",
+                            "TestNone",
+                            "19661231",
+                            "F",
+                            "1 Brookside St",
+                            "100-222-3333");
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test getPatient should throw ResourceNotFoundException")
+        public void getPatientTestShouldThrowsResourceNotFoundException() {
+            //GIVEN
+            when(patientRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+            //WHEN
+            //THEN
+            assertThat(assertThrows(ResourceNotFoundException.class,
+                    () -> patientService.getPatient(1))
+                    .getMessage()).isEqualTo("Patient not found");
+        }
+    }
+
+    @Nested
+    @Tag("createPatientTests")
+    @DisplayName("Tests for create patient")
+    class CreatePatientTests {
+
+        @BeforeEach
+        public void setUpForEachTest() {
+            patient = Patient.builder()
+                    .id(null)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966,12,31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            patientService = null;
+            patient = null;
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test createPatient should persist and return patient")
+        public void createPatientTestShouldPersistAndReturnPatient() {
+
+            //GIVEN
+            Patient patientExpected = Patient.builder()
+                    .id(1)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966,12,31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+            when(patientRepository.save(any(Patient.class))).thenReturn(patientExpected);
+
+            //WHEN
+            Patient resultedPatient = assertDoesNotThrow(()->patientService.createPatient(patient));
+
+            //THEN
+            assertThat(resultedPatient).extracting(
+                            Patient::getId,
+                            Patient::getFirstName,
+                            Patient::getLastName,
+                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            Patient::getGenre,
+                            Patient::getAddress,
+                            Patient::getPhoneNumber)
+                    .containsExactly(
+                            1,
+                            "Test",
+                            "TestNone",
+                            "19661231",
+                            "F",
+                            "1 Brookside St",
+                            "100-222-3333");
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test createPatient should throw BadRequestException on Not Null Id")
+        public void createPatientTestShouldThrowsBadRequestExceptionOnNotNullId() {
+
+            //GIVEN
+            patient.setId(1);
+
+            //WHEN
+            //THEN
+            assertThat(assertThrows(BadRequestException.class,
+                    () -> patientService.createPatient(patient))
+                    .getMessage()).isEqualTo("Patient Id is not null");
+        }
+    }
+
+    @Nested
+    @Tag("updatePatientTests")
+    @DisplayName("Tests for update patient")
+    class UpdatePatientTests {
+
+        @BeforeEach
+        public void setUpForEachTest() {
+            patient = Patient.builder()
+                    .id(1)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966,12,31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            patientService = null;
+            patient = null;
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test updatePatient should persist and return patient")
+        public void updatePatientTestShouldPersistAndReturnPatient() {
+
+            //GIVEN
+            Patient patientExpected = Patient.builder()
+                    .id(1)
+                    .firstName("TestUpdt")
+                    .lastName("TestNoneUpdt")
+                    .birthDate(LocalDate.of(1976,12,31))
+                    .genre("M")
+                    .address("10 Brookside St")
+                    .phoneNumber("200-222-3333")
+                    .build();
+            when(patientRepository.existsById(anyInt())).thenReturn(true);
+            when(patientRepository.save(any(Patient.class))).thenReturn(patientExpected);
+
+            //WHEN
+            Patient resultedPatient = patientService.updatePatient(patient);
+
+            //THEN
+            assertThat(resultedPatient).extracting(
+                            Patient::getId,
+                            Patient::getFirstName,
+                            Patient::getLastName,
+                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            Patient::getGenre,
+                            Patient::getAddress,
+                            Patient::getPhoneNumber)
+                    .containsExactly(
+                            1,
+                            "TestUpdt",
+                            "TestNoneUpdt",
+                            "19761231",
+                            "M",
+                            "10 Brookside St",
+                            "200-222-3333");
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test updatePatient should throw ResourceNotFoundException")
+        public void updatePatientTestShouldThrowsResourceNotFoundException() {
+
+            //GIVEN
+            when(patientRepository.existsById(anyInt())).thenReturn(false);
+
+            //WHEN
+            //THEN
+            assertThat(assertThrows(ResourceNotFoundException.class,
+                    () -> patientService.updatePatient(patient))
+                    .getMessage()).isEqualTo("Patient not found for update");
         }
     }
 }
