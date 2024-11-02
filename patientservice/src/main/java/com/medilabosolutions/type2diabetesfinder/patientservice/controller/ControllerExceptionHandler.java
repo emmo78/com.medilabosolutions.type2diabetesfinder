@@ -6,6 +6,8 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,55 +24,24 @@ public class ControllerExceptionHandler {
     private final RequestService requestService;
 
     /**
-     * Handle MethodArgumentNotValidException thrown by @Valid in @RequestBody
-     * @param manvex the MethodArgumentNotValidException
-     * @param request webrequest to log uri
-     * @return return a Bad Request ResponseEntity with ApiError in body
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> methodArgumentNotValidException(MethodArgumentNotValidException manvex, WebRequest request) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, manvex);
-        log.error("{} : {} : {}",
-                requestService.requestToString(request),
-                ((ServletWebRequest) request).getHttpMethod(),
-                error.getMessage());
-        return new ResponseEntity<>(error, error.getStatus());
-    }
-
-    /**
-     * Handle ConstraintViolation thrown by constraint violation on path variable
-     * @param cve the ConstraintViolationException
-     * @param request webrequest to log uri
-     * @return return a Bad Request ResponseEntity with ApiError in body
-     */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiError> constraintViolationException(ConstraintViolationException cve, WebRequest request) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, cve);
-        log.error("{} : {} : {}",
-                requestService.requestToString(request),
-                ((ServletWebRequest) request).getHttpMethod(),
-                error.getMessage());
-        return new ResponseEntity<>(error, error.getStatus());
-    }
-
-    /**
-     * Handle UnexpectedRollBackException thrown by services
-     * @param brex the UnexpectedRollBackException
+     * Handle all kind of bad request Exception thrown by services :
+     * the exception message is logged and the message returned is "Bad request"
+     * @param brex
      * @param request web request to log uri
      * @return return a Bad Request ResponseEntity with ApiError in body
      */
-    @ExceptionHandler({NullPointerException.class, BadRequestException.class})
+    @ExceptionHandler({InvalidDataAccessApiUsageException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class, ResourceNotFoundException.class, NullPointerException.class, BadRequestException.class})
     public ResponseEntity<ApiError> badRequestException(Exception brex, WebRequest request) {
-        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, brex);
         log.error("{} : {} : {}",
                 requestService.requestToString(request),
                 ((ServletWebRequest) request).getHttpMethod(),
-                error.getMessage());
+                brex.getMessage());
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, "Bad request");
         return new ResponseEntity<>(error, error.getStatus());
     }
 
     /**
-     * Handle unexpected Exception : the exception message is logged and the message returned is "Internal Server Error"
+     * Handle other and unexpected Exception : the exception message is logged and the message returned is "Internal Server Error"
      * @param e the Exception
      * @param request web request to log uri
      * @return the string "error" the view name for the view resolver

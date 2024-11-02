@@ -174,4 +174,18 @@ public class PatientRepositoryIT {
 				.isEqualTo("Entity must not be null");
 
 	}
+
+	@Test
+	@Tag("PatientRepositoryIT")
+	@DisplayName("existById test null should throw InvalidDataAccessApiUsageException")
+	public void existByIdTestNull() {
+
+		//GIVEN
+		//WHEN
+		//THEN
+		assertThat(assertThrows(InvalidDataAccessApiUsageException.class, () -> patientRepository.existsById(null)).getMessage())
+				.isEqualTo("The given id must not be null");
+
+	}
+
 }

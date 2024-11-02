@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -135,12 +136,12 @@ public class PatientServiceImplTest {
         @DisplayName("test getPatients should throw NullPointerException")
         public void getPatientsTestShouldThrowsNullPointerException() {
             //GIVEN
-            when(patientRepository.findAll(any(Pageable.class))).thenThrow(new NullPointerException());
+            when(patientRepository.findAll(any(Pageable.class))).thenThrow(new NullPointerException("Pageable must not be null"));
             //WHEN
             //THEN
-            assertThrows(NullPointerException.class,
+            assertThat(assertThrows(NullPointerException.class,
                     () -> patientService.getPatients(pageRequest))
-                    .getMessage();
+                    .getMessage()).isEqualTo("Pageable must not be null");
         }
     }
 
@@ -284,7 +285,7 @@ public class PatientServiceImplTest {
             //THEN
             assertThat(assertThrows(BadRequestException.class,
                     () -> patientService.createPatient(patient))
-                    .getMessage()).isEqualTo("Patient Id is not null");
+                    .getMessage()).isEqualTo("Patient to create has a not null Id !");
         }
     }
 
@@ -365,6 +366,60 @@ public class PatientServiceImplTest {
             assertThat(assertThrows(ResourceNotFoundException.class,
                     () -> patientService.updatePatient(patient))
                     .getMessage()).isEqualTo("Patient not found for update");
+        }
+    }
+
+    @Nested
+    @Tag("deletePatientTests")
+    @DisplayName("Tests for deleting Patient")
+    class DeletePatientTests {
+
+        @BeforeEach
+        public void setUpForEachTest() {
+            patient = Patient.builder()
+                    .id(1)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966,12,31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            patientService = null;
+            patient = null;
+        }
+
+        @Test
+        @Tag("PatientServiceTest")
+        @DisplayName("test deletePatient by Id should delete it")
+        public void deleteUserByIdTestShouldDeleteIt() {
+
+            //GIVEN
+            //doNothing().when(patientRepository).delete(any(Patient.class));// By default mock do this, not necessary
+
+            //WHEN
+            //THEN
+            assertDoesNotThrow(() ->patientService.deletePatient(1));
+
+            //THEN
+        }
+
+        @Test
+        @Tag("UserServiceTest")
+        @DisplayName("test deleteUser by Id should throw InvalidDataAccessApiUsageException")
+        public void deleteUserByIdTestShouldThrowsInvalidDataAccessApiUsageException() {
+
+            //GIVEN
+            doThrow(new InvalidDataAccessApiUsageException("Id must not be null")).when(patientRepository).deleteById(nullable(Integer.class));
+            //WHEN
+            //THEN
+            assertThat(assertThrows(InvalidDataAccessApiUsageException.class,
+                    () ->patientService.deletePatient(null))
+                    .getMessage()).isEqualTo("Id must not be null");
         }
     }
 }

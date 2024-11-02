@@ -2,7 +2,9 @@ package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -14,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
 
 	private final PatientRepository patientRepository;
@@ -27,7 +29,7 @@ public class PatientServiceImpl implements PatientService {
 
 	@Override
 	public Patient getPatient(Integer id) throws ResourceNotFoundException {
-		// @Transactional is implemented by default on  repository methods, here it is alone
+		// @Transactional is implemented by default on repository methods, here it is alone
 		// Throw ResourceNotFoundException
 		return patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 	}
@@ -35,29 +37,27 @@ public class PatientServiceImpl implements PatientService {
 	@Override
 	public Patient createPatient(Patient patient) throws BadRequestException {
 		if(patient.getId() != null) {
-			throw new BadRequestException("Patient Id is not null");
+			throw new BadRequestException("Patient to create has a not null Id !");
 		}
 		// @Transactional is implemented by default on  repository methods, here it is alone
-		// Throw OptimisticLockingFailureException
 		return patientRepository.save(patient);
 	}
 
 	@Override
-	public Patient updatePatient(Patient patient) throws ResourceNotFoundException {
-		// Todo Throw RessourceNotFoundException if null id ?
+	public Patient updatePatient(Patient patient) throws ResourceNotFoundException, InvalidDataAccessApiUsageException {
+		// Throw InvalidDataAccessApiUsageException if null id
 		if (!patientRepository.existsById(patient.getId())) {
 			throw new ResourceNotFoundException("Patient not found for update");
 		}
 		// @Transactional is implemented by default on  repository methods here it is alone
-		// Throw OptimisticLockingFailureException
 		return patientRepository.save(patient);
 	}
 
 	@Override
-	public void deletePatient(Integer id) {
+	public void deletePatient(Integer id) throws InvalidDataAccessApiUsageException {
 		// @Transactional is implemented by default on repository methods here it is alone
 		// If the entity is not found in the persistence store it is silently ignored.
-		// Throw InvalidDataAccessApiUsageException
+		// Throw InvalidDataAccessApiUsageException if null id
 		patientRepository.deleteById(id);
 	}
 }

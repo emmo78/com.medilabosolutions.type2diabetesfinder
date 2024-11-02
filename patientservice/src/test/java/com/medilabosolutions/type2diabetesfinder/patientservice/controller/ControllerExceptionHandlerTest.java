@@ -1,6 +1,7 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.controller;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.error.ApiError;
+import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestServiceImpl;
 import jakarta.validation.ConstraintViolation;
@@ -13,12 +14,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.MethodParameter;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.validation.DirectFieldBindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +65,21 @@ public class ControllerExceptionHandlerTest {
         controllerExceptionHandler = null;
     }
 
-/*    @Test
+    @Test
+    @Tag("ControllerExceptionHandlerTest")
+    @DisplayName("test invalidDataAccessApiUsageException should return a a Bad Request ResponseEntity")
+    public void invalidDataAccessApiUsageExceptionTest() {
+
+        //GIVEN
+        InvalidDataAccessApiUsageException invalidDataAccessApiUsageException = new InvalidDataAccessApiUsageException("Resource Not Found");
+        //WHEN
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(invalidDataAccessApiUsageException, request);
+        //THEN
+        assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
+    }
+
+    @Test
     @Tag("ControllerExceptionHandlerTest")
     @DisplayName("test methodArgumentNotValidException should return a Bad Request ResponseEntity")
     public void methodArgumentNotValidException() {
@@ -64,7 +87,7 @@ public class ControllerExceptionHandlerTest {
         //GIVEN
         Method method = null;
         try {
-            method = PatientController.class.getDeclaredMethod("createUser", Optional.class, WebRequest.class);
+            method = PatientController.class.getDeclaredMethod("createPatient", Optional.class, WebRequest.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -72,19 +95,18 @@ public class ControllerExceptionHandlerTest {
         MethodParameter methodParameter = new MethodParameter(method, 0);
 
         // user to be validated
-        Object user = User.class;
-        DirectFieldBindingResult bindingResult = new DirectFieldBindingResult(user, "User");
-        bindingResult.addError(new FieldError("User", "password",  "Password is mandatory"));
+        Object patient = Patient.class;
+        DirectFieldBindingResult bindingResult = new DirectFieldBindingResult(patient, "Patient");
+        bindingResult.addError(new FieldError("Patient", "firstName",  "firstName is mandatory"));
 
         MethodArgumentNotValidException manve =  new MethodArgumentNotValidException(methodParameter, bindingResult);
 
         //WHEN
-        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.methodArgumentNotValidException(manve, request);
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(manve, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
-        //Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.poseidoninc.poseidon.domain.User> com.poseidoninc.poseidon.controller.api.ApiUserController.createUser(java.util.Optional<com.poseidoninc.poseidon.domain.User>,org.springframework.web.context.request.WebRequest) throws org.springframework.web.bind.MethodArgumentNotValidException,com.poseidoninc.poseidon.exception.BadRequestException,org.springframework.dao.DataIntegrityViolationException,org.springframework.transaction.BadRequestException: [Field error in object 'User' on field 'password': rejected value [null]; codes []; arguments []; default message [Password is mandatory]]
-        assertThat(responseEntity.getBody().getMessage()).contains("Validation failed", "createUser", "'User'", "'password'", "[Password is mandatory]");
-    }*/
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
+    }
 
     @Test
     @Tag("ControllerExceptionHandlerTest")
@@ -95,19 +117,38 @@ public class ControllerExceptionHandlerTest {
         // Class ConstraintViolationImpl is nested
         ConstraintViolationException cve = new ConstraintViolationException(Set.of(new ConstraintViolationImpl("Constraint violation")));
         //WHEN
-        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.constraintViolationException(cve, request);
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(cve, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
-        /*
-        jakarta.validation.ConstraintViolationException
-        private static String toString(Set<? extends ConstraintViolation<?>> constraintViolations) {
-		return constraintViolations.stream()
-			.map( cv -> cv == null ? "null" : cv.getPropertyPath() + ": " + cv.getMessage() )
-			.collect( Collectors.joining( ", " ) );
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
+    }
 
-		given : cv == null -> so expected  "null"+": "+"Constraint violation"
-         */
-        assertThat(responseEntity.getBody().getMessage()).isEqualTo("null: Constraint violation");
+    @Test
+    @Tag("ControllerExceptionHandlerTest")
+    @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
+    public void resourceNotFoundExceptionTest() {
+
+        //GIVEN
+        InvalidDataAccessApiUsageException resourceNotFoundException = new InvalidDataAccessApiUsageException("Resource Not Found");
+        //WHEN
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(resourceNotFoundException, request);
+        //THEN
+        assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
+    }
+
+    @Test
+    @Tag("ControllerExceptionHandlerTest")
+    @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
+    public void nullPointerExceptionTest() {
+
+        //GIVEN
+        NullPointerException bre = new NullPointerException("Null Pointer Exception");
+        //WHEN
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(bre, request);
+        //THEN
+        assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
     }
 
     @Test
@@ -116,12 +157,12 @@ public class ControllerExceptionHandlerTest {
     public void badRequestExceptionTest() {
 
         //GIVEN
-        BadRequestException bre = new BadRequestException("Error while...");
+        BadRequestException bre = new BadRequestException("Bad request exception");
         //WHEN
         ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(bre, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
-        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Error while...");
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
     }
 
     @Test
@@ -202,6 +243,4 @@ public class ControllerExceptionHandlerTest {
             return null;
         }
     }
-
-
 }
