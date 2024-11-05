@@ -1,9 +1,7 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
-import jakarta.validation.ConstraintViolationException;
 import org.apache.coyote.BadRequestException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;

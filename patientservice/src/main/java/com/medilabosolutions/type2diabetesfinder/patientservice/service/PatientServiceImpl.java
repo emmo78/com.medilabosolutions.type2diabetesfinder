@@ -3,16 +3,13 @@ package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -39,7 +36,7 @@ public class PatientServiceImpl implements PatientService {
 		if(patient.getId() != null) {
 			throw new BadRequestException("Patient to create has a not null Id !");
 		}
-		// @Transactional is implemented by default on  repository methods, here it is alone
+		// @Transactional is implemented by default on repository methods, here it is alone
 		return patientRepository.save(patient);
 	}
 
@@ -49,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
 		if (!patientRepository.existsById(patient.getId())) {
 			throw new ResourceNotFoundException("Patient not found for update");
 		}
-		// @Transactional is implemented by default on  repository methods here it is alone
+		// @Transactional is implemented by default on repository methods here it is alone
 		return patientRepository.save(patient);
 	}
 

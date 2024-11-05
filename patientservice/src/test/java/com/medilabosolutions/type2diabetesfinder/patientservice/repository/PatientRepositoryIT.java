@@ -1,7 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.repository;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
-
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -7,7 +7,6 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Optional;
 
@@ -55,17 +55,17 @@ public class PatientController {
 
     // Retrieve information by patient Id
     //ConstraintViolationException are thrown by constraint violation on path variable
-    //todo : test id null (Integer), Constraint IT else invalidargumentexception cf repositoryit find(null)
+    //if id is null (Integer) throws MethodArgumentTypeMismatchException
     @GetMapping("/patients/{id}") //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
-    public ResponseEntity<Patient> getPatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id, WebRequest request) throws ConstraintViolationException, ResourceNotFoundException {
+    public ResponseEntity<Patient> getPatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id, WebRequest request) throws MethodArgumentTypeMismatchException, ConstraintViolationException, ResourceNotFoundException {
+        //Throw ResourceNotFoundException if patient not found by id
         Patient patient = patientService.getPatient(id);
         log.info("{} : {} : patient = {} gotten",  requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     // Create a new patient
-    //MethodArgumentNotValidException are thrown by @Valid in @RequestBody
-    //todo MethodArgumentNotValidException in IT test
+    // Throw MethodArgumentNotValidException by @Valid in @RequestBody
     @PostMapping("/patients/")
     public ResponseEntity<Patient> createPatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException {
         if (optionalPatient.isEmpty()) {
@@ -78,7 +78,8 @@ public class PatientController {
     }
 
     // Update patient information
-    @PutMapping("/patients/{id}")
+    // Throw MethodArgumentNotValidException by @Valid in @RequestBody
+    @PutMapping("/patients/")
     public ResponseEntity<Patient> updatePatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, ResourceNotFoundException {
         if (optionalPatient.isEmpty()) {
             throw new BadRequestException("Correct request should be a json Patient body");
@@ -91,9 +92,9 @@ public class PatientController {
     }
 
     // Delete a patient
+    //if id is null (Integer) throws MethodArgumentTypeMismatchException
     @DeleteMapping("/patients/{id}")
-    //todo : test id null (Integer), Constraint IT else invalidargumentexception
-    public HttpStatus deletePatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id, WebRequest request) throws ConstraintViolationException {
+    public HttpStatus deletePatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id, WebRequest request) throws MethodArgumentTypeMismatchException, ConstraintViolationException {
         patientService.deletePatient(id);
         log.info("{} : {} : user = {} deleted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), id);
         return HttpStatus.OK;

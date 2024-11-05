@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 @Slf4j
@@ -30,7 +31,7 @@ public class ControllerExceptionHandler {
      * @param request web request to log uri
      * @return return a Bad Request ResponseEntity with ApiError in body
      */
-    @ExceptionHandler({InvalidDataAccessApiUsageException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class, ResourceNotFoundException.class, NullPointerException.class, BadRequestException.class})
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, InvalidDataAccessApiUsageException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class, ResourceNotFoundException.class, NullPointerException.class, BadRequestException.class})
     public ResponseEntity<ApiError> badRequestException(Exception brex, WebRequest request) {
         log.error("{} : {} : {}",
                 requestService.requestToString(request),

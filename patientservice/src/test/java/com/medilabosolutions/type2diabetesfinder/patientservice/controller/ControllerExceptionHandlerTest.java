@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.metadata.ConstraintDescriptor;
+import lombok.SneakyThrows;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -65,10 +67,36 @@ public class ControllerExceptionHandlerTest {
         controllerExceptionHandler = null;
     }
 
+    @SneakyThrows
     @Test
     @Tag("ControllerExceptionHandlerTest")
-    @DisplayName("test invalidDataAccessApiUsageException should return a a Bad Request ResponseEntity")
-    public void invalidDataAccessApiUsageExceptionTest() {
+    @DisplayName("test methodArgumentTypeMismatchException should return a Bad Request ResponseEntity")
+    public void methodArgumentTypeMismatchExceptionTestShouldReturnABadRequestResponseEntity() {
+
+        //GIVEN
+        Method method = PatientController.class.getDeclaredMethod("getPatientById", Integer.class, WebRequest.class);
+        // index of the parameter @PathVariable("id") @Min(1) @Max(2147483647) Integer id
+        MethodParameter methodParameter = new MethodParameter(method, 0);
+        MethodArgumentTypeMismatchException methodArgumentTypeMismatchException
+                = new MethodArgumentTypeMismatchException(
+                    "null"
+                    ,Integer.class
+                    ,"id"
+                    ,methodParameter
+                    ,new NumberFormatException("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; For input string: \"null\"")
+                );
+        //WHEN
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(methodArgumentTypeMismatchException, request);
+        //THEN
+        assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
+    }
+
+
+    @Test
+    @Tag("ControllerExceptionHandlerTest")
+    @DisplayName("test invalidDataAccessApiUsageException should return a Bad Request ResponseEntity")
+    public void invalidDataAccessApiUsageExceptionTestShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
         InvalidDataAccessApiUsageException invalidDataAccessApiUsageException = new InvalidDataAccessApiUsageException("Resource Not Found");
@@ -79,24 +107,18 @@ public class ControllerExceptionHandlerTest {
         assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
     }
 
+    @SneakyThrows
     @Test
     @Tag("ControllerExceptionHandlerTest")
     @DisplayName("test methodArgumentNotValidException should return a Bad Request ResponseEntity")
-    public void methodArgumentNotValidException() {
+    public void methodArgumentNotValidExceptionTestShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
-        Method method = null;
-        try {
-            method = PatientController.class.getDeclaredMethod("createPatient", Optional.class, WebRequest.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        Method method = PatientController.class.getDeclaredMethod("createPatient", Optional.class, WebRequest.class);
         // index of the parameter @RequestBody Optional<@Valid User> optionalUser
         MethodParameter methodParameter = new MethodParameter(method, 0);
-
-        // user to be validated
-        Object patient = Patient.class;
-        DirectFieldBindingResult bindingResult = new DirectFieldBindingResult(patient, "Patient");
+        Object patientClass = Patient.class;
+        DirectFieldBindingResult bindingResult = new DirectFieldBindingResult(patientClass, "Patient");
         bindingResult.addError(new FieldError("Patient", "firstName",  "firstName is mandatory"));
 
         MethodArgumentNotValidException manve =  new MethodArgumentNotValidException(methodParameter, bindingResult);
@@ -111,7 +133,7 @@ public class ControllerExceptionHandlerTest {
     @Test
     @Tag("ControllerExceptionHandlerTest")
     @DisplayName("test constraintViolationException should return a Bad Request ResponseEntity")
-    public void constraintViolationExceptionTest() {
+    public void constraintViolationExceptionTestShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
         // Class ConstraintViolationImpl is nested
@@ -125,11 +147,11 @@ public class ControllerExceptionHandlerTest {
 
     @Test
     @Tag("ControllerExceptionHandlerTest")
-    @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
-    public void resourceNotFoundExceptionTest() {
+    @DisplayName("test resourceNotFoundException should return a Bad Request ResponseEntity")
+    public void resourceNotFoundExceptionTesShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
-        InvalidDataAccessApiUsageException resourceNotFoundException = new InvalidDataAccessApiUsageException("Resource Not Found");
+        ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException("Resource Not Found");
         //WHEN
         ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(resourceNotFoundException, request);
         //THEN
@@ -139,13 +161,13 @@ public class ControllerExceptionHandlerTest {
 
     @Test
     @Tag("ControllerExceptionHandlerTest")
-    @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
-    public void nullPointerExceptionTest() {
+    @DisplayName("test nullPointerException should return a Bad Request ResponseEntity")
+    public void nullPointerExceptionTestShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
-        NullPointerException bre = new NullPointerException("Null Pointer Exception");
+        NullPointerException npe = new NullPointerException("Null Pointer Exception");
         //WHEN
-        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(bre, request);
+        ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(npe, request);
         //THEN
         assertThat(responseEntity.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST)).isTrue();
         assertThat(responseEntity.getBody().getMessage()).isEqualTo("Bad request");
@@ -154,7 +176,7 @@ public class ControllerExceptionHandlerTest {
     @Test
     @Tag("ControllerExceptionHandlerTest")
     @DisplayName("test badRequestException should return a Internal Server Error ResponseEntity")
-    public void badRequestExceptionTest() {
+    public void badRequestExceptionTestShouldReturnABadRequestResponseEntity() {
 
         //GIVEN
         BadRequestException bre = new BadRequestException("Bad request exception");
