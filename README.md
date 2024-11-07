@@ -1,7 +1,7 @@
 # com.mediLaboSolutions.type2DiabetesFinder
 # microServices
 
-The purpose of this application is to  
+The purpose of this microservices application is to help doctors find out people who can develop type 2 diabetes
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ The purpose of this application is to
 
 - Java 17
 - apache Maven
-- Spring Boot 3.0.0
+- Spring Boot 3.3.5
 
 ### Properties : ./src/main/resources/application.properties :
 

@@ -40,8 +40,8 @@ public class PatientControllerIT {
     @Autowired
     private PatientRepository patientRepository;
 
-    @AfterEach
-    public void undefPerTest() {
+    @BeforeEach
+    public void setUpPerTest() {
         patientRepository.deleteAll();
         patientRepository.flush();
     }

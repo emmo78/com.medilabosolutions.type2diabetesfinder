@@ -7,42 +7,43 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
 /**
- * Service interface for Patient DAL
- * @author olivi
- *
+ * PatientService is an interface that defines the operations for managing patient entities.
  */
 public interface PatientService {
 
     /**
-     * Return all patients by pages
-     * @param pageRequest
-     * @return list of patients
-     * @throws NullPointerException  //if pageRequest is null
+     * Retrieves a paginated list of patients from the system.
+     *
+     * @param pageRequest the pagination and sorting information
+     * @return a paginated list of patients
+     * @throws NullPointerException if pageRequest is null
      */
     Page<Patient> getPatients(Pageable pageRequest) throws NullPointerException;
 
     /**
-     * Return patient from a given id
-     * @param id:Integer
-     * @return patient
-     * @throws ResourceNotFoundException
+     * Retrieves a patient by their unique identifier.
+     *
+     * @param id the unique identifier of the patient to retrieve
+     * @return the patient with the specified id
+     * @throws ResourceNotFoundException if no patient is found with the specified id
      */
     Patient getPatient(Integer id) throws ResourceNotFoundException;
 
        /**
-     * Persist a patient
-     * @param patient with id null
-     * @return created patient with id not null
-     * @throws BadRequestException if id is not null
-     */
+        * Creates a new patient in the system.
+        *
+        * @param patient the patient entity to be created
+        * @return the created patient entity
+        * @throws BadRequestException if the patient entity has a non-null id or any validation fails
+        */
     Patient createPatient(Patient patient) throws BadRequestException;
 
     /**
-     * Update a patient
+     * Updates an existing patient entity in the system.
      *
-     * @param patient with id not null
-     * @return updated patient
-     * @throws ResourceNotFoundException
+     * @param patient the patient entity with updated information
+     * @return the updated patient entity
+     * @throws ResourceNotFoundException if no patient is found with the specified id
      */
     Patient updatePatient(Patient patient) throws ResourceNotFoundException;
 
