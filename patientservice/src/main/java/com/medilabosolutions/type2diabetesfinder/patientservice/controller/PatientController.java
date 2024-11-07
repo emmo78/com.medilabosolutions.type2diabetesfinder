@@ -13,6 +13,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +46,7 @@ public class PatientController {
      */
     // Retrieve all patients
     @GetMapping("/patients")
-    public ResponseEntity<Iterable<Patient>> getPatients(WebRequest request) throws NullPointerException {
+    public ResponseEntity<PagedModel<Patient>> getPatients(WebRequest request) throws NullPointerException {
         //todo with with front
         Pageable pageRequest = Pageable.unpaged();
         //Throw NullPointerException if pageRequest is null
@@ -55,7 +56,7 @@ public class PatientController {
                 ((ServletWebRequest) request).getHttpMethod(),
                 patients.getNumber()+1,
                 patients.getTotalPages());
-        return new ResponseEntity<>(patients, HttpStatus.OK);
+        return new ResponseEntity<>(new PagedModel<>(patients), HttpStatus.OK);
     }
 
     /**

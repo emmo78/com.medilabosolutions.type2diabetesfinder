@@ -48,9 +48,10 @@ public interface PatientService {
     Patient updatePatient(Patient patient) throws ResourceNotFoundException;
 
     /**
-     * Delete patient
+     * Deletes a patient with the given ID. If the patient does not exist, the request is silently ignored.
      *
-     * @param id
+     * @param id the ID of the patient to be deleted. Must not be null.
+     * @throws InvalidDataAccessApiUsageException if the provided ID is null.
      */
     void deletePatient(Integer id);
 

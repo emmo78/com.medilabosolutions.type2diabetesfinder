@@ -15,6 +15,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -30,8 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -134,11 +135,11 @@ public class PatientControllerTest {
             when(patientService.getPatients(any(Pageable.class))).thenReturn(new PageImpl<Patient>(givenPatients, pageRequest, 4));
 
             //WHEN
-            ResponseEntity<Iterable<Patient>> responseEntity = patientController.getPatients(request);
+            ResponseEntity<PagedModel<Patient>> responseEntity = patientController.getPatients(request);
 
             //THEN
             assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
-            Iterable<Patient> resultPatients = responseEntity.getBody();
+            Iterable<Patient> resultPatients = responseEntity.getBody().getContent();
             assertThat(resultPatients).isNotNull();
             assertThat(resultPatients)
                     .extracting(
@@ -481,7 +482,6 @@ public class PatientControllerTest {
             assertThat(httpStatus.is2xxSuccessful()).isTrue();
         }
 
-        /*
         @Test
         @Tag("PatientControllerTest")
         @DisplayName("test deleteById should throw UnexpectedRollbackException")
@@ -494,7 +494,7 @@ public class PatientControllerTest {
             assertThat(assertThrows(InvalidDataAccessApiUsageException.class,
                     () -> patientController.deletePatientById(null, request))
                     .getMessage()).isEqualTo("Id must not be null");
-        }*/
+        }
     }
 }
 
