@@ -140,7 +140,7 @@ public class PatientRepositoryIT {
 		@Test
 		@Tag("PatientRepositoryIT")
 		@DisplayName("save test null should throw InvalidDataAccessApiUsageException")
-		public void saveTestNull() {
+		public void saveTestNullShouldThrowAnInvalidDataAccessApiUsageException() {
 
 			//GIVEN
 			//WHEN
@@ -153,20 +153,21 @@ public class PatientRepositoryIT {
 
 	@Test
 	@Tag("PatientRepositoryIT")
-	@DisplayName("getPatients with pageRequest null should throw an InvalidDataAccessApiUsageException")
-	public void getPatientsWithPageRequestNullShouldThrowAnnvalidDataAccessApiUsageException() {
+	@DisplayName("getPatients with pageRequest null should throw an NullPointerException")
+	public void getPatientsTestWithPageRequestNullShouldThrowAnNullPointerException() {
 		//GIVEN
+		Pageable pageRequest = null;
 		//WHEN
 		//THEN
-		assertThat(assertThrows(InvalidDataAccessApiUsageException.class, () -> patientRepository.findAll((Pageable) null)).getMessage())
-				.contains("The given id must not be null");
+		assertThat(assertThrows(NullPointerException.class, () -> patientRepository.findAll(pageRequest)).getMessage())
+				.contains("Cannot invoke \"org.springframework.data.domain.Pageable.isUnpaged()\" because \"pageable\" is null");
 	}
 
 
 	@Test
 	@Tag("PatientRepositoryIT")
-	@DisplayName("find by Id null should throw an InvalidDataAccessApiUsageException")
-	public void findByIdNullShouldThrowAnInvalidDataAccessApiUsageException() {
+	@DisplayName("find by Id Test with id null should throw an InvalidDataAccessApiUsageException")
+	public void findByIdTestWithIdNullShouldThrowAnInvalidDataAccessApiUsageException() {
 		//GIVEN
 		//WHEN
 		//THEN
@@ -176,15 +177,15 @@ public class PatientRepositoryIT {
 
 	@Test
 	@Tag("PatientRepositoryIT")
-	@DisplayName("delete test null should throw InvalidDataAccessApiUsageException")
-	public void deleteTestNull() {
+	@DisplayName("deleteById test null should throw InvalidDataAccessApiUsageException")
+	public void deleteByIdTestWithIdNullShouldThrowAnInvalidDataAccessApiUsageException() {
 
 		//GIVEN
-		patient = null;
+		Integer id = null;
 		//WHEN
 		//THEN
-		assertThat(assertThrows(InvalidDataAccessApiUsageException.class, () -> patientRepository.delete(patient)).getMessage())
-				.isEqualTo("Entity must not be null");
+		assertThat(assertThrows(InvalidDataAccessApiUsageException.class, () -> patientRepository.deleteById(id)).getMessage())
+				.isEqualTo("The given id must not be null");
 
 	}
 

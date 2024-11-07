@@ -33,6 +33,9 @@ https://spring.io/tools
 or Eclipse Marketplace
 or bundled in IntelliJ ultimate
 
+4.Create Database in MyQL  
+CREATE DATABASE IF NOT EXISTS \`patient_service`;
+
 ## Testing
 
 The app has unit tests and integration tests written.
@@ -46,8 +49,8 @@ To run the tests from maven :
 - \$ mvn package		→ build .jar + Jacoco report in ./\[micro-service-name\]/target/site/jacoco/index.html  
   (run : $ java -jar ./\[micro-service-name\]/target/./\[micro-service-name\]-0.0.1-SNAPSHOT.jar)
 - $ mvn site 		→ put project reports in ./\[micro-service-name\]/target/site/index.html  
-  ( JavaDocs, SpotBugs, Surefire & Failsafe Reports, Jacoco & JaCoCo IT Reports)
-- $ mvn surefire-report:report → surefire report in	./\[micro-service-name\]/target/site/ surefire-report
+  ( JavaDocs, SpotBugs, Surefire & Failsafe Reports, JaCoCo & JaCoCo IT Reports)
+- $ mvn surefire-report:report → surefire report in	./\[micro-service-name\]/target/site/surefire-report
 - https://sonarcloud.io/
 
 ## patientService : CRUD API REST micro service for patient
@@ -56,8 +59,7 @@ root = /patientService/
 
 ### Properties : ./src/main/resources/application.properties :
 
-Does not contain SGBD properties, these are saved in "./db.properties"
-writted in "./.gitignore"  
+Does not contain SGBD properties, these are saved in "./db.properties" which is addeded in "./.gitignore"  
  - spring.datasource.url
  - spring.datasource.username
  - spring.datasource.password
@@ -72,7 +74,7 @@ writted in "./.gitignore"
 GET http://localhost:9090/patients : return JSON Page of Patients  
 GET http://localhost:9090/patients/{id : return JSON patient with specified id  
 POST http://localhost:9090/patients/ : with JSON patient in request Body, id must be null. Return the persisted patient with id not null  
-PUT http://localhost:9090/patients/ : with JSON patient in request Body, id exist in DDB. Return the persisted updated patient with same id  
+PUT http://localhost:9090/patients/ : with JSON patient in request Body, id has to exist in DDB. Return the persisted updated patient with same id  
 DELETE http://localhost:9090/patients/{id} : deletes a patient with specified id. If the patient does not exist, the request is silently ignored
 
 GET http://localhost:9090/v3/api-docs ; return JSON open api description  

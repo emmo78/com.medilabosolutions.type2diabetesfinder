@@ -87,13 +87,11 @@ public class PatientServiceImpl implements PatientService {
 	 * Deletes a patient with the given ID. If the patient does not exist, the request is silently ignored.
 	 *
 	 * @param id the ID of the patient to be deleted. Must not be null.
-	 * @throws InvalidDataAccessApiUsageException if the provided ID is null.
 	 */
 	@Override
-	public void deletePatient(Integer id) throws InvalidDataAccessApiUsageException {
+	public void deletePatient(Integer id) {
 		// @Transactional is implemented by default on repository methods here it is alone
 		// If the entity is not found in the persistence store it is silently ignored.
-		// Throw InvalidDataAccessApiUsageException if null id
 		patientRepository.deleteById(id);
 	}
 }

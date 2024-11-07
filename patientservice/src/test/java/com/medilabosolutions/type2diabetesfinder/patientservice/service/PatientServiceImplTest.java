@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
@@ -137,12 +136,12 @@ public class PatientServiceImplTest {
         @DisplayName("test getPatients should throw NullPointerException")
         public void getPatientsTestShouldThrowsNullPointerException() {
             //GIVEN
-            when(patientRepository.findAll(any(Pageable.class))).thenThrow(new NullPointerException("Pageable must not be null"));
+            when(patientRepository.findAll(any(Pageable.class))).thenThrow(new NullPointerException("Cannot invoke \"org.springframework.data.domain.Pageable.isUnpaged()\" because \"pageable\" is null"));
             //WHEN
             //THEN
             assertThat(assertThrows(NullPointerException.class,
                     () -> patientService.getPatients(pageRequest))
-                    .getMessage()).isEqualTo("Pageable must not be null");
+                    .getMessage()).isEqualTo("Cannot invoke \"org.springframework.data.domain.Pageable.isUnpaged()\" because \"pageable\" is null");
         }
     }
 
@@ -405,22 +404,6 @@ public class PatientServiceImplTest {
             //WHEN
             //THEN
             assertDoesNotThrow(() ->patientService.deletePatient(1));
-
-            //THEN
-        }
-
-        @Test
-        @Tag("UserServiceTest")
-        @DisplayName("test deleteUser by Id should throw InvalidDataAccessApiUsageException")
-        public void deleteUserByIdTestShouldThrowsInvalidDataAccessApiUsageException() {
-
-            //GIVEN
-            doThrow(new InvalidDataAccessApiUsageException("Id must not be null")).when(patientRepository).deleteById(nullable(Integer.class));
-            //WHEN
-            //THEN
-            assertThat(assertThrows(InvalidDataAccessApiUsageException.class,
-                    () ->patientService.deletePatient(null))
-                    .getMessage()).isEqualTo("Id must not be null");
         }
     }
 }

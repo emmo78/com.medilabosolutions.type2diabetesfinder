@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -112,11 +113,12 @@ public class PatientController {
      * @throws MethodArgumentNotValidException if the patient object is not valid
      * @throws BadRequestException if the request body is missing or invalid
      * @throws ResourceNotFoundException if the patient does not exist
+     * @throws InvalidDataAccessApiUsageException if the patient id is null
      */
     // Update patient information
     // Throw MethodArgumentNotValidException by @Valid in @RequestBody
     @PutMapping("/patients/")
-    public ResponseEntity<Patient> updatePatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, ResourceNotFoundException {
+    public ResponseEntity<Patient> updatePatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, ResourceNotFoundException, InvalidDataAccessApiUsageException {
         if (optionalPatient.isEmpty()) {
             throw new BadRequestException("Correct request should be a json Patient body");
         }
@@ -137,6 +139,7 @@ public class PatientController {
      * @throws ConstraintViolationException if the provided id does not meet the validation constraints
      */
     // Delete a patient
+    //ConstraintViolationException are thrown by constraint violation on path variable
     //if id is null (Integer) throws MethodArgumentTypeMismatchException
     @DeleteMapping("/patients/{id}")
     public HttpStatus deletePatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id, WebRequest request) throws MethodArgumentTypeMismatchException, ConstraintViolationException {

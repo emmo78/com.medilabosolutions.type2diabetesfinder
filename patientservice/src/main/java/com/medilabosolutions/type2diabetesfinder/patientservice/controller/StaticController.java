@@ -4,6 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * The StaticController class handles specific static routes for the application.
+ * It provides methods to manage requests for the favicon and the Swagger UI.
+ */
 @Controller
 public class StaticController {
 

@@ -423,7 +423,7 @@ public class PatientControllerIT {
     @ValueSource(strings = {"-1", "0"})
     @Tag("PatientControllerIT")
     @DisplayName("@Valid in @PathVariable test with a incorrect id value should return a Bad Request ResponseEntity")
-    void whenIdIsInvalid_thenReturnsBadRequestResponse(String ids) {
+    void whenIdIsInvalidThenReturnsBadRequestResponse(String ids) {
 
         //GIVEN
         Integer id = ids!=null?Integer.valueOf(ids):null;
@@ -436,12 +436,13 @@ public class PatientControllerIT {
         assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
     }
 
+    @SneakyThrows
     @ParameterizedTest(name = "{0} should throw a Bad Request ResponseEntity")
     @NullAndEmptySource
     @ValueSource(strings = {"   ", "AbcdefghijklmnopqrstuvwxyzAbcdefghijklmnopqrstuvwxyz"})//26*2=52
     @Tag("PatientControllerIT")
     @DisplayName("@Valid in @RequestBody test with a incorrect patient firstName should return a Bad Request ResponseEntity")
-    void whenPatientIsInvalid_thenReturnsBadRequestResponse(String firstName) throws Exception {
+    void whenPatientIsInvalidThenReturnsBadRequestResponse(String firstName) {
 
         //GIVEN
         Patient invalidPatient = Patient.builder()

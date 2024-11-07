@@ -2,6 +2,7 @@ package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import org.apache.coyote.BadRequestException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -45,13 +46,12 @@ public interface PatientService {
      * @return the updated patient entity
      * @throws ResourceNotFoundException if no patient is found with the specified id
      */
-    Patient updatePatient(Patient patient) throws ResourceNotFoundException;
+    Patient updatePatient(Patient patient) throws ResourceNotFoundException, InvalidDataAccessApiUsageException;
 
     /**
      * Deletes a patient with the given ID. If the patient does not exist, the request is silently ignored.
      *
      * @param id the ID of the patient to be deleted. Must not be null.
-     * @throws InvalidDataAccessApiUsageException if the provided ID is null.
      */
     void deletePatient(Integer id);
 
