@@ -3,6 +3,11 @@ package com.medilabosolutions.type2diabetesfinder.patientservice.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
+/**
+ * Service implementation for handling web requests.
+ * This class provides methods to process and convert web requests into a
+ * string representation of their parameters, typically used for logging purposes.
+ */
 @Service
 public class RequestServiceImpl implements RequestService{
     @Override

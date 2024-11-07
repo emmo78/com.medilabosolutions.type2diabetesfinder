@@ -11,6 +11,22 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
+/**
+ * Entity class representing a Patient in the system.
+ * This class is mapped to the "patient" table in the database.
+ *
+ * Annotations:
+ * - @Entity: Specifies that this class is an entity.
+ * - @Table: Specifies the name of the database table.
+ * - @DynamicInsert: Generates dynamic SQL for insert operations.
+ * - @DynamicUpdate: Generates dynamic SQL for update operations.
+ * - @Getter: Lombok annotation to generate getter methods.
+ * - @Setter: Lombok annotation to generate setter methods.
+ * - @Builder: Lombok annotation to implement the builder pattern for the class.
+ * - @AllArgsConstructor: Lombok annotation to generate a constructor with all fields.
+ * - @NoArgsConstructor: Lombok annotation to generate a no-args constructor.
+ * - @ToString: Lombok annotation to generate a toString method including only explicitly included fields.
+ */
 @Entity
 @Table(name = "patient")
 @DynamicInsert
