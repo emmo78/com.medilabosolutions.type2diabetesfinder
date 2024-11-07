@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ public class PatientRepositoryIT {
 	@AfterEach
 	public void undefPerTest() {
 		patientRepository.deleteAll();
+		patientRepository.flush();
 		patient = null;
 	}
 	
@@ -148,6 +150,18 @@ public class PatientRepositoryIT {
 
 		}
 	}
+
+	@Test
+	@Tag("PatientRepositoryIT")
+	@DisplayName("getPatients with pageRequest null should throw an InvalidDataAccessApiUsageException")
+	public void getPatientsWithPageRequestNullShouldThrowAnnvalidDataAccessApiUsageException() {
+		//GIVEN
+		//WHEN
+		//THEN
+		assertThat(assertThrows(InvalidDataAccessApiUsageException.class, () -> patientRepository.findAll((Pageable) null)).getMessage())
+				.contains("The given id must not be null");
+	}
+
 
 	@Test
 	@Tag("PatientRepositoryIT")
