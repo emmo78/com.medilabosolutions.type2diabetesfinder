@@ -213,7 +213,7 @@ public class PatientControllerIT {
             String givenPatientString = objectMapper.writeValueAsString(givenPatient);
 
             //WHEN
-            final MvcResult result = mvc.perform(post("/patients/")
+            final MvcResult result = mvc.perform(post("/patients")
                             .contentType("application/json")
                             .content(body))
                     .andReturn();
@@ -244,7 +244,7 @@ public class PatientControllerIT {
             String body = objectMapper.writeValueAsString(givenPatient);
 
             //WHEN
-            final MvcResult result = mvc.perform(post("/patients/")
+            final MvcResult result = mvc.perform(post("/patients")
                             .contentType("application/json")
                             .content(body))
                     .andReturn();
@@ -309,7 +309,7 @@ public class PatientControllerIT {
             String patientUpdatedString = objectMapper.writeValueAsString(patientUpdated);
 
             //WHEN
-            final MvcResult result = mvc.perform(put("/patients/")
+            final MvcResult result = mvc.perform(put("/patients")
                             .contentType("application/json")
                             .content(body))
                     .andReturn();
@@ -342,7 +342,7 @@ public class PatientControllerIT {
             String body = objectMapper.writeValueAsString(patientUpdated);
 
             //WHEN
-            final MvcResult result = mvc.perform(put("/patients/")
+            final MvcResult result = mvc.perform(put("/patients")
                             .contentType("application/json")
                             .content(body))
                     .andReturn();
@@ -455,7 +455,7 @@ public class PatientControllerIT {
         String body = objectMapper.writeValueAsString(invalidPatient);
 
         //WHEN
-        MvcResult result = mvc.perform(post("/patients/")
+        MvcResult result = mvc.perform(post("/patients")
                 .contentType("application/json")
                 .content(body))
                 .andReturn();

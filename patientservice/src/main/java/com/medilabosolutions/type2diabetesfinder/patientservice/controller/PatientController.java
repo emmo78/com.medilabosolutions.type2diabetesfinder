@@ -93,7 +93,7 @@ public class PatientController {
      */
     // Create a new patient
     // Throw MethodArgumentNotValidException by @Valid in @RequestBody
-    @PostMapping("/patients/")
+    @PostMapping("/patients")
     public ResponseEntity<Patient> createPatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException {
         if (optionalPatient.isEmpty()) {
             throw new BadRequestException("Correct request should be a json Patient body");
@@ -117,7 +117,7 @@ public class PatientController {
      */
     // Update patient information
     // Throw MethodArgumentNotValidException by @Valid in @RequestBody
-    @PutMapping("/patients/")
+    @PutMapping("/patients")
     public ResponseEntity<Patient> updatePatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, ResourceNotFoundException, InvalidDataAccessApiUsageException {
         if (optionalPatient.isEmpty()) {
             throw new BadRequestException("Correct request should be a json Patient body");
@@ -131,6 +131,7 @@ public class PatientController {
 
     /**
      * Deletes a patient by their unique identifier.
+     * If the patient does not exist, the request is silently ignored.
      *
      * @param id the unique identifier of the patient to be deleted; must be a positive integer
      * @param request the web request object containing request details
