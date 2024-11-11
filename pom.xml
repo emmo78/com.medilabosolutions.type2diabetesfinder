@@ -31,6 +31,7 @@
 	
 	<modules>
 		<module>patientservice</module>
+		<module>frontservice</module>
 	</modules>
 
 	<dependencies>
