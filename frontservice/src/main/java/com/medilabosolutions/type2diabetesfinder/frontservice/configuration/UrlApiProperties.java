@@ -3,12 +3,12 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.configuration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ConfigurationProperties(prefix= "com.medilabosolutions.type2diabetesfinder.frontservice.apiURL")
+@ConfigurationProperties(prefix = "com.medilabosolutions.type2diabetesfinder.frontservice")
+@Component
 @Getter
 @Setter
-public class urlApiProperties {
+public class UrlApiProperties {
     private String apiURL;
 }
