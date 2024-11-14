@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * Need the patientService running
  */
-@ExtendWith(MockitoExtension.class)
+/*@ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PatientProxyIT {
 
@@ -190,3 +190,4 @@ class PatientProxyIT {
 
 
 }
+*/
