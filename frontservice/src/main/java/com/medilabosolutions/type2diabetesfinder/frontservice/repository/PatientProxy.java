@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class PatientProxy {
 
-    private UrlApiProperties urlApiProperties;
+    private final UrlApiProperties urlApiProperties;
 
     /**
      * Get page of patients
