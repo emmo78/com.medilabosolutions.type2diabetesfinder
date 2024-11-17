@@ -1,6 +1,8 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -17,19 +19,17 @@ import java.time.LocalDate;
 public class Patient {
 
     //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
-    @NonNull
     @ToString.Include
     private Integer id;
 
-    @NonNull
     @ToString.Include
     private String firstName;
 
-    @NonNull
     @ToString.Include
     private String lastName;
 
-    @NonNull
+    @DateTimeFormat
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ToString.Include
     private LocalDate birthDate;
 

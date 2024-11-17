@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -63,6 +64,7 @@ public class Patient {
     @Column(name = "birth_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "Birthdate is mandatory")
+    @Past(message = "Birthdate must be in the past")
     @ToString.Include
     private LocalDate birthDate;
 

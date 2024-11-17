@@ -1,26 +1,5 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
-import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
-import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.web.PagedModel;
-import org.springframework.test.web.servlet.MvcResult;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 /**
  * Need the patientService running
  */
