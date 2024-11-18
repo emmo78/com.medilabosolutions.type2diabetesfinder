@@ -1,10 +1,24 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
+import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.web.PagedModel;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+
 /**
  * Need the patientService running
  */
-/*@ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class PatientProxyIT {
 
     @InjectMocks
@@ -13,7 +27,7 @@ class PatientProxyIT {
     @Mock
     UrlApiProperties urlApiProperties;
     
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         when(urlApiProperties.getApiURL()).thenReturn("http://localhost:9090");
     }
@@ -23,6 +37,65 @@ class PatientProxyIT {
         urlApiProperties = null;
     }
 
+    @Test
+    @Tag("PatientProxyIT")
+    @DisplayName("getPatients IT should return patients")
+    public void getPatientsITShouldReturnPatients() {
+
+        //GIVEN
+        List<Patient> givenPatients = List.of(
+                Patient.builder()
+                        .id(1)
+                        .firstName("Test")
+                        .lastName("TestNone")
+                        .birthDate(LocalDate.of(1966,12,31))
+                        .genre("F")
+                        .address("1 Brookside St")
+                        .phoneNumber("100-222-3333")
+                        .build(),
+                Patient.builder()
+                        .id(2)
+                        .firstName("Test")
+                        .lastName("TestBorderline")
+                        .birthDate(LocalDate.of(1945,06,24))
+                        .genre("M")
+                        .address("2 High St")
+                        .phoneNumber("200-333-4444")
+                        .build(),
+                Patient.builder()
+                        .id(3)
+                        .firstName("Test")
+                        .lastName("TestDanger")
+                        .birthDate(LocalDate.of(2004,06,18))
+                        .genre("M")
+                        .address("3 Club Road")
+                        .phoneNumber("300-444-5555")
+                        .build(),
+                Patient.builder()
+                        .id(4)
+                        .firstName("Test")
+                        .lastName("TestEarlyOnset")
+                        .birthDate(LocalDate.of(2002,06,28))
+                        .genre("F")
+                        .address("4 Valley Dr")
+                        .phoneNumber("400-555-6666")
+                        .build()
+        );
+
+        //WHEN
+        PagedModel<Patient> pageModelPatient = patientProxy.getPatients();
+
+        //THEN
+        //assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        //assertThat(
+        //        assertDoesNotThrow(() ->
+        //                result.getResponse().getContentAsString())
+        //).contains(givenPatientsString);
+    }
+}
+
+
+    /*
     @Nested
     @Tag("createPatient")
     @DisplayName("IT for createPatient")
@@ -109,64 +182,4 @@ class PatientProxyIT {
 
 
 
-    @Test
-    @Tag("PatientProxyIT")
-    @DisplayName("getPatients IT should return patients")
-    public void getPatientsITShouldReturnPatients() {
-
-        //GIVEN
-        List<Patient> givenPatients = List.of(
-                Patient.builder()
-                        .id(1)
-                        .firstName("Test")
-                        .lastName("TestNone")
-                        .birthDate(LocalDate.of(1966,12,31))
-                        .genre("F")
-                        .address("1 Brookside St")
-                        .phoneNumber("100-222-3333")
-                        .build(),
-                Patient.builder()
-                        .id(2)
-                        .firstName("Test")
-                        .lastName("TestBorderline")
-                        .birthDate(LocalDate.of(1945,06,24))
-                        .genre("M")
-                        .address("2 High St")
-                        .phoneNumber("200-333-4444")
-                        .build(),
-                Patient.builder()
-                        .id(3)
-                        .firstName("Test")
-                        .lastName("TestDanger")
-                        .birthDate(LocalDate.of(2004,06,18))
-                        .genre("M")
-                        .address("3 Club Road")
-                        .phoneNumber("300-444-5555")
-                        .build(),
-                Patient.builder()
-                        .id(4)
-                        .firstName("Test")
-                        .lastName("TestEarlyOnset")
-                        .birthDate(LocalDate.of(2002,06,28))
-                        .genre("F")
-                        .address("4 Valley Dr")
-                        .phoneNumber("400-555-6666")
-                        .build()
-        );
-        
-
-        //WHEN
-        PagedModel<Patient> pageModelPatient = patientProxy.getPatients();
-
-        //THEN
-        //assertThat(result.getResponse().getStatus()).isEqualTo(200);
-        //assertThat(
-        //        assertDoesNotThrow(() ->
-        //                result.getResponse().getContentAsString())
-        //).contains(givenPatientsString);
-    }
-
-
-
-}
 */
