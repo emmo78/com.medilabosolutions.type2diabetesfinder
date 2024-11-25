@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;

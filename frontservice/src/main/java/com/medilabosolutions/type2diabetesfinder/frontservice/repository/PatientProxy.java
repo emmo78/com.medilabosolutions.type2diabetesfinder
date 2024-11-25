@@ -2,6 +2,7 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.PatientPageModelImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,11 +30,11 @@ public class PatientProxy {
         String getPatientsUrl = baseApiUrl + "/patients";
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<PagedModel<Patient>> response = restTemplate.exchange(
+        ResponseEntity<PatientPageModelImpl<Patient>> response = restTemplate.exchange(
                 getPatientsUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<PagedModel<Patient>>() {}
+                new ParameterizedTypeReference<PatientPageModelImpl<Patient>>() {}
         );
 
         log.debug("Get Patients call " + response.getStatusCode().toString());

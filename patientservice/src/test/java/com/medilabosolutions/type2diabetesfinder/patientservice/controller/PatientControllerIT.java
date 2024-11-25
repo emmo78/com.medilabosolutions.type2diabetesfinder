@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -95,10 +94,7 @@ public class PatientControllerIT {
 
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
-        assertThat(
-                assertDoesNotThrow(() ->
-                        result.getResponse().getContentAsString())
-        ).contains(givenPatientsString);
+        assertThat(result.getResponse().getContentAsString()).contains(givenPatientsString);
     }
 
     @Nested
@@ -148,10 +144,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains(givenPatientString);
+            assertThat(result.getResponse().getContentAsString()).contains(givenPatientString);
         }
 
         @SneakyThrows
@@ -167,10 +160,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
@@ -251,10 +241,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
@@ -316,10 +303,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains(patientUpdatedString);
+            assertThat(result.getResponse().getContentAsString()).contains(patientUpdatedString);
         }
 
         @SneakyThrows
@@ -327,8 +311,8 @@ public class PatientControllerIT {
         @NullSource
         @MethodSource("stringArrayProvider")
         @Tag("PatientControllerIT")
-        @DisplayName("updatePatient IT By Id should return a BadRequest Response if id null or not found")
-        public void updatePatientITByIdShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
+        @DisplayName("updatePatient IT should return a BadRequest Response if id null or not found")
+        public void updatePatientITShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
             //GIVEN
             Patient patientUpdated = Patient.builder()
                     .id(idI)
@@ -349,10 +333,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
 
         private Stream<Arguments> stringArrayProvider() {
@@ -410,10 +391,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
