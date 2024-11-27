@@ -92,7 +92,7 @@ public class PatientProxy {
      */
     public Patient updatePatient(Patient e) {
         String baseApiUrl = urlApiProperties.getApiURL();
-        String updatePatientUrl = baseApiUrl + "/patients" + e.getId();
+        String updatePatientUrl = baseApiUrl + "/patients";
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Patient> request = new HttpEntity<Patient>(e);

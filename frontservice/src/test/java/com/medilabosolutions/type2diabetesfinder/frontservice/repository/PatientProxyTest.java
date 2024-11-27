@@ -4,34 +4,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.error.ApiError;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 /**
  * Need the patientService running
@@ -318,7 +311,6 @@ class PatientProxyTest {
        }
     }
 
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     @Tag("updatePatient")
     @DisplayName("Test for updatePatient")
@@ -377,18 +369,19 @@ class PatientProxyTest {
                             Patient::getAddress,
                             Patient::getPhoneNumber)
                     .containsExactly(
-                            1, "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"
+                            id, "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"
                     );
 
         }
 
         @ParameterizedTest(name = "{0} should throw a Bad Request Response")
         @NullSource
-        @MethodSource("stringArrayProvider")
+        @ValueSource(strings = "1")
         @Tag("PatientControllerTest")
         @DisplayName("updatePatient Test should return a BadRequest Response if id null or not found")
         public void updatePatientTestShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
             //GIVEN
+            idI = idI != null ? idI + id : null;
             Patient patientUpdated = Patient.builder()
                     .id(idI)
                     .firstName("Test")
@@ -413,13 +406,6 @@ class PatientProxyTest {
                             "Bad request"
                             , HttpStatus.BAD_REQUEST
                     );
-
-        }
-
-        private Stream<Arguments> stringArrayProvider() {
-            return Stream.of(
-                    arguments(id+1)
-            );
         }
     }
 }
