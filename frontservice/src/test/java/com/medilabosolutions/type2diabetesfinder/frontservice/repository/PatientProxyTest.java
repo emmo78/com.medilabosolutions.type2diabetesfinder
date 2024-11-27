@@ -376,12 +376,12 @@ class PatientProxyTest {
 
         @ParameterizedTest(name = "{0} should throw a Bad Request Response")
         @NullSource
-        @ValueSource(strings = "1")
+        @ValueSource(strings = "id+1")
         @Tag("PatientControllerTest")
-        @DisplayName("updatePatient Test should return a BadRequest Response if id null or not found")
-        public void updatePatientTestShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
+        @DisplayName("updatePatient Test should throw a HttpClientErrorException$BadRequest if id null or not found")
+        public void updatePatientTestShouldReturnABadRequestResponseIfIdNullOrNotFound(String idS) {
             //GIVEN
-            idI = idI != null ? idI + id : null;
+            Integer idI = idS != null ? id + 1 : null;
             Patient patientUpdated = Patient.builder()
                     .id(idI)
                     .firstName("Test")

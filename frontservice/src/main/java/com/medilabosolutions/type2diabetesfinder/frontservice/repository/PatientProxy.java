@@ -22,6 +22,7 @@ public class PatientProxy {
 
     /**
      * Get page of patients
+     *
      * @return A PageModel of requested page patients
      */
     public PagedModel<Patient> getPatients() {
