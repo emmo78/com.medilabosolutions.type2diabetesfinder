@@ -26,10 +26,8 @@ public class PatientProxy {
      * @return A PageModel of requested page patients
      */
     public PagedModel<Patient> getPatients() {
-
         String baseApiUrl = urlApiProperties.getApiURL();
         String getPatientsUrl = baseApiUrl + "/patients";
-
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientPageModelImpl<Patient>> response = restTemplate.exchange(
                 getPatientsUrl,
@@ -37,9 +35,7 @@ public class PatientProxy {
                 null,
                 new ParameterizedTypeReference<PatientPageModelImpl<Patient>>() {}
         );
-
         log.debug("Get Patients call " + response.getStatusCode().toString());
-
         return response.getBody();
     }
 

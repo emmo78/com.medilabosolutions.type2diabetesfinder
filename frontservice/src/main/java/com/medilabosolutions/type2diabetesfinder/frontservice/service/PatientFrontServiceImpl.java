@@ -62,6 +62,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
 	 * @return the updated patient entity
 	 * @throws HttpClientErrorException.BadRequest if the provided patient entity has a null identifier
 	 */
+
 	@Override
 	public Patient updatePatient(Patient patient) throws HttpClientErrorException.BadRequest {
 		return patientProxy.updatePatient(patient);

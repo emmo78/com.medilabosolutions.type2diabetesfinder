@@ -1,6 +1,5 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.service;
 
-import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
