@@ -2,7 +2,7 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PatientFrontServiceImpl implements PatientFrontService {
 
 	private  PatientProxy patientProxy;

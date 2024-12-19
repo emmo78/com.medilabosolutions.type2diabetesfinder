@@ -1,14 +1,10 @@
-package com.medilabosolutions.type2diabetesfinder.frontservice.conroller;
+package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -56,7 +51,7 @@ public class PatientFrontController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    @GetMapping("/createPatient")
+    @GetMapping("/patients")
     public String createPatient(Patient patient) {
         return "formNewPatient";
     }
@@ -86,6 +81,7 @@ public class PatientFrontController {
         } else {
             savedPatient = patientFrontService.updatePatient(patient);
         };
+
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
         return new ModelAndView("redirect:/");
     }}

@@ -3,6 +3,7 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.PatientPageModelImpl;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;

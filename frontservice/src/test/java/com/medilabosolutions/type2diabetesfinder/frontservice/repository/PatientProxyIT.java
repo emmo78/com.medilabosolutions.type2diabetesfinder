@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  * Need the patientService running
  */
 @ExtendWith(MockitoExtension.class)
-class PatientProxyTest {
+class PatientProxyIT {
 
     @InjectMocks
     PatientProxy patientProxy;
