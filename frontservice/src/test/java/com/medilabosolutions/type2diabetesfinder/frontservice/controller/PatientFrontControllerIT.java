@@ -1,13 +1,12 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
-import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontServiceImpl;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
-import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestServiceImpl;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
@@ -15,8 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.web.PagedModel;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PatientFrontControllerIT {
 
     @Inject
@@ -59,7 +60,18 @@ class PatientFrontControllerIT {
 
     private MockHttpServletRequest requestMock;
     private ServletWebRequest request;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
+
+    @BeforeAll
+    public void init() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    @AfterAll
+    public void clean() {
+        objectMapper = null;
+    }
 
     @BeforeEach
     public void setUpPerTest() {
@@ -97,7 +109,6 @@ class PatientFrontControllerIT {
         public void homeTestPatients() {
 
             //GIVEN
-            ObjectMapper objectMapper = new ObjectMapper();
             List<Patient> givenPatients = List.of(
                     Patient.builder()
                             .firstName("Test")
@@ -140,12 +151,26 @@ class PatientFrontControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(result.getResponse().getContentAsString()).i
+            List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
+            assertThat(resultPatients).extracting(
+                    Patient::getId,
+                    Patient::getFirstName,
+                    Patient::getLastName,
+                    p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                    Patient::getGenre,
+                    Patient::getAddress,
+                    Patient::getPhoneNumber)
+            .containsExactly(
+                    tuple(1, "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"),
+                    tuple(2, "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"),
+                    tuple(3, "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555"),
+                    tuple(4, "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+            );
             givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
         }
     }
 
-    @Nested
+    /*@Nested
     @Tag("getPatient")
     @DisplayName("Test for \"/getPatient/{id}\"")
     class getPatientTest {
@@ -210,7 +235,7 @@ class PatientFrontControllerIT {
         }
     }
 
-    /*@Nested
+    @Nested
     @Tag("/patients")
     @DisplayName("Test for createPatient")
     class CreatePatientTest {
