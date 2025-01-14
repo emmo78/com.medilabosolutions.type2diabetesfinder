@@ -379,7 +379,7 @@ class PatientProxyIT {
         @ValueSource(strings = "id+1")
         @Tag("PatientControllerTest")
         @DisplayName("updatePatient Test should throw a HttpClientErrorException$BadRequest if id null or not found")
-        public void updatePatientTestShouldReturnABadRequestResponseIfIdNullOrNotFound(String idS) {
+        public void updatePatientTestShouldThrowHttpClientErrorException$BadRequestIfIdNullNotFound(String idS) {
             //GIVEN
             Integer idI = idS != null ? id + 1 : null;
             Patient patientUpdated = Patient.builder()

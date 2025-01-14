@@ -43,7 +43,7 @@ public class PatientFrontController {
         return "home";
     }
 
-    @GetMapping("/patients/{id}") //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
+    @GetMapping("/gpatients/{id}") //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
     public ResponseEntity<Patient> getPatientById(@PathVariable("id") final Integer id, WebRequest request) throws HttpClientErrorException.BadRequest {
         //Throw ResourceNotFoundException if patient not found by id or null
         Patient patient = patientFrontService.getPatient(id);

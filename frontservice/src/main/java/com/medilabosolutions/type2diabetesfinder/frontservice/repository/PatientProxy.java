@@ -29,6 +29,7 @@ public class PatientProxy {
     public PagedModel<Patient> getPatients() {
         String baseApiUrl = urlApiProperties.getApiURL();
         String getPatientsUrl = baseApiUrl + "/patients";
+
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientPageModelImpl<Patient>> response = restTemplate.exchange(
                 getPatientsUrl,
@@ -64,15 +65,15 @@ public class PatientProxy {
 
     /**
      * Add a new patient
-     * @param e A new patient (without an id)
+     * @param newPatient A new patient (without an id)
      * @return The patient full filled (with an id)
      */
-    public Patient createPatient(Patient e) {
+    public Patient createPatient(Patient newPatient) {
         String baseApiUrl = urlApiProperties.getApiURL();
         String createPatientUrl = baseApiUrl + "/patients";
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<Patient> request = new HttpEntity<Patient>(e);
+        HttpEntity<Patient> request = new HttpEntity<>(newPatient);
         ResponseEntity<Patient> response = restTemplate.exchange(
                 createPatientUrl,
                 HttpMethod.POST,
@@ -86,14 +87,14 @@ public class PatientProxy {
 
     /**
      * Update an patient - using the PUT HTTP Method.
-     * @param e Existing patient to update
+     * @param patientToUpdate Existing patient to update
      */
-    public Patient updatePatient(Patient e) {
+    public Patient updatePatient(Patient patientToUpdate) {
         String baseApiUrl = urlApiProperties.getApiURL();
         String updatePatientUrl = baseApiUrl + "/patients";
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<Patient> request = new HttpEntity<Patient>(e);
+        HttpEntity<Patient> request = new HttpEntity<Patient>(patientToUpdate);
         ResponseEntity<Patient> response = restTemplate.exchange(
                 updatePatientUrl,
                 HttpMethod.PUT,

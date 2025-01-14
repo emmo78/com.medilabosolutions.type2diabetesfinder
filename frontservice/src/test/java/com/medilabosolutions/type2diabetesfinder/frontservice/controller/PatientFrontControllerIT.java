@@ -24,6 +24,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PatientFrontControllerIT {
 
     @Inject
@@ -60,18 +60,6 @@ class PatientFrontControllerIT {
 
     private MockHttpServletRequest requestMock;
     private ServletWebRequest request;
-    private ObjectMapper objectMapper;
-
-    @BeforeAll
-    public void init() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-    }
-
-    @AfterAll
-    public void clean() {
-        objectMapper = null;
-    }
 
     @BeforeEach
     public void setUpPerTest() {
@@ -143,16 +131,22 @@ class PatientFrontControllerIT {
                             .phoneNumber("400-555-6666")
                             .build()
             );
-            givenPatients.forEach(patient -> patient.setId(patientProxy.createPatient(patient).getId()));
+            List<Integer> ids = new ArrayList<>();
+            givenPatients.forEach(patient -> {
+                int id = patientProxy.createPatient(patient).getId();
+                patient.setId(id);
+                ids.add(id);
+            });
 
             //WHEN
             final MvcResult result = mvc.perform(get("/"))
                     .andReturn();
 
             //THEN
-            assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
-            assertThat(resultPatients).extracting(
+            try {
+                assertThat(result.getResponse().getStatus()).isEqualTo(200);
+                List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
+                assertThat(resultPatients).extracting(
                     Patient::getId,
                     Patient::getFirstName,
                     Patient::getLastName,
@@ -160,13 +154,15 @@ class PatientFrontControllerIT {
                     Patient::getGenre,
                     Patient::getAddress,
                     Patient::getPhoneNumber)
-            .containsExactly(
-                    tuple(1, "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"),
-                    tuple(2, "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"),
-                    tuple(3, "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555"),
-                    tuple(4, "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
-            );
-            givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
+                .containsExactly(
+                    tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"),
+                    tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"),
+                    tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555"),
+                    tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+                );
+            } finally {
+                givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
+            }
         }
     }
 
