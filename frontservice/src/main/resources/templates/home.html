@@ -1,15 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="../static/css/userhome.css" th:href="@{/css/userhome.css}" />
-    <title>Home</title>
-</head>
-<body>
-<div id="main_wrapper">
-    <!--<header th:replace="~{header::header('Userhome')}"></header>
-    <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>
-    -->
-</div>
-</body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset=UTF-8" />
+        <link rel="stylesheet"
+              type="text/css"
+              href="../static/css/home.css"
+              th:href="@{/css/home.css}" />
+        <title>Home</title>
+    </head>
+    <body>
+        <div id="main_wrapper">
+            <header th:replace="~{header::header('Home')}"></header>
+            <!--<h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <div>
+                <a href="/login">Login</a> or create one <a href="/createpatient">Register</a>
+            </div>
+        </div>
+        <br/>
+        <div sec:authorize="isAuthenticated()">
+            <div>
+                <span sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="/user/list">User List</a>&nbsp;|
+                </span>&nbsp;
+            </div>
+            <br/>
+    </body>
 </html>

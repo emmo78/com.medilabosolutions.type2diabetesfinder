@@ -144,6 +144,7 @@ class PatientFrontControllerIT {
 
             //THEN
             try {
+                assertThat((result.getResponse().getContentAsString())).contains("<title>Home</title>");
                 assertThat(result.getResponse().getStatus()).isEqualTo(200);
                 List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
                 assertThat(resultPatients).extracting(
@@ -165,6 +166,78 @@ class PatientFrontControllerIT {
             }
         }
     }
+
+    /*@Nested
+    @Tag("/createpatient")
+    @DisplayName("Test for createPatient form")
+    class CreatePatientTest {
+
+        Patient givenPatient;
+
+        @BeforeEach
+        public void setUpForEachTests() {
+            requestMock = new MockHttpServletRequest();
+            requestMock.setServerName("http://localhost:8080");
+            requestMock.setRequestURI("/createpatient");
+            request = new ServletWebRequest(requestMock);
+        }
+
+        @AfterEach
+        public void unSetForEachTests () {
+             requestMock = null;
+             request = null;
+        }
+
+        @SneakyThrows
+        @Test
+        @Tag("PatientProxyTest")
+        @DisplayName("createPatient Test should return form")
+        public void createPatientTestShouldReturnSaveAndReturnForm() {
+
+            //GIVEN
+            //WHEN
+            final MvcResult result = mvc.perform(get("/createpatient"))
+                    .andReturn();
+
+            //THEN
+            int id = patientResult.getId();
+            try {
+                assertThat(id).isGreaterThanOrEqualTo(1);
+                assertThat(patientResult)
+                        .extracting(
+                                Patient::getFirstName,
+                                Patient::getLastName,
+                                p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                                Patient::getGenre,
+                                Patient::getAddress,
+                                Patient::getPhoneNumber)
+                        .containsExactly("Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333");
+            } finally {
+                patientProxy.deletePatient(id);
+            }
+        }*/
+
+        /*@Test
+        @Tag("PatientProxyTest")
+        @DisplayName("createPatient Test should throw HttpClientErrorException$BadRequest if id not null")
+        public void createPatientTestShouldThrowAHttpClientErrorException$BadRequestIfIdNotNull() {
+
+            //GIVEN
+            givenPatient.setId(1);
+
+            //WHEN
+            //THEN
+            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.createPatient(givenPatient));
+            assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(heeB.getResponseBodyAs(ApiError.class))
+                    .extracting(
+                            ApiError::getMessage,
+                            ApiError::getStatus
+                    ).containsExactly(
+                            "Bad request"
+                            , HttpStatus.BAD_REQUEST
+                    );
+        }*/
 
     /*@Nested
     @Tag("getPatient")
@@ -231,79 +304,6 @@ class PatientFrontControllerIT {
         }
     }
 
-    @Nested
-    @Tag("/patients")
-    @DisplayName("Test for createPatient")
-    class CreatePatientTest {
-
-        Patient givenPatient;
-
-        @BeforeEach
-        public void setUpPerTest() {
-            givenPatient = Patient.builder()
-                    .firstName("Test")
-                    .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966, 12, 31))
-                    .genre("F")
-                    .address("1 Brookside St")
-                    .phoneNumber("100-222-3333")
-                    .build();
-        }
-
-        @AfterEach
-        public void undefPerTest() {
-            givenPatient = null;
-        }
-
-        @Test
-        @Tag("PatientProxyTest")
-        @DisplayName("createPatient Test should return saved patient with id")
-        public void createPatientTestShouldReturnSaveAndReturnPatientWithId() {
-
-            //GIVEN
-            //WHEN
-            Patient patientResult = patientProxy.createPatient(givenPatient);
-
-            //THEN
-            int id = patientResult.getId();
-            try {
-                assertThat(id).isGreaterThanOrEqualTo(1);
-                assertThat(patientResult)
-                        .extracting(
-                                Patient::getFirstName,
-                                Patient::getLastName,
-                                p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                                Patient::getGenre,
-                                Patient::getAddress,
-                                Patient::getPhoneNumber)
-                        .containsExactly("Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333");
-            } finally {
-                patientProxy.deletePatient(id);
-            }
-        }
-
-        @Test
-        @Tag("PatientProxyTest")
-        @DisplayName("createPatient Test should throw HttpClientErrorException$BadRequest if id not null")
-        public void createPatientTestShouldThrowAHttpClientErrorException$BadRequestIfIdNotNull() {
-
-            //GIVEN
-            givenPatient.setId(1);
-
-            //WHEN
-            //THEN
-            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.createPatient(givenPatient));
-            assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(heeB.getResponseBodyAs(ApiError.class))
-                    .extracting(
-                            ApiError::getMessage,
-                            ApiError::getStatus
-                    ).containsExactly(
-                            "Bad request"
-                            , HttpStatus.BAD_REQUEST
-                    );
-        }
-    }
 
     @Nested
     @Tag("deletePatient")

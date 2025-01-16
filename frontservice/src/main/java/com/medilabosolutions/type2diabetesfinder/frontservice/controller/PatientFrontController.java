@@ -19,6 +19,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
+
 /**
  * PatientController class handles HTTP requests related to User management.
  *
@@ -33,7 +35,7 @@ public class PatientFrontController {
     private final RequestService requestService;
 
     @GetMapping("/")
-    public String home(Model model, WebRequest request) {
+    public String home(Model model, WebRequest request) { //Principal user
         PagedModel<Patient> patientPage = patientFrontService.getPatients();
         log.info("{} : patient page number : {} of {}",
                 requestService.requestToString(request),
@@ -43,15 +45,7 @@ public class PatientFrontController {
         return "home";
     }
 
-    @GetMapping("/gpatients/{id}") //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
-    public ResponseEntity<Patient> getPatientById(@PathVariable("id") final Integer id, WebRequest request) throws HttpClientErrorException.BadRequest {
-        //Throw ResourceNotFoundException if patient not found by id or null
-        Patient patient = patientFrontService.getPatient(id);
-        log.info("{} : {} : patient = {} gotten",  requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
-        return new ResponseEntity<>(patient, HttpStatus.OK);
-    }
-
-    @GetMapping("/patients")
+    @GetMapping("/createpatient")
     public String createPatient(Patient patient) {
         return "formNewPatient";
     }
@@ -62,7 +56,7 @@ public class PatientFrontController {
         // If there is a password, don't let it
         log.info("{} : {} : patient to update = {} gotten",  requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
         model.addAttribute("patient", patient);
-        return "formUpdatePatient";
+        return "formPatient";
     }
 
     @GetMapping("/deletePatient/{id}")
