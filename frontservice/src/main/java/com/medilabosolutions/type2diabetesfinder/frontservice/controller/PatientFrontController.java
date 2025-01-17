@@ -6,8 +6,6 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestSer
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.web.PagedModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +16,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.security.Principal;
 
 /**
  * PatientController class handles HTTP requests related to User management.
