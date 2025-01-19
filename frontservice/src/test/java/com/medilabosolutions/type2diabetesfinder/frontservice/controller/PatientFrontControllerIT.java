@@ -139,12 +139,12 @@ class PatientFrontControllerIT {
             });
 
             //WHEN
-            final MvcResult result = mvc.perform(get("/home"))
+            final MvcResult result = mvc.perform(get("/"))
                     .andReturn();
 
             //THEN
             try {
-                assertThat((result.getResponse().getContentAsString())).contains("<title>Allpatients</title>");
+                assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 assertThat(result.getResponse().getStatus()).isEqualTo(200);
                 List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
                 assertThat(resultPatients).extracting(

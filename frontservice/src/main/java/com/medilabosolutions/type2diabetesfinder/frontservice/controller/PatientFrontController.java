@@ -17,6 +17,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 /**
  * PatientController class handles HTTP requests related to User management.
  *

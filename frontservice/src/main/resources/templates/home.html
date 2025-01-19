@@ -7,7 +7,7 @@
               type="text/css"
               href="../static/css/home.css"
               th:href="@{/css/home.css}" />
-        <title>allpatients</title>
+        <title>home</title>
     </head>
     <body>
         <div id="main_wrapper" class="color" th:with="page='home'">
@@ -30,17 +30,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="patient : ${patients}">
+                    <tr th:each="patient : ${patients.getContent()}">
                         <td style="width: 10%" th:text="${patient.id}">1</td>
-                        <td th:text="${patient.firstname}">fullname</td>
-                        <td th:text="${patient.lastname}">username</td>
-                        <td style="width: 25%" th:text="${#temporals.format(${patient.birthdate}, 'dd-MM-yyyy')}">16-05-1975</td>
+                        <td th:text="${patient.firstName}">firstname</td>
+                        <td th:text="${patient.lastName}">lastname</td>
+                        <td style="width: 25%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
                         <td th:text="${patient.genre}">genre</td>
                         <td th:text="${patient.address}">address</td>
                         <td th:text="${patient.phoneNumber}">phone number</td>
-                        <td style="width: 15%">
+                        <!--<td style="width: 15%">
                             <a th:href="@{/updatePatient/{id}(id=${user.id})}">Edit</a>&nbsp;|&nbsp;
-                            <a th:href="@{/deletePatient/{id}(id=${user.id})}">Delete</a>
+                            <a th:href="@{/deletePatient/{id}(id=${user.id})}">Delete</a>-->
                         </td>
                     </tr>
                 </tbody>
