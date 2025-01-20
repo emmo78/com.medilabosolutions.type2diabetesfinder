@@ -13,38 +13,40 @@
         <div id="main_wrapper" class="color" th:with="page='home'">
             <header th:replace="~{header::header(${page})}"></header>
             <!--<h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
-        </div>
-        <br/>
-        <!--<div sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
-            <a href="/createpatient">Add New</a>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Firstname</th>
-                        <th>LastName</th>
-                        <th>Birthdate</th>
-                        <th>Genre</th>
-                        <th>Address</th>
-                        <th>Phone number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="patient : ${patients.getContent()}">
-                        <td style="width: 10%" th:text="${patient.id}">1</td>
-                        <td th:text="${patient.firstName}">firstname</td>
-                        <td th:text="${patient.lastName}">lastname</td>
-                        <td style="width: 25%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
-                        <td th:text="${patient.genre}">genre</td>
-                        <td th:text="${patient.address}">address</td>
-                        <td th:text="${patient.phoneNumber}">phone number</td>
-                        <!--<td style="width: 15%">
-                            <a th:href="@{/updatePatient/{id}(id=${user.id})}">Edit</a>&nbsp;|&nbsp;
-                            <a th:href="@{/deletePatient/{id}(id=${user.id})}">Delete</a>-->
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
+                <button class="button">
+                    <a href="/createpatient">Add New</a>
+                </button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Firstname</th>
+                            <th>LastName</th>
+                            <th>Birthdate</th>
+                            <th>Genre</th>
+                            <th>Address</th>
+                            <th>Phone number</th>
+                            <th id="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="patient : ${patients.getContent()}">
+                            <td style="width: 5%" th:text="${patient.id}">1</td>
+                            <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
+                            <td style="width: 15%"th:text="${patient.lastName}">lastname</td>
+                            <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
+                            <td style="width: 5%" th:text="${patient.genre}">genre</td>
+                            <td style="width: 25%"th:text="${patient.address}">address</td>
+                            <td style="width: 5%" th:text="${patient.phoneNumber}">phone number</td>
+                            <td style="width: 15%">
+                                <a th:href="@{/updatePatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
+                                <a th:href="@{/deletePatient/{id}(id=${patient.id})}">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
         </div>
     </body>
 </html>

@@ -48,7 +48,7 @@ public class PatientFrontController {
         return "formNewPatient";
     }
 
-    @GetMapping("/updatePatient/{id}")
+    @GetMapping("/updatepatient/{id}")
     public String updatePatient(@PathVariable("id") final Integer id, Model model, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient patient = patientFrontService.getPatient(id);
         // If there is a password, don't let it
@@ -57,14 +57,14 @@ public class PatientFrontController {
         return "formPatient";
     }
 
-    @GetMapping("/deletePatient/{id}")
+    @GetMapping("/deletepatient/{id}")
     public ModelAndView deletePatient(@PathVariable("id") final int id, WebRequest request) {
         patientFrontService.deletePatient(id);
         log.info("{} : {} : user = {} deleted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), id);
         return new ModelAndView("redirect:/");
     }
 
-    @PostMapping("/savePatient")
+    @PostMapping("/savepatient")
     public ModelAndView savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient savedPatient;
         if(patient.getId() == null) {
