@@ -70,4 +70,11 @@ a:hover, .athis:hover {
 	cursor: pointer;
 	border-radius: 10px;
 }
+ th {
+	 text-align: left;
+ }
+
+.odd {
+	background-color: #e0e0e0;
+}
 

@@ -12,11 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.security.Principal;
 import java.util.Optional;
 
 /**
@@ -47,7 +50,7 @@ public class PatientController {
      */
     // Retrieve all patients
     @GetMapping("/patients")
-    public ResponseEntity<PagedModel<Patient>> getPatients(WebRequest request) throws NullPointerException {
+    public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Principal user, Model model, WebRequest request) throws NullPointerException {
         //todo with with front
         Pageable pageRequest = Pageable.unpaged();
         //Throw NullPointerException if pageRequest is null
@@ -57,7 +60,7 @@ public class PatientController {
                 ((ServletWebRequest) request).getHttpMethod(),
                 patients.getNumber()+1,
                 patients.getTotalPages());
-        return new ResponseEntity<>(new PagedModel<>(patients), HttpStatus.OK);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
     /**

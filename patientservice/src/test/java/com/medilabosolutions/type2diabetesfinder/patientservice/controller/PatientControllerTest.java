@@ -135,7 +135,7 @@ public class PatientControllerTest {
             when(patientService.getPatients(any(Pageable.class))).thenReturn(new PageImpl<Patient>(givenPatients, pageRequest, 4));
 
             //WHEN
-            ResponseEntity<PagedModel<Patient>> responseEntity = patientController.getPatients(request);
+            ResponseEntity<Page<Patient>> responseEntity = patientController.getPatients(request);
 
             //THEN
             assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();

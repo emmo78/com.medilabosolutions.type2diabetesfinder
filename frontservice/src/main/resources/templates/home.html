@@ -31,14 +31,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="patient : ${patients.getContent()}">
+                        <tr th:each="patient, iterstat : ${patients.getContent()}" th:class="${iterstat.odd}?'odd'">
                             <td style="width: 5%" th:text="${patient.id}">1</td>
                             <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
                             <td style="width: 15%"th:text="${patient.lastName}">lastname</td>
                             <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
                             <td style="width: 5%" th:text="${patient.genre}">genre</td>
-                            <td style="width: 25%"th:text="${patient.address}">address</td>
-                            <td style="width: 5%" th:text="${patient.phoneNumber}">phone number</td>
+                            <td style="width: 15%"th:text="${patient.address}">address</td>
+                            <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
                             <td style="width: 15%">
                                 <a th:href="@{/updatePatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
                                 <a th:href="@{/deletePatient/{id}(id=${patient.id})}">Delete</a>
@@ -46,6 +46,21 @@
                         </tr>
                     </tbody>
                 </table>
+                <div th:if="${pageInterval}" th:with="index = ${transactions.getNumber()}">
+                    <ul id="legendbuttons">
+                        <li th:unless="${index}<=0">
+                            <a th:href="@{/user/home/transfer(pageNumber=(${index}-1))}">&laquo;</a>
+                        </li>
+                        <li th:each="pageNum : ${pageInterval}">
+                            <a th:href="@{/user/home/transfer(pageNumber=(${pageNum}-1))}">
+                                <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
+                            </a>
+                        </li>
+                        <li th:if="${index}lt(${transactions.getTotalPages()}-1)">
+                            <a th:href="@{/user/home/transfer(pageNumber=(${index}+1))}">&raquo;</a>
+                        </li>
+                    </ul>
+                </div>
             </section>
         </div>
     </body>
