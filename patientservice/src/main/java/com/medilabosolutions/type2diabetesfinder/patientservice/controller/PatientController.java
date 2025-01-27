@@ -50,7 +50,7 @@ public class PatientController {
      */
     // Retrieve all patients
     @GetMapping("/patients")
-    public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Principal user, Model model, WebRequest request) throws NullPointerException {
+    public ResponseEntity<Page<Patient>> getPatients(WebRequest request) throws NullPointerException {
         //todo with with front
         Pageable pageRequest = Pageable.unpaged();
         //Throw NullPointerException if pageRequest is null

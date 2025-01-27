@@ -78,3 +78,10 @@ a:hover, .athis:hover {
 	background-color: #e0e0e0;
 }
 
+th {
+	text-align: left;
+}
+
+.odd {
+	background-color: #e0e0e0;
+}
