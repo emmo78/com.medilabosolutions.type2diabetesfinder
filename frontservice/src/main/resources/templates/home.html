@@ -46,18 +46,18 @@
                         </tr>
                     </tbody>
                 </table>
-                <div th:if="${pageInterval}" th:with="index = ${transactions.getNumber()}">
+                <div th:if="${pageInterval}" th:with="index = ${patients.getMetadata().number()}">
                     <ul id="legendbuttons">
                         <li th:unless="${index}<=0">
-                            <a th:href="@{/user/home/transfer(pageNumber=(${index}-1))}">&laquo;</a>
+                            <a th:href="@{/(pageNumber=(${index}-1))}">&laquo;</a>
                         </li>
                         <li th:each="pageNum : ${pageInterval}">
-                            <a th:href="@{/user/home/transfer(pageNumber=(${pageNum}-1))}">
+                            <a th:href="@{/(pageNumber=(${pageNum}-1))}">
                                 <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
                             </a>
                         </li>
                         <li th:if="${index}lt(${transactions.getTotalPages()}-1)">
-                            <a th:href="@{/user/home/transfer(pageNumber=(${index}+1))}">&raquo;</a>
+                            <a th:href="@{/(pageNumber=(${index}+1))}">&raquo;</a>
                         </li>
                     </ul>
                 </div>

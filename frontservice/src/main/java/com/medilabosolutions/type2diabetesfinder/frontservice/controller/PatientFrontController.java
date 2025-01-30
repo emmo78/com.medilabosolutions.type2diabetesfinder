@@ -5,19 +5,23 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFro
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * PatientController class handles HTTP requests related to User management.
@@ -33,13 +37,18 @@ public class PatientFrontController {
     private final RequestService requestService;
 
     @GetMapping("/")
-    public String home(Model model, WebRequest request) { //Principal user
-        PagedModel<Patient> patientPage = patientFrontService.getPatients();
+    public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) { //Principal user
+        //with Principal user get user admin ?
+        int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
+        Pageable pageRequest = PageRequest.of(index, 3);
+        PagedModel<Patient> patientPage = patientFrontService.getPatients(pageRequest);
         log.info("{} : patient page number : {} of {}",
                 requestService.requestToString(request),
                 patientPage.getMetadata().number()+1,
                 patientPage.getMetadata().totalPages());
         model.addAttribute("patients", patientPage);
+        int lastPage = (int) patientPage.getMetadata().totalPages()-1;
+        model.addAttribute("pageInterval", pageInterval(index, lastPage));
         return "home";
     }
 
@@ -76,4 +85,45 @@ public class PatientFrontController {
 
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
         return new ModelAndView("redirect:/");
-    }}
+    }
+
+    /**
+     * Calculation of the parameters for the creation of the page interval
+     * @param index
+     * @param lastPage
+     * @return
+     */
+    private List<Integer> pageInterval(int index, int lastPage) {
+        if (lastPage>=0) {
+            if (index-2 <= 0) {
+                return createInterval(1, lastPage+1);
+            } else if (index+2 > lastPage) {
+                if (lastPage-4 <= 0) {
+                    return createInterval(1, lastPage+1);
+                } else {
+                    return createInterval(lastPage-3, lastPage+1);
+                }
+            } else {
+                return createInterval(index-1, index+3);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Create page interval
+     * @param min
+     * @param max
+     * @return
+     */
+    private List<Integer> createInterval(int min, int max) {
+        List<Integer> interval = new ArrayList<>();
+        for (int i = min, j=0; i <= max && j<5; i++,j++) {
+            interval.add(j, i);
+        }
+        return interval;
+    }
+
+
+}

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,9 +28,9 @@ public class PatientProxy {
      *
      * @return A PageModel of requested page patients
      */
-    public PagedModel<Patient> getPatients() {
+    public PagedModel<Patient> getPatients(Pageable pageRequest) {
         String baseApiUrl = urlApiProperties.getApiURL();
-        String getPatientsUrl = baseApiUrl + "/patients";
+        String getPatientsUrl = baseApiUrl + "/patients?pageNumber="+(pageRequest.getPageNumber()+1);
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientPageModelImpl<Patient>> response = restTemplate.exchange(

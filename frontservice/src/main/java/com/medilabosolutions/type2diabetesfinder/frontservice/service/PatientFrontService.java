@@ -1,6 +1,7 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.data.web.PagedModel;
 
@@ -14,7 +15,7 @@ public interface PatientFrontService {
      *
      * @return a paginated list of patients
      */
-    PagedModel<Patient> getPatients();
+    PagedModel<Patient> getPatients(Pageable pageRequest);
 
     /**
      * Retrieves a patient by their unique identifier.

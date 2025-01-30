@@ -85,3 +85,27 @@ th {
 .odd {
 	background-color: #e0e0e0;
 }
+
+#legendbuttons {
+	position: relative;
+	top : -0.7em;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	list-style-type: none;
+}
+
+#legendbuttons a {
+	color: #0275D8;
+	text-decoration: none;
+	padding: 0.2em;
+	border: 1px #e0e0e0 solid;
+}
+
+#legendbuttons a:hover {
+	background-color: #f6ff00;
+}
+
+.currentpage {
+	color: #5CB85C;
+}

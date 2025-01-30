@@ -287,7 +287,7 @@ class PatientProxyIT {
             });
 
             //WHEN
-            PagedModel<Patient> pagedModelPatient = patientProxy.getPatients();
+            PagedModel<Patient> pagedModelPatient = patientProxy.getPatients(pageRequest);
 
             //THEN
             try {
