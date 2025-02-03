@@ -34,10 +34,10 @@
                         <tr th:each="patient, iterstat : ${patients}" th:class="${iterstat.odd}?'odd'">
                             <td style="width: 5%" th:text="${patient.id}">1</td>
                             <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
-                            <td style="width: 15%"th:text="${patient.lastName}">lastname</td>
+                            <td style="width: 15%" th:text="${patient.lastName}">lastname</td>
                             <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
                             <td style="width: 5%" th:text="${patient.genre}">genre</td>
-                            <td style="width: 15%"th:text="${patient.address}">address</td>
+                            <td style="width: 15%" th:text="${patient.address}">address</td>
                             <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
                             <td style="width: 15%">
                                 <a th:href="@{/updatePatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;

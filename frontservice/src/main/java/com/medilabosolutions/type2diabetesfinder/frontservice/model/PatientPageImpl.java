@@ -18,7 +18,7 @@ public class PatientPageImpl<T> extends PageImpl<T> {
         @JsonProperty("totalElements") Long totalElements, @JsonProperty("pageable") JsonNode pageable, @JsonProperty("last") boolean last,
         @JsonProperty("totalPages") int totalPages, @JsonProperty("sort") JsonNode sort, @JsonProperty("first") boolean first,
         @JsonProperty("numberOfElements") int numberOfElements) {
-            super(content, PageRequest.of(number-1, size), totalElements);
+            super(content, PageRequest.of(number, size), totalElements);
         }
 
 }

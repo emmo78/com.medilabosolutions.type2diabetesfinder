@@ -50,9 +50,8 @@ public class PatientController {
     @GetMapping("/patients")
     public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, WebRequest request) throws NullPointerException {
         //Throw NullPointerException if pageRequest is null
-        String pageNumber = pageNumberOpt.orElse("0");
         int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
-        Pageable pageRequest = PageRequest.of(index, 3);
+        Pageable pageRequest = PageRequest.of(index, 3, Sort.by(Sort.Direction.ASC, "id"));
         Page<Patient> patients = patientService.getPatients(pageRequest);
         log.info("{} : {} : patients page number : {} of {}",
                 requestService.requestToString(request),

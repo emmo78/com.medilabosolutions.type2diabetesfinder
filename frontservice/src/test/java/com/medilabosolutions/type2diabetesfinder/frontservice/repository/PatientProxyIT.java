@@ -289,15 +289,13 @@ class PatientProxyIT {
                 patient.setId(id);
                 ids.add(id);
             });
-            Pageable pageRequest = PageRequest.of(0, 3, Sort.by("id"));
-
 
             //WHEN
-            Page<Patient> pagedModelPatient = patientProxy.getPatients(pageRequest);
+            Page<Patient> pagedPatient = patientProxy.getPatients(0);
 
             //THEN
             try {
-                assertThat(pagedModelPatient.getContent())
+                assertThat(pagedPatient.getContent())
                         .extracting(
                                 Patient::getId,
                                 Patient::getFirstName,
@@ -307,10 +305,11 @@ class PatientProxyIT {
                                 Patient::getAddress,
                                 Patient::getPhoneNumber)
                         .contains(
-                                tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"),
-                                tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"),
-                                tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555"),
-                                tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666"));
+                                tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
+                                ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                                ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+                                //,tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+                        );
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
             }
