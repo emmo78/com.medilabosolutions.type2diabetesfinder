@@ -136,7 +136,7 @@ public class PatientControllerTest {
             when(patientService.getPatients(any(Pageable.class))).thenReturn(new PageImpl<Patient>(givenPatients, pageRequest, 4));
 
             //WHEN
-            ResponseEntity<Page<Patient>> responseEntity = patientController.getPatients(request);
+            ResponseEntity<Page<Patient>> responseEntity = patientController.getPatients(Optional.of("3"), request);
 
             //THEN
             assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
@@ -169,7 +169,7 @@ public class PatientControllerTest {
             //WHEN
             //THEN
             assertThat(assertThrows(NullPointerException.class,
-                    () -> patientController.getPatients(request))
+                    () -> patientController.getPatients(Optional.ofNullable(null), request))
                    .getMessage()).isEqualTo("Pageable must not be null");
         }
     }

@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -139,14 +140,14 @@ class PatientFrontControllerIT {
             });
 
             //WHEN
-            final MvcResult result = mvc.perform(get("/"))
+            final MvcResult result = mvc.perform(get("/?pageNumber=0"))
                     .andReturn();
 
             //THEN
             try {
                 assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 assertThat(result.getResponse().getStatus()).isEqualTo(200);
-                List <Patient> resultPatients = ((PagedModel) result.getModelAndView().getModel().get("patients")).getContent();
+                List <Patient> resultPatients = ((Page) result.getModelAndView().getModel().get("patients")).getContent();
                 assertThat(resultPatients).extracting(
                     Patient::getId,
                     Patient::getFirstName,
@@ -156,10 +157,10 @@ class PatientFrontControllerIT {
                     Patient::getAddress,
                     Patient::getPhoneNumber)
                 .containsExactly(
-                    tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"),
-                    tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444"),
-                    tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555"),
-                    tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+                    tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
+                    ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                    ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+                    //,tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                 );
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));

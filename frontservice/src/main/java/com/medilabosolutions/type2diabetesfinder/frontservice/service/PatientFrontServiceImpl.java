@@ -4,8 +4,9 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -26,9 +27,9 @@ public class PatientFrontServiceImpl implements PatientFrontService {
 	 * @return A page of patients based on the given pagination information.
 	 */
 	@Override
-	public PagedModel<Patient> getPatients(Pageable pageRequest) {
+	public Page<Patient> getPatients(int index) {
 		//throws NullPointerException if pageRequest is null
-		return patientProxy.getPatients(pageRequest);
+		return patientProxy.getPatients(index);
 	}
 
 	/**

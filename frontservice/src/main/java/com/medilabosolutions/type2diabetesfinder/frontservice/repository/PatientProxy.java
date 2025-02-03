@@ -2,14 +2,12 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
-import com.medilabosolutions.type2diabetesfinder.frontservice.model.PatientPageModelImpl;
-import lombok.NoArgsConstructor;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.PatientPageImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +26,16 @@ public class PatientProxy {
      *
      * @return A PageModel of requested page patients
      */
-    public PagedModel<Patient> getPatients(Pageable pageRequest) {
+    public Page<Patient> getPatients(int) {
         String baseApiUrl = urlApiProperties.getApiURL();
         String getPatientsUrl = baseApiUrl + "/patients?pageNumber="+(pageRequest.getPageNumber()+1);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<PatientPageModelImpl<Patient>> response = restTemplate.exchange(
+        ResponseEntity<PatientPageImpl<Patient>> response = restTemplate.exchange(
                 getPatientsUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<PatientPageModelImpl<Patient>>() {}
+                new ParameterizedTypeReference<PatientPageImpl<Patient>>() {}
         );
         log.debug("Get Patients call " + response.getStatusCode().toString());
         return response.getBody();

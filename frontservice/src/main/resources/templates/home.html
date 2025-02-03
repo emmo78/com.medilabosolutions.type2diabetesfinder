@@ -31,7 +31,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="patient, iterstat : ${patients.getContent()}" th:class="${iterstat.odd}?'odd'">
+                        <tr th:each="patient, iterstat : ${patients}" th:class="${iterstat.odd}?'odd'">
                             <td style="width: 5%" th:text="${patient.id}">1</td>
                             <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
                             <td style="width: 15%"th:text="${patient.lastName}">lastname</td>
@@ -46,7 +46,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div th:if="${pageInterval}" th:with="index = ${patients.getMetadata().number()}">
+                <div th:if="${pageInterval}" th:with="index = ${patients.getNumber()}">
                     <ul id="legendbuttons">
                         <li th:unless="${index}<=0">
                             <a th:href="@{/(pageNumber=(${index}-1))}">&laquo;</a>
@@ -56,7 +56,7 @@
                                 <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
                             </a>
                         </li>
-                        <li th:if="${index}lt(${transactions.getTotalPages()}-1)">
+                        <li th:if="${index}lt(${patients.getTotalPages()}-1)">
                             <a th:href="@{/(pageNumber=(${index}+1))}">&raquo;</a>
                         </li>
                     </ul>

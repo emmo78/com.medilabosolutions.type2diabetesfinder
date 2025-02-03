@@ -39,15 +39,15 @@ public class PatientFrontController {
     @GetMapping("/")
     public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) { //Principal user
         //with Principal user get user admin ?
+
         int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
-        Pageable pageRequest = PageRequest.of(index, 3);
-        PagedModel<Patient> patientPage = patientFrontService.getPatients(pageRequest);
+        Page<Patient> patientPage = patientFrontService.getPatients(index);
         log.info("{} : patient page number : {} of {}",
                 requestService.requestToString(request),
-                patientPage.getMetadata().number()+1,
-                patientPage.getMetadata().totalPages());
+                patientPage.getNumber()+1,
+                patientPage.getTotalPages());
         model.addAttribute("patients", patientPage);
-        int lastPage = (int) patientPage.getMetadata().totalPages()-1;
+        int lastPage = (int) patientPage.getTotalPages()-1;
         model.addAttribute("pageInterval", pageInterval(index, lastPage));
         return "home";
     }
@@ -124,6 +124,4 @@ public class PatientFrontController {
         }
         return interval;
     }
-
-
 }

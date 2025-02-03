@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -50,8 +48,11 @@ public class PatientController {
      */
     // Retrieve all patients
     @GetMapping("/patients")
-    public ResponseEntity<Page<Patient>> getPatients(Pageable pageRequest, WebRequest request) throws NullPointerException {
+    public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, WebRequest request) throws NullPointerException {
         //Throw NullPointerException if pageRequest is null
+        String pageNumber = pageNumberOpt.orElse("0");
+        int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
+        Pageable pageRequest = PageRequest.of(index, 3);
         Page<Patient> patients = patientService.getPatients(pageRequest);
         log.info("{} : {} : patients page number : {} of {}",
                 requestService.requestToString(request),

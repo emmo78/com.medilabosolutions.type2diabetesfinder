@@ -86,10 +86,10 @@ public class PatientControllerIT {
                         .build()
         );
         givenPatients.forEach(patient -> patient.setId(patientRepository.saveAndFlush(patient).getId()));
-        String givenPatientsString = objectMapper.writeValueAsString(givenPatients);
+        String givenPatientsString = objectMapper.writeValueAsString(givenPatients.subList(0, 3));
 
         //WHEN
-        final MvcResult result = mvc.perform(get("/patients"))
+        final MvcResult result = mvc.perform(get("/patients?pageNumber=0"))
                     .andReturn();
 
         //THEN
