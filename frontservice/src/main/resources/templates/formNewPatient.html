@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet"
+              type="text/css"
+              href="../static/css/formNewPatient.css"
+              th:href="@{/css/formNewPatient.css}" />
+        <title>formNewPatient</title>
+    </head>
+    <body>
+    <div id="main_wrapper" class="color" th:with="page='formNewPatient'">
+        <header th:replace="~{header::header(${page})}"></header>
+        <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+            <section>
+                <form method="POST" th:action="@{/savepatient}" th:object="${patient}">
+                    <div>
+                        <label for="firstName">First name</label><br/>
+                        <input type="text" th:field="*{firstName}" required maxlength="35" placeholder="Firstname up to 35 characters"/><br/>
+
+                        <label for="lastName">Last name</label><br/>
+                        <input type="text" th:field="*{lastName}" required maxlength="35" placeholder="Lastname up to 35 characters"/><br/>
+
+                        <label for="birthDate">Birth date</label><br/>
+                        <input type="text" th:field="${#temporals.format(patient.birthDate, 'MM-dd-yyyy')}" required placeholder="MM/dd/yyyy"/><br/>
+
+                        <label for="genre">Genre</label><br/>
+                        <input type="text" th:field="*{genre}" required maxlength="1" placeholder="1 letter"/><br/>
+
+                        <label for="address">Address</label><br/>
+                        <input type="text" th:field="*{address}" required maxlength="90" placeholder="up to 90 characters"/><br/>
+
+                        <label for="phoneNumber">Phone number</label><br/>
+                        <input type="text" th:field="*{phoneNumber}" required maxlength="16" placeholder="up to 16 characters"/><br/>
+
+                        <input class="button" type="submit" th:value="'Create'"/>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </body>
+</html>

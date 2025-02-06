@@ -19,6 +19,10 @@ header {
 	border: none;
 }
 
+.color {
+	color: #181818;
+}
+
 section {
 	margin-top: 2em;
 	padding-bottom: 0.5em;
@@ -73,14 +77,6 @@ a:hover, .athis:hover {
  th {
 	 text-align: left;
  }
-
-.odd {
-	background-color: #e0e0e0;
-}
-
-th {
-	text-align: left;
-}
 
 .odd {
 	background-color: #e0e0e0;

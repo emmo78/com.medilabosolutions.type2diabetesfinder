@@ -37,9 +37,8 @@ public class PatientFrontController {
     private final RequestService requestService;
 
     @GetMapping("/")
-    public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) { //Principal user
+    public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) throws NumberFormatException { //Principal user
         //with Principal user get user admin ?
-
         int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
         Page<Patient> patientPage = patientFrontService.getPatients(index);
         log.info("{} : patient page number : {} of {}",

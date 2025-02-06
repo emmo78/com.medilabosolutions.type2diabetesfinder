@@ -1,7 +1,5 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
@@ -9,14 +7,16 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFro
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -92,10 +92,11 @@ class PatientFrontControllerIT {
         }
 
         @SneakyThrows
-        @Test
+        @ParameterizedTest(name = "{0} should first page of three and then page of one")
+        @ValueSource( strings = {"0", "1"})
         @Tag("PatientFrontControllerIT")
         @DisplayName("getPatients Test should return selected page of patients")
-        public void homeTestPatients() {
+        public void homeTestPatients(String pageNumber) {
 
             //GIVEN
             List<Patient> givenPatients = List.of(
@@ -139,15 +140,27 @@ class PatientFrontControllerIT {
                 ids.add(id);
             });
 
+            List<Tuple> expectedResult = "0".equals(pageNumber)?
+                    List.of(
+                            tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
+                            ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                            ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+
+                    ):
+                    List.of(
+                            tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+                    );
+
+
             //WHEN
-            final MvcResult result = mvc.perform(get("/?pageNumber=0"))
+            final MvcResult result = mvc.perform(get("/?pageNumber="+pageNumber))
                     .andReturn();
 
             //THEN
             try {
                 assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 assertThat(result.getResponse().getStatus()).isEqualTo(200);
-                List <Patient> resultPatients = ((Page) result.getModelAndView().getModel().get("patients")).getContent();
+                Page<Patient> resultPatients = (Page) result.getModelAndView().getModel().get("patients");
                 assertThat(resultPatients).extracting(
                     Patient::getId,
                     Patient::getFirstName,
@@ -156,16 +169,15 @@ class PatientFrontControllerIT {
                     Patient::getGenre,
                     Patient::getAddress,
                     Patient::getPhoneNumber)
-                .containsExactly(
-                    tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
-                    ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
-                    ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
-                    //,tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
-                );
+                .containsExactlyElementsOf(expectedResult);
+
+                    //
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
             }
         }
+        //ToDo : @Test with "a" in ExceptionControllerIT
+
     }
 
     /*@Nested

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8" />
@@ -12,7 +13,7 @@
     <body>
         <div id="main_wrapper" class="color" th:with="page='home'">
             <header th:replace="~{header::header(${page})}"></header>
-            <!--<h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+            <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
             <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
                 <button class="button">
                     <a href="/createpatient">Add New</a>
@@ -27,7 +28,7 @@
                             <th>Genre</th>
                             <th>Address</th>
                             <th>Phone number</th>
-                            <th id="actions">Actions</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +36,7 @@
                             <td style="width: 5%" th:text="${patient.id}">1</td>
                             <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
                             <td style="width: 15%" th:text="${patient.lastName}">lastname</td>
-                            <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">16-05-1975</td>
+                            <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'MM-dd-yyyy')}">16-05-1975</td>
                             <td style="width: 5%" th:text="${patient.genre}">genre</td>
                             <td style="width: 15%" th:text="${patient.address}">address</td>
                             <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
