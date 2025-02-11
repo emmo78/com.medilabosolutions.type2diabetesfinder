@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          type="text/css"
+          href="../static/css/formPatient.css"
+          th:href="@{/css/formPatient.css}">
+    <title>formUpdatePatient</title>
+</head>
+<body>
+    <div id="main_wrapper" class="color" th:with="page='formUpdatePatient'">
+        <header th:replace="~{header::header(${page})}"></header>
+        <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+        <section>
+            <h1>Modifier un Patient</h1>
+                <form action="#" th:action="@{/savepatient}" th:object="${patient}" method="post">
+                <!-- Champ ID caché pour l'update -->
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label for="firstName">Prénom</label>
+                    <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Nom</label>
+                    <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">Date de naissance</label>
+                    <input type="date" class="form-control" id="birthDate" th:field="*{birthDate}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <select class="form-control" id="genre" th:field="*{genre}" required>
+                        <option value="M">Homme</option>
+                        <option value="F">Femme</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" class="form-control" id="address" th:field="*{address}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">Numéro de téléphone</label>
+                    <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}"
+                           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="XXX-XXX-XXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                    <a th:href="@{/}" class="btn btn-secondary">Annuler</a>
+                </div>
+            </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

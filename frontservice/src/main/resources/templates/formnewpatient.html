@@ -5,15 +5,16 @@
         <meta charset="UTF-8">
         <link rel="stylesheet"
               type="text/css"
-              href="../static/css/formNewPatient.css"
-              th:href="@{/css/formNewPatient.css}" />
+              href="../static/css/formPatient.css"
+              th:href="@{/css/formPatient.css}" />
         <title>formNewPatient</title>
     </head>
     <body>
-    <div id="main_wrapper" class="color" th:with="page='formNewPatient'">
-        <header th:replace="~{header::header(${page})}"></header>
-        <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+        <div id="main_wrapper" class="color" th:with="page='formNewPatient'">
+            <header th:replace="~{header::header(${page})}"></header>
+            <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
             <section>
+                <h1>Ajouter un Patient</h1>
                 <form method="POST" th:action="@{/savepatient}" th:object="${patient}">
                     <div>
                         <label for="firstName">First name</label><br/>

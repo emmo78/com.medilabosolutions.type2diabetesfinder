@@ -21,6 +21,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.time.LocalDate;
@@ -30,6 +31,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -151,15 +154,14 @@ class PatientFrontControllerIT {
                             tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                     );
 
-
             //WHEN
             final MvcResult result = mvc.perform(get("/?pageNumber="+pageNumber))
                     .andReturn();
 
             //THEN
             try {
-                assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 assertThat(result.getResponse().getStatus()).isEqualTo(200);
+                assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 Page<Patient> resultPatients = (Page) result.getModelAndView().getModel().get("patients");
                 assertThat(resultPatients).extracting(
                     Patient::getId,
@@ -170,15 +172,114 @@ class PatientFrontControllerIT {
                     Patient::getAddress,
                     Patient::getPhoneNumber)
                 .containsExactlyElementsOf(expectedResult);
-
-                    //
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
             }
         }
         //ToDo : @Test with "a" in ExceptionControllerIT
-
     }
+
+    @Nested
+    @Tag("createpatient form")
+    @DisplayName("Test for \"/createpatient\"")
+    class CreatePatientTest {
+
+        @BeforeEach
+        public void setUpForEachTests() {
+            requestMock = new MockHttpServletRequest();
+            requestMock.setServerName("http://localhost:8080");
+            requestMock.setRequestURI("/createpatient");
+            request = new ServletWebRequest(requestMock);
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            requestMock = null;
+            request = null;
+        }
+
+        @SneakyThrows
+        @Test
+        @Tag("PatientFrontControllerIT")
+        @DisplayName("createPatient Test should return a valid form view")
+        public void createPatientTestShouldReturnFormView() {
+            // GIVEN - No specific setup required
+            // WHEN
+            final MvcResult result = mvc.perform(get("/createpatient")).andReturn();
+
+            // THEN
+            assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            assertThat(result.getResponse().getContentAsString()).contains("<title>formNewPatient</title>");
+        }
+    }
+
+    @Nested
+    @Tag("updatepatient form")
+    @DisplayName("Test for \"/updatepatient/{id}\"")
+    class UpdatePatientTest {
+
+        @BeforeEach
+        public void setUpForEachTests() {
+            requestMock = new MockHttpServletRequest();
+            requestMock.setServerName("http://localhost:8080");
+            requestMock.setRequestURI("/updatepatient/{id}");
+            request = new ServletWebRequest(requestMock);
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            requestMock = null;
+            request = null;
+        }
+
+        @SneakyThrows
+        @Test
+        @Tag("PatientFrontControllerIT")
+        @DisplayName("updatepatient Test should return a valid form view completed with patient to update")
+        void updatePatientTestShouldReturnFormView() {
+
+            // GIVEN
+            Patient patientToUpdate = Patient.builder()
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966, 12, 31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+            int id = patientProxy.createPatient(patientToUpdate).getId();
+            patientToUpdate.setId(id);
+            when(patientFrontService.getPatient(anyInt())).thenReturn(patientToUpdate);
+
+            // WHEN
+            final MvcResult result = mvc.perform(get("/updatepatient/"+id)).andReturn();
+
+            // THEN
+            assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            assertThat(result.getResponse().getContentAsString()).contains("<title>formUpdatePatient</title>");
+            Patient patientResult = (Patient) result.getModelAndView().getModel().get("patient");
+            assertThat(patientResult)
+                    .extracting(
+                            Patient::getId
+                            ,Patient::getFirstName
+                            ,Patient::getLastName
+                            ,p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+                            ,Patient::getGenre
+                            ,Patient::getAddress
+                            ,Patient::getPhoneNumber
+                    ).containsExactly(
+                            patientToUpdate.getId()
+                            ,patientToUpdate.getFirstName()
+                            , patientToUpdate.getLastName()
+                            , patientToUpdate.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+                            , patientToUpdate.getGenre(), patientToUpdate.getAddress()
+                            , patientToUpdate.getPhoneNumber()
+                    );
+        }
+    }
+
+    
+    
 
     /*@Nested
     @Tag("/createpatient")

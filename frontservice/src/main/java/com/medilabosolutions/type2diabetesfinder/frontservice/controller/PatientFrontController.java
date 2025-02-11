@@ -6,10 +6,6 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestSer
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +14,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +48,7 @@ public class PatientFrontController {
 
     @GetMapping("/createpatient")
     public String createPatient(Patient patient) {
-        return "formNewPatient";
+        return "formnewpatient";
     }
 
     @GetMapping("/updatepatient/{id}")
@@ -62,7 +57,7 @@ public class PatientFrontController {
         // If there is a password, don't let it
         log.info("{} : {} : patient to update = {} gotten",  requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
         model.addAttribute("patient", patient);
-        return "formPatient";
+        return "formupdatepatient";
     }
 
     @GetMapping("/deletepatient/{id}")
