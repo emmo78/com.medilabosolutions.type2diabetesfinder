@@ -1,9 +1,7 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -29,7 +27,6 @@ public class Patient {
     @ToString.Include
     private String lastName;
 
-    @DateTimeFormat
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ToString.Include
     private LocalDate birthDate;

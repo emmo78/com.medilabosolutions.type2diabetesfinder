@@ -5,8 +5,6 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.repository.Patient
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

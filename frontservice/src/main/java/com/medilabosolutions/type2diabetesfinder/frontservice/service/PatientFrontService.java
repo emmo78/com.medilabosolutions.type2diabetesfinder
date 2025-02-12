@@ -2,9 +2,7 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.service;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.data.web.PagedModel;
 
 /**
  * PatientService is an interface that defines the operations for managing patient entities.

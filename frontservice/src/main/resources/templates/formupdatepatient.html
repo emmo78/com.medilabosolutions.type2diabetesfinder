@@ -6,17 +6,20 @@
         <link rel="stylesheet"
               type="text/css"
               href="../static/css/formPatient.css"
-              th:href="@{/css/formPatient.css}" />
-        <title>formNewPatient</title>
+              th:href="@{/css/formPatient.css}">
+        <title>formUpdatePatient</title>
     </head>
     <body>
-        <div id="main_wrapper" class="color" th:with="page='formNewPatient'">
+        <div id="main_wrapper" class="color" th:with="page='formUpdatePatient'">
             <header th:replace="~{header::header(${page})}"></header>
             <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
             <section>
-                <h1>Ajouter un Patient</h1>
+                <h1>Modifier un Patient</h1>
                 <form method="POST" action="#" th:action="@{/savepatient}" th:object="${patient}">
                     <div>
+                        <!-- Champ ID caché pour l'update -->
+                        <input type="hidden" th:field="*{id}" />
+
                         <label for="firstName">First name</label><br/>
                         <input type="text" th:field="*{firstName}" required maxlength="35" placeholder="Firstname up to 35 characters"/><br/>
 
@@ -37,7 +40,7 @@
                         <label for="phoneNumber">Phone number</label><br/>
                         <input type="text" th:field="*{phoneNumber}" required maxlength="16" placeholder="up to 16 characters"/><br/>
 
-                        <input class="button" type="submit" th:value="'Create'"/>
+                        <input class="button" type="submit" th:value="'Update'"/>
                     </div>
                 </form>
             </section>
