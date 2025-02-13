@@ -1,6 +1,7 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
+import com.medilabosolutions.type2diabetesfinder.frontservice.error.ApiError;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
@@ -17,10 +18,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.time.LocalDate;
@@ -30,6 +33,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -74,7 +78,7 @@ class PatientFrontControllerIT {
     }
 
     @Nested
-    @Tag("getPatients")
+    @Tag("getPatientsIT")
     @DisplayName("Test for \"/\"")
     class HomeTest {
 
@@ -178,7 +182,7 @@ class PatientFrontControllerIT {
     }
 
     @Nested
-    @Tag("createpatient form")
+    @Tag("createpatientIT")
     @DisplayName("Test for \"/createpatient\"")
     class CreatePatientTest {
 
@@ -226,7 +230,7 @@ class PatientFrontControllerIT {
     }
 
     @Nested
-    @Tag("updatepatient form")
+    @Tag("updatepatientIT")
     @DisplayName("Test for \"/updatepatient/{id}\"")
     class UpdatePatientTest {
 
@@ -291,6 +295,75 @@ class PatientFrontControllerIT {
                 patientProxy.deletePatient(id);
             }
 
+        }
+    }
+
+    @Nested
+    @Tag("deletepatientIT")
+    @DisplayName("Test for \"/deletepatient/{id}\"")
+    class DeletePatientTest {
+
+        @BeforeEach
+        public void setUpForEachTests() {
+            requestMock = new MockHttpServletRequest();
+            requestMock.setServerName("http://localhost:8080");
+            requestMock.setRequestURI("/deletepatient/{id}");
+            request = new ServletWebRequest(requestMock);
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            requestMock = null;
+            request = null;
+        }
+
+        @SneakyThrows
+        @Test
+        @Tag("PatientFrontControllerIT")
+        @DisplayName("deletePatient Test should remove patient from system and redirect to home page")
+        void deletePatientTestShouldRemovePatientFromSystem() {
+
+            // GIVEN
+            Patient patientToDelete = Patient.builder()
+                    .firstName("ToDelete")
+                    .lastName("Patient")
+                    .birthDate(LocalDate.of(1980, 1, 1))
+                    .genre("M")
+                    .address("123 Delete St")
+                    .phoneNumber("555-666-7777")
+                    .build();
+            int id = patientProxy.createPatient(patientToDelete).getId();
+
+            // WHEN
+            final MvcResult result = mvc.perform(get("/deletepatient/" + id)).andReturn();
+
+            // THEN
+            try {
+                // The 302 Found redirect response status code indicates that the resource is temporarily moved to the home URL
+                assertThat(result.getResponse().getStatus()).isEqualTo(302);
+                assertThat(result.getResponse().getHeader("Location")).isEqualTo("/");
+
+                // Verify the patient no longer exists
+                HttpClientErrorException.BadRequest heeB =
+                        assertThrows(HttpClientErrorException.BadRequest.class,
+                                () -> patientProxy.getPatient(id));
+                assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                assertThat(heeB.getResponseBodyAs(ApiError.class))
+                        .extracting(
+                                ApiError::getMessage,
+                                ApiError::getStatus
+                        ).containsExactly(
+                                "Bad request"
+                                , HttpStatus.BAD_REQUEST
+                        );
+
+            } finally {
+                try {
+                    // Cleanup in case of partial failure
+                    patientProxy.deletePatient(id);
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 }
