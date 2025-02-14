@@ -294,7 +294,6 @@ class PatientFrontControllerIT {
             } finally {
                 patientProxy.deletePatient(id);
             }
-
         }
     }
 
@@ -358,11 +357,7 @@ class PatientFrontControllerIT {
                         );
 
             } finally {
-                try {
-                    // Cleanup in case of partial failure
                     patientProxy.deletePatient(id);
-                } catch (Exception ignored) {
-                }
             }
         }
     }
