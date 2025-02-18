@@ -25,14 +25,14 @@ public class ControllerExceptionHandler {
 
 	/**
 	 * Handle UnexpectedRollBackException thrown by services
-	 * @param urex the UnexpectedRollBackException
+	 * @param badRequestException the UnexpectedRollBackException
 	 * @param request web request to log uri
 	 * @param model part of Spring MVC, to contain data for the view (Thymeleaf)
 	 * @return the string "error" the view name for the view resolver
 	 */
-	@ExceptionHandler(HttpClientErrorException.BadRequest.class)
-	public String unexpectedRollbackException(HttpClientErrorException.BadRequest urex, WebRequest request, Model model) {
-		String errorMessage = urex.getMessage();
+	@ExceptionHandler({HttpClientErrorException.BadRequest.class, NumberFormatException.class})
+	public String unexpectedRollbackException(RuntimeException badRequestException, WebRequest request, Model model) {
+		String errorMessage = badRequestException.getMessage();
 		log.error("{} : {} : {}",
 				requestService.requestToString(request),
 				((ServletWebRequest) request).getHttpMethod(),
