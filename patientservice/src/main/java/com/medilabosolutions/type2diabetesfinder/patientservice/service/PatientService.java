@@ -30,13 +30,13 @@ public interface PatientService {
      */
     Patient getPatient(Integer id) throws ResourceNotFoundException;
 
-       /**
-        * Creates a new patient in the system.
-        *
-        * @param patient the patient entity to be created
-        * @return the created patient entity
-        * @throws BadRequestException if the patient entity has a non-null id or any validation fails
-        */
+    /**
+     * Creates a new patient in the system.
+     *
+     * @param patient the patient entity to be created
+     * @return the created patient entity
+     * @throws BadRequestException if the patient entity has a non-null id or any validation fails
+     */
     Patient createPatient(Patient patient) throws BadRequestException;
 
     /**

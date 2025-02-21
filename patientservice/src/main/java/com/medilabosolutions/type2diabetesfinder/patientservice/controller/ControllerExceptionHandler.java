@@ -29,7 +29,7 @@ public class ControllerExceptionHandler {
 
     /**
      * Service for handling web request operations.
-     *
+     * <p>
      * This service is used to convert web requests into a string representation
      * of their parameters and is typically used for logging purposes in the
      * context of exception handling.
@@ -42,11 +42,11 @@ public class ControllerExceptionHandler {
      * {@code InvalidDataAccessApiUsageException}, {@code MethodArgumentNotValidException}, {@code ConstraintViolationException},
      * {@code ResourceNotFoundException}, {@code NullPointerException}, and {@code BadRequestException}.
      *
-     * @param brex the exception that was thrown
+     * @param brex    the exception that was thrown
      * @param request the web request during which the exception was raised
      * @return a {@code ResponseEntity} containing the {@code ApiError} with an HTTP status of {@code BAD_REQUEST}
      */
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, InvalidDataAccessApiUsageException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class, ResourceNotFoundException.class, NullPointerException.class, BadRequestException.class})
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, InvalidDataAccessApiUsageException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class, ResourceNotFoundException.class, IllegalArgumentException.class, BadRequestException.class})
     public ResponseEntity<ApiError> badRequestException(Exception brex, WebRequest request) {
         log.error("{} : {} : {}",
                 requestService.requestToString(request),
@@ -58,11 +58,11 @@ public class ControllerExceptionHandler {
 
     /**
      * Handles unexpected exceptions and converts them into a standardized ApiError response.
-     *
+     * <p>
      * This method logs the details of the exception and returns a {@link ResponseEntity}
      * with an HTTP status of {@code INTERNAL_SERVER_ERROR}.
      *
-     * @param e the exception that was thrown
+     * @param e       the exception that was thrown
      * @param request the web request during which the exception was raised
      * @return a {@code ResponseEntity} containing the {@link ApiError} with an HTTP status of {@code INTERNAL_SERVER_ERROR}
      */

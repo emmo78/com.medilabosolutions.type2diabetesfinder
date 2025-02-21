@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 /**
  * Entity class representing a Patient in the system.
  * This class is mapped to the "patient" table in the database.
- *
+ * <p>
  * Annotations:
  * - @Entity: Specifies that this class is an entity.
  * - @Table: Specifies the name of the database table.
@@ -36,14 +37,14 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, includeFieldNames=true)
+@ToString(onlyExplicitlyIncluded = true, includeFieldNames = true)
 public class Patient {
 
     private static final long serialVersionUID = 1L;
 
     //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     @ToString.Include
     private Integer id;
@@ -63,6 +64,7 @@ public class Patient {
     @Column(name = "birth_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "Birthdate is mandatory")
+    @Past(message = "Birthdate must be in the past")
     @ToString.Include
     private LocalDate birthDate;
 

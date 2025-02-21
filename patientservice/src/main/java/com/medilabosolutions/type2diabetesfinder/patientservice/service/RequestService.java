@@ -6,7 +6,6 @@ import org.springframework.web.context.request.WebRequest;
  * web request treatment
  *
  * @author Olivier MOREL
- *
  */
 public interface RequestService {
 
