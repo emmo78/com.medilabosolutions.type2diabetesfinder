@@ -34,7 +34,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -97,11 +96,11 @@ class PatientFrontControllerIT {
         }
 
         @SneakyThrows
-        @ParameterizedTest(name = "{0} should first page of three and then page of one")
-        @ValueSource( strings = {"0", "1"})
+        @ParameterizedTest(name = "{0} should show first page of three and then page of one patient")
+        @ValueSource(strings = {"0", "1"})
         @Tag("PatientFrontControllerIT")
         @DisplayName("getPatients Test should return selected page of patients")
-        public void homeTestPatients(String pageNumber) {
+        public void homeTestPatientsShouldReturnSelectedPageOfPatients(String pageNumber) {
 
             //GIVEN
             List<Patient> givenPatients = List.of(
@@ -145,19 +144,19 @@ class PatientFrontControllerIT {
                 ids.add(id);
             });
 
-            List<Tuple> expectedResult = "0".equals(pageNumber)?
+            List<Tuple> expectedResult = "0".equals(pageNumber) ?
                     List.of(
                             tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
-                           ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
-                           ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+                            , tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                            , tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
 
-                    ):
+                    ) :
                     List.of(
                             tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                     );
 
             //WHEN
-            final MvcResult result = mvc.perform(get("/?pageNumber="+pageNumber))
+            final MvcResult result = mvc.perform(get("/?pageNumber=" + pageNumber))
                     .andReturn();
 
             //THEN
@@ -166,19 +165,35 @@ class PatientFrontControllerIT {
                 assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
                 Page<Patient> resultPatients = (Page) result.getModelAndView().getModel().get("patients");
                 assertThat(resultPatients).extracting(
-                    Patient::getId,
-                    Patient::getFirstName,
-                    Patient::getLastName,
-                    p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                    Patient::getGenre,
-                    Patient::getAddress,
-                    Patient::getPhoneNumber)
-                .containsExactlyElementsOf(expectedResult);
+                                Patient::getId,
+                                Patient::getFirstName,
+                                Patient::getLastName,
+                                p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                                Patient::getGenre,
+                                Patient::getAddress,
+                                Patient::getPhoneNumber)
+                        .containsExactlyElementsOf(expectedResult);
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
             }
         }
-        //ToDo : @Test with "a" in ExceptionControllerIT
+
+        @SneakyThrows
+        @ParameterizedTest(name = "{0} should return error page")
+        @ValueSource(strings = {"-1", "a", ""})
+        @Tag("PatientFrontControllerIT&ControllerExceptionHandlerIT")
+        @DisplayName("getPatients Test should return error page")
+        public void homeTestPatientsShouldReturnErrorPage(String pageNumber) {
+
+            //GIVEN
+            //WHEN
+            final MvcResult result = mvc.perform(get("/?pageNumber=" + pageNumber))
+                    .andReturn();
+
+            //THEN
+            assertThat(result.getResponse().getStatus()).isEqualTo(400);
+            assertThat((result.getResponse().getContentAsString())).contains("<title>Error page</title>");
+        }
     }
 
     @Nested
@@ -266,7 +281,7 @@ class PatientFrontControllerIT {
             int id = patientProxy.createPatient(patientToUpdate).getId();
 
             // WHEN
-            final MvcResult result = mvc.perform(get("/updatepatient/"+id)).andReturn();
+            final MvcResult result = mvc.perform(get("/updatepatient/" + id)).andReturn();
 
             // THEN
             try {
@@ -276,21 +291,21 @@ class PatientFrontControllerIT {
                 assertThat(patientResult)
                         .extracting(
                                 Patient::getId
-                               ,Patient::getFirstName
-                               ,Patient::getLastName
-                               ,p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-                               ,Patient::getGenre
-                               ,Patient::getAddress
-                               ,Patient::getPhoneNumber
+                                , Patient::getFirstName
+                                , Patient::getLastName
+                                , p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+                                , Patient::getGenre
+                                , Patient::getAddress
+                                , Patient::getPhoneNumber
                         ).containsExactly(
                                 id
-                               ,"Test"
-                               ,"TestNone"
-                               ,"19661231"
-                               ,"F"
-                               ,"1 Brookside St"
-                               ,"100-222-3333"
-                       );
+                                , "Test"
+                                , "TestNone"
+                                , "19661231"
+                                , "F"
+                                , "1 Brookside St"
+                                , "100-222-3333"
+                        );
             } finally {
                 patientProxy.deletePatient(id);
             }
@@ -357,7 +372,7 @@ class PatientFrontControllerIT {
                         );
 
             } finally {
-                    patientProxy.deletePatient(id);
+                patientProxy.deletePatient(id);
             }
         }
     }

@@ -148,7 +148,7 @@ class PatientProxyIT {
         public void undefPerTest() {
             patientProxy.deletePatient(id);
             givenPatient = null;
-            id=0;
+            id = 0;
         }
 
         @Test
@@ -182,7 +182,7 @@ class PatientProxyIT {
             //GIVEN
             //WHEN
             //THEN
-            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.getPatient(id+1));
+            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.getPatient(id + 1));
             assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(heeB.getResponseBodyAs(ApiError.class))
                     .extracting(
@@ -192,8 +192,8 @@ class PatientProxyIT {
                             "Bad request"
                             , HttpStatus.BAD_REQUEST
                     );
-            }
         }
+    }
 
     @Nested
     @Tag("deletePatient")
@@ -221,7 +221,7 @@ class PatientProxyIT {
             // THEN
             HttpClientErrorException.BadRequest heeB =
                     assertThrows(HttpClientErrorException.BadRequest.class,
-                                 () -> patientProxy.getPatient(id));
+                            () -> patientProxy.getPatient(id));
             assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(heeB.getResponseBodyAs(ApiError.class))
                     .extracting(
@@ -233,7 +233,7 @@ class PatientProxyIT {
                     );
         }
     }
-    
+
     @Nested
     @Tag("getPatients")
     @DisplayName("Test for getPatients")
@@ -250,7 +250,7 @@ class PatientProxyIT {
                     Patient.builder()
                             .firstName("Test")
                             .lastName("TestNone")
-                            .birthDate(LocalDate.of(1966,12,31))
+                            .birthDate(LocalDate.of(1966, 12, 31))
                             .genre("F")
                             .address("1 Brookside St")
                             .phoneNumber("100-222-3333")
@@ -258,7 +258,7 @@ class PatientProxyIT {
                     Patient.builder()
                             .firstName("Test")
                             .lastName("TestBorderline")
-                            .birthDate(LocalDate.of(1945,06,24))
+                            .birthDate(LocalDate.of(1945, 06, 24))
                             .genre("M")
                             .address("2 High St")
                             .phoneNumber("200-333-4444")
@@ -266,7 +266,7 @@ class PatientProxyIT {
                     Patient.builder()
                             .firstName("Test")
                             .lastName("TestDanger")
-                            .birthDate(LocalDate.of(2004,06,18))
+                            .birthDate(LocalDate.of(2004, 06, 18))
                             .genre("M")
                             .address("3 Club Road")
                             .phoneNumber("300-444-5555")
@@ -274,7 +274,7 @@ class PatientProxyIT {
                     Patient.builder()
                             .firstName("Test")
                             .lastName("TestEarlyOnset")
-                            .birthDate(LocalDate.of(2002,06,28))
+                            .birthDate(LocalDate.of(2002, 06, 28))
                             .genre("F")
                             .address("4 Valley Dr")
                             .phoneNumber("400-555-6666")
@@ -303,14 +303,14 @@ class PatientProxyIT {
                                 Patient::getPhoneNumber)
                         .contains(
                                 tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
-                                ,tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
-                                ,tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+                                , tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                                , tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
                                 //,tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                         );
             } finally {
                 givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
             }
-       }
+        }
     }
 
     @Nested

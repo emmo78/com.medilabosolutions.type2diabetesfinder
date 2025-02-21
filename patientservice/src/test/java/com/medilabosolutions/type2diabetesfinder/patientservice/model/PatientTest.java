@@ -58,7 +58,7 @@ public class PatientTest {
                 .id(1)
                 .firstName(firstName)
                 .lastName("lastName")
-                .birthDate(LocalDate.of(1950,12,31))
+                .birthDate(LocalDate.of(1950, 12, 31))
                 .genre("M")
                 .build();
 
@@ -81,12 +81,12 @@ public class PatientTest {
                 .id(1)
                 .firstName(firstName)
                 .lastName("lastName")
-                .birthDate(LocalDate.of(1950,12,31))
+                .birthDate(LocalDate.of(1950, 12, 31))
                 .genre("M")
                 .build();
 
         String msg = null;
-        if (firstName!=null) {
+        if (firstName != null) {
             if (!firstName.isBlank()) {
                 msg = "Firstname must be maximum of 35 characters";//26*2=52
             } else {
@@ -120,9 +120,9 @@ public class PatientTest {
                 .build();
 
         String msg = null;
-        if (birthDate!=null) {
+        if (birthDate != null) {
             msg = "Birthdate must be in the past"; //now or future
-            } else {
+        } else {
             msg = "Birthdate is mandatory"; //null
         }
 

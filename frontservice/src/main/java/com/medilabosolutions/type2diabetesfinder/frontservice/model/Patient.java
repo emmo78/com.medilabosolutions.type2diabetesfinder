@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, includeFieldNames=true)
+@ToString(onlyExplicitlyIncluded = true, includeFieldNames = true)
 public class Patient {
 
     //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1

@@ -37,6 +37,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * unit test class for the PatientController.
+ *
  * @author olivier morel
  */
 @ExtendWith(MockitoExtension.class)
@@ -98,7 +99,7 @@ public class PatientControllerTest {
                             .id(1)
                             .firstName("Test")
                             .lastName("TestNone")
-                            .birthDate(LocalDate.of(1966,12,31))
+                            .birthDate(LocalDate.of(1966, 12, 31))
                             .genre("F")
                             .address("1 Brookside St")
                             .phoneNumber("100-222-3333")
@@ -107,7 +108,7 @@ public class PatientControllerTest {
                             .id(2)
                             .firstName("Test")
                             .lastName("TestBorderline")
-                            .birthDate(LocalDate.of(1945,06,24))
+                            .birthDate(LocalDate.of(1945, 06, 24))
                             .genre("M")
                             .address("2 High St")
                             .phoneNumber("200-333-4444")
@@ -116,7 +117,7 @@ public class PatientControllerTest {
                             .id(3)
                             .firstName("Test")
                             .lastName("TestDanger")
-                            .birthDate(LocalDate.of(2004,06,18))
+                            .birthDate(LocalDate.of(2004, 06, 18))
                             .genre("M")
                             .address("3 Club Road")
                             .phoneNumber("300-444-5555")
@@ -125,7 +126,7 @@ public class PatientControllerTest {
                             .id(4)
                             .firstName("Test")
                             .lastName("TestEarlyOnset")
-                            .birthDate(LocalDate.of(2002,06,28))
+                            .birthDate(LocalDate.of(2002, 06, 28))
                             .genre("F")
                             .address("4 Valley Dr")
                             .phoneNumber("400-555-6666")
@@ -159,17 +160,15 @@ public class PatientControllerTest {
 
         @Test
         @Tag("PatientControllerTest")
-        @DisplayName("test getPatients should throw NullPointerException")
-        public void getPatientsTestShouldThrowNullPointerException() {
+        @DisplayName("test getPatients should throw IllegalArgumentException")
+        public void getPatientsTestShouldThrowIllegalArgumentException() {
 
             //GIVEN
-            when(patientService.getPatients(any(Pageable.class))).thenThrow(new NullPointerException("Pageable must not be null"));
-
             //WHEN
             //THEN
-            assertThat(assertThrows(NullPointerException.class,
-                    () -> patientController.getPatients(Optional.ofNullable(null), request))
-                   .getMessage()).isEqualTo("Pageable must not be null");
+            assertThat(assertThrows(IllegalArgumentException.class,
+                    () -> patientController.getPatients(Optional.ofNullable("-1"), request))
+                    .getMessage()).isEqualTo("Page index must not be less than zero");
         }
     }
 
@@ -204,7 +203,7 @@ public class PatientControllerTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -275,7 +274,7 @@ public class PatientControllerTest {
                     .id(null)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -293,7 +292,7 @@ public class PatientControllerTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -306,7 +305,7 @@ public class PatientControllerTest {
 
             //WHEN
             ResponseEntity<Patient> responseEntity =
-                assertDoesNotThrow(()-> patientController.createPatient(optionalPatient, request));
+                    assertDoesNotThrow(() -> patientController.createPatient(optionalPatient, request));
 
             //THEN
             assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
@@ -369,7 +368,7 @@ public class PatientControllerTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -387,7 +386,7 @@ public class PatientControllerTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestBorderline")
-                    .birthDate(LocalDate.of(1945,06,24))
+                    .birthDate(LocalDate.of(1945, 06, 24))
                     .genre("M")
                     .address("2 High St")
                     .phoneNumber("200-333-4444")
@@ -396,7 +395,7 @@ public class PatientControllerTest {
 
             //WHEN
             ResponseEntity<Patient> responseEntity =
-                assertDoesNotThrow(()-> patientController.updatePatient(optionalPatient, request));
+                    assertDoesNotThrow(() -> patientController.updatePatient(optionalPatient, request));
 
             //THEN
             assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();

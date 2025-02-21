@@ -1,49 +1,52 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet"
-              type="text/css"
-              href="../static/css/formPatient.css"
-              th:href="@{/css/formPatient.css}">
-        <title>formUpdatePatient</title>
-    </head>
-    <body>
-        <div id="main_wrapper" class="color" th:with="page='formUpdatePatient'">
-            <header th:replace="~{header::header(${page})}"></header>
-            <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
-            <section>
-                <h1>Modifier un Patient</h1>
-                <form method="POST" action="#" th:action="@{/savepatient}" th:object="${patient}">
-                    <div>
-                        <!-- Champ ID caché pour l'update -->
-                        <input type="hidden" th:field="*{id}" />
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          type="text/css"
+          href="../static/css/formPatient.css"
+          th:href="@{/css/formPatient.css}">
+    <title>formUpdatePatient</title>
+</head>
+<body>
+<div id="main_wrapper" class="color" th:with="page='formUpdatePatient'">
+    <header th:replace="~{header::header(${page})}"></header>
+    <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+    <section>
+        <h1>Modifier un Patient</h1>
+        <form method="POST" action="#" th:action="@{/savepatient}" th:object="${patient}">
+            <div>
+                <!-- Champ ID caché pour l'update -->
+                <input type="hidden" th:field="*{id}"/>
 
-                        <label for="firstName">First name</label><br/>
-                        <input type="text" th:field="*{firstName}" required maxlength="35" placeholder="Firstname up to 35 characters"/><br/>
+                <label for="firstName">First name</label><br/>
+                <input type="text" th:field="*{firstName}" required maxlength="35"
+                       placeholder="Firstname up to 35 characters"/><br/>
 
-                        <label for="lastName">Last name</label><br/>
-                        <input type="text" th:field="*{lastName}" required maxlength="35" placeholder="Lastname up to 35 characters"/><br/>
+                <label for="lastName">Last name</label><br/>
+                <input type="text" th:field="*{lastName}" required maxlength="35"
+                       placeholder="Lastname up to 35 characters"/><br/>
 
-                        <label for="birthDate">Birth date</label><br/>
-                        <input type="date" th:field="*{birthDate}"
-                               th:value="${#temporals.format(patient.birthDate, 'yyyy-MM-dd')}"
-                               required placeholder="yyyy-MM-dd"/><br/>
+                <label for="birthDate">Birth date</label><br/>
+                <input type="date" th:field="*{birthDate}"
+                       th:value="${#temporals.format(patient.birthDate, 'yyyy-MM-dd')}"
+                       required placeholder="yyyy-MM-dd"/><br/>
 
-                        <label for="genre">Genre</label><br/>
-                        <input type="text" th:field="*{genre}" required maxlength="1" placeholder="1 letter"/><br/>
+                <label for="genre">Genre</label><br/>
+                <input type="text" th:field="*{genre}" required maxlength="1" placeholder="1 letter"/><br/>
 
-                        <label for="address">Address</label><br/>
-                        <input type="text" th:field="*{address}" required maxlength="90" placeholder="up to 90 characters"/><br/>
+                <label for="address">Address</label><br/>
+                <input type="text" th:field="*{address}" required maxlength="90"
+                       placeholder="up to 90 characters"/><br/>
 
-                        <label for="phoneNumber">Phone number</label><br/>
-                        <input type="text" th:field="*{phoneNumber}" required maxlength="16" placeholder="up to 16 characters"/><br/>
+                <label for="phoneNumber">Phone number</label><br/>
+                <input type="text" th:field="*{phoneNumber}" required maxlength="16" placeholder="up to 16 characters"/><br/>
 
-                        <input class="button" type="submit" th:value="'Update'"/>
-                    </div>
-                </form>
-            </section>
-        </div>
-    </body>
+                <input class="button" type="submit" th:value="'Update'"/>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
 </html>

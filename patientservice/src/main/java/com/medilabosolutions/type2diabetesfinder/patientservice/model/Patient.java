@@ -15,7 +15,7 @@ import java.time.LocalDate;
 /**
  * Entity class representing a Patient in the system.
  * This class is mapped to the "patient" table in the database.
- *
+ * <p>
  * Annotations:
  * - @Entity: Specifies that this class is an entity.
  * - @Table: Specifies the name of the database table.
@@ -37,14 +37,14 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, includeFieldNames=true)
+@ToString(onlyExplicitlyIncluded = true, includeFieldNames = true)
 public class Patient {
 
     private static final long serialVersionUID = 1L;
 
     //Integer.MAX_VALUE = 2 147 483 647 = 2^31-1
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     @ToString.Include
     private Integer id;

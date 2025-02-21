@@ -55,7 +55,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestNone")
-                        .birthDate(LocalDate.of(1966,12,31))
+                        .birthDate(LocalDate.of(1966, 12, 31))
                         .genre("F")
                         .address("1 Brookside St")
                         .phoneNumber("100-222-3333")
@@ -63,7 +63,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestBorderline")
-                        .birthDate(LocalDate.of(1945,06,24))
+                        .birthDate(LocalDate.of(1945, 06, 24))
                         .genre("M")
                         .address("2 High St")
                         .phoneNumber("200-333-4444")
@@ -71,7 +71,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestDanger")
-                        .birthDate(LocalDate.of(2004,06,18))
+                        .birthDate(LocalDate.of(2004, 06, 18))
                         .genre("M")
                         .address("3 Club Road")
                         .phoneNumber("300-444-5555")
@@ -79,7 +79,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestEarlyOnset")
-                        .birthDate(LocalDate.of(2002,06,28))
+                        .birthDate(LocalDate.of(2002, 06, 28))
                         .genre("F")
                         .address("4 Valley Dr")
                         .phoneNumber("400-555-6666")
@@ -90,7 +90,7 @@ public class PatientControllerIT {
 
         //WHEN
         final MvcResult result = mvc.perform(get("/patients?pageNumber=0"))
-                    .andReturn();
+                .andReturn();
 
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
@@ -155,7 +155,7 @@ public class PatientControllerIT {
 
             //GIVEN
             //WHEN
-            final MvcResult result = mvc.perform(get("/patients/" + id +1))
+            final MvcResult result = mvc.perform(get("/patients/" + id + 1))
                     .andReturn();
 
             //THEN
@@ -338,7 +338,7 @@ public class PatientControllerIT {
 
         private Stream<Arguments> stringArrayProvider() {
             return Stream.of(
-                    arguments(id+1)
+                    arguments(id + 1)
             );
         }
     }
@@ -359,7 +359,7 @@ public class PatientControllerIT {
             Patient givenPatient = Patient.builder()
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -367,7 +367,7 @@ public class PatientControllerIT {
             int id = patientRepository.saveAndFlush(givenPatient).getId();
 
             //WHEN
-            final MvcResult result = mvc.perform(delete("/patients/"+id))
+            final MvcResult result = mvc.perform(delete("/patients/" + id))
                     .andReturn();
             patientRepository.flush();
 
@@ -386,7 +386,7 @@ public class PatientControllerIT {
             Integer id = null;
 
             //WHEN
-            final MvcResult result = mvc.perform(delete("/patients/"+id))
+            final MvcResult result = mvc.perform(delete("/patients/" + id))
                     .andReturn();
 
             //THEN
@@ -404,9 +404,9 @@ public class PatientControllerIT {
     void whenIdIsInvalidThenReturnsBadRequestResponse(String ids) {
 
         //GIVEN
-        Integer id = ids!=null?Integer.valueOf(ids):null;
+        Integer id = ids != null ? Integer.valueOf(ids) : null;
         //WHEN
-        MvcResult result = mvc.perform(get("/patients/"+id))
+        MvcResult result = mvc.perform(get("/patients/" + id))
                 .andReturn();
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
@@ -426,7 +426,7 @@ public class PatientControllerIT {
         Patient invalidPatient = Patient.builder()
                 .firstName(firstName)
                 .lastName("lastName")
-                .birthDate(LocalDate.of(1950,12,31))
+                .birthDate(LocalDate.of(1950, 12, 31))
                 .genre("M")
                 .build();
 
@@ -434,8 +434,8 @@ public class PatientControllerIT {
 
         //WHEN
         MvcResult result = mvc.perform(post("/patients")
-                .contentType("application/json")
-                .content(body))
+                        .contentType("application/json")
+                        .content(body))
                 .andReturn();
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(400);

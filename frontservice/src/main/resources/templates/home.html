@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet"
-              type="text/css"
-              href="../static/css/home.css"
-              th:href="@{/css/home.css}" />
-        <title>home</title>
-    </head>
-    <body>
-        <div id="main_wrapper" class="color" th:with="page='home'">
-            <header th:replace="~{header::header(${page})}"></header>
-            <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
-            <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
-                <button class="button">
-                    <a th:href="@{/createpatient}">Créer un patient</a>
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet"
+          type="text/css"
+          href="../static/css/home.css"
+          th:href="@{/css/home.css}"/>
+    <title>home</title>
+</head>
+<body>
+<div id="main_wrapper" class="color" th:with="page='home'">
+    <header th:replace="~{header::header(${page})}"></header>
+    <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
+    <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
+        <h1>All Patient Listed By Page of Three</h1>
+        <button class="button">
+            <a th:href="@{/createpatient}">Créer un patient</a>
 
-                </button>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Firstname</th>
-                            <th>LastName</th>
-                            <th>Birthdate</th>
-                            <th>Genre</th>
-                            <th>Address</th>
-                            <th>Phone number</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="patient, iterstat : ${patients}" th:class="${iterstat.odd}?'odd'">
-                            <td style="width: 5%" th:text="${patient.id}">1</td>
-                            <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
-                            <td style="width: 15%" th:text="${patient.lastName}">lastname</td>
-                            <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'MM-dd-yyyy')}">16-05-1975</td>
-                            <td style="width: 5%" th:text="${patient.genre}">genre</td>
-                            <td style="width: 15%" th:text="${patient.address}">address</td>
-                            <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
-                            <td style="width: 15%">
-                                <a th:href="@{/updatepatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
-                                <a th:href="@{/deletepatient/{id}(id=${patient.id})}">Delete</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div th:if="${pageInterval}" th:with="index = ${patients.getNumber()}">
-                    <ul id="legendbuttons">
-                        <li th:unless="${index}<=0">
-                            <a th:href="@{/(pageNumber=(${index}-1))}">&laquo;</a>
-                        </li>
-                        <li th:each="pageNum : ${pageInterval}">
-                            <a th:href="@{/(pageNumber=(${pageNum}-1))}">
-                                <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
-                            </a>
-                        </li>
-                        <li th:if="${index}lt(${patients.getTotalPages()}-1)">
-                            <a th:href="@{/(pageNumber=(${index}+1))}">&raquo;</a>
-                        </li>
-                    </ul>
-                </div>
-            </section>
+        </button>
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Firstname</th>
+                <th>LastName</th>
+                <th>Birthdate</th>
+                <th>Genre</th>
+                <th>Address</th>
+                <th>Phone number</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="patient, iterstat : ${patients}" th:class="${iterstat.odd}?'odd'">
+                <td style="width: 5%" th:text="${patient.id}">1</td>
+                <td style="width: 15%" th:text="${patient.firstName}">firstname</td>
+                <td style="width: 15%" th:text="${patient.lastName}">lastname</td>
+                <td style="width: 15%" th:text="${#temporals.format(patient.birthDate, 'MM-dd-yyyy')}">16-05-1975</td>
+                <td style="width: 5%" th:text="${patient.genre}">genre</td>
+                <td style="width: 15%" th:text="${patient.address}">address</td>
+                <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
+                <td style="width: 15%">
+                    <a th:href="@{/updatepatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
+                    <a th:href="@{/deletepatient/{id}(id=${patient.id})}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:if="${pageInterval}" th:with="index = ${patients.getNumber()}">
+            <ul id="legendbuttons">
+                <li th:unless="${index}<=0">
+                    <a th:href="@{/(pageNumber=(${index}-1))}">&laquo;</a>
+                </li>
+                <li th:each="pageNum : ${pageInterval}">
+                    <a th:href="@{/(pageNumber=(${pageNum}-1))}">
+                        <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
+                    </a>
+                </li>
+                <li th:if="${index}lt(${patients.getTotalPages()}-1)">
+                    <a th:href="@{/(pageNumber=(${index}+1))}">&raquo;</a>
+                </li>
+            </ul>
         </div>
-    </body>
+    </section>
+</div>
+</body>
 </html>

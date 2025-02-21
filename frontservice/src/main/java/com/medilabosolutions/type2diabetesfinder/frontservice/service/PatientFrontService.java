@@ -25,13 +25,13 @@ public interface PatientFrontService {
      */
     Patient getPatient(Integer id) throws HttpClientErrorException.BadRequest;
 
-       /**
-        * Creates a new patient in the system.
-        *
-        * @param patient the patient entity to be created
-        * @return the created patient entity
-        * @throws HttpClientErrorException.BadRequest if the patient entity has a non-null id or any validation fails
-        */
+    /**
+     * Creates a new patient in the system.
+     *
+     * @param patient the patient entity to be created
+     * @return the created patient entity
+     * @throws HttpClientErrorException.BadRequest if the patient entity has a non-null id or any validation fails
+     */
     Patient createPatient(Patient patient) throws HttpClientErrorException.BadRequest;
 
     /**

@@ -34,14 +34,14 @@ public class PatientFrontController {
     @GetMapping("/")
     public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) throws NumberFormatException { //Principal user
         //with Principal user get user admin ?
-        int index = Integer.parseInt(pageNumberOpt.orElseGet(()-> "0"));
+        int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
         Page<Patient> patientPage = patientFrontService.getPatients(index);
         log.info("{} : patient page number : {} of {}",
                 requestService.requestToString(request),
-                patientPage.getNumber()+1,
+                patientPage.getNumber() + 1,
                 patientPage.getTotalPages());
         model.addAttribute("patients", patientPage);
-        int lastPage = (int) patientPage.getTotalPages()-1;
+        int lastPage = (int) patientPage.getTotalPages() - 1;
         model.addAttribute("pageInterval", pageInterval(index, lastPage));
         return "home";
     }
@@ -55,7 +55,7 @@ public class PatientFrontController {
     public String updatePatient(@PathVariable("id") final Integer id, Model model, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient patient = patientFrontService.getPatient(id);
         // If there is a password, don't let it
-        log.info("{} : {} : patient to update = {} gotten",  requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
+        log.info("{} : {} : patient to update = {} gotten", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
         model.addAttribute("patient", patient);
         return "formupdatepatient";
     }
@@ -70,12 +70,13 @@ public class PatientFrontController {
     @PostMapping("/savepatient")
     public ModelAndView savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient savedPatient;
-        if(patient.getId() == null) {
+        if (patient.getId() == null) {
             // If id is null, then it is a new patient.
             savedPatient = patientFrontService.createPatient(patient);
         } else {
             savedPatient = patientFrontService.updatePatient(patient);
-        };
+        }
+        ;
 
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
         return new ModelAndView("redirect:/");
@@ -83,22 +84,23 @@ public class PatientFrontController {
 
     /**
      * Calculation of the parameters for the creation of the page interval
+     *
      * @param index
      * @param lastPage
      * @return
      */
     private List<Integer> pageInterval(int index, int lastPage) {
-        if (lastPage>=0) {
-            if (index-2 <= 0) {
-                return createInterval(1, lastPage+1);
-            } else if (index+2 > lastPage) {
-                if (lastPage-4 <= 0) {
-                    return createInterval(1, lastPage+1);
+        if (lastPage >= 0) {
+            if (index - 2 <= 0) {
+                return createInterval(1, lastPage + 1);
+            } else if (index + 2 > lastPage) {
+                if (lastPage - 4 <= 0) {
+                    return createInterval(1, lastPage + 1);
                 } else {
-                    return createInterval(lastPage-3, lastPage+1);
+                    return createInterval(lastPage - 3, lastPage + 1);
                 }
             } else {
-                return createInterval(index-1, index+3);
+                return createInterval(index - 1, index + 3);
             }
         } else {
             return null;
@@ -107,13 +109,14 @@ public class PatientFrontController {
 
     /**
      * Create page interval
+     *
      * @param min
      * @param max
      * @return
      */
     private List<Integer> createInterval(int min, int max) {
         List<Integer> interval = new ArrayList<>();
-        for (int i = min, j=0; i <= max && j<5; i++,j++) {
+        for (int i = min, j = 0; i <= max && j < 5; i++, j++) {
             interval.add(j, i);
         }
         return interval;

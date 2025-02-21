@@ -27,14 +27,15 @@ public class PatientProxy {
      */
     public Page<Patient> getPatients(int index) {
         String baseApiUrl = urlApiProperties.getApiURL();
-        String getPatientsUrl = baseApiUrl + "/patients?pageNumber="+(index);
+        String getPatientsUrl = baseApiUrl + "/patients?pageNumber=" + (index);
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientPageImpl<Patient>> response = restTemplate.exchange(
                 getPatientsUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<PatientPageImpl<Patient>>() {}
+                new ParameterizedTypeReference<PatientPageImpl<Patient>>() {
+                }
         );
         log.debug("Get Patients call " + response.getStatusCode().toString());
         return response.getBody();
@@ -42,6 +43,7 @@ public class PatientProxy {
 
     /**
      * Get a patient by the id
+     *
      * @param id The id of the patient
      * @return The patient which matches the id
      */
@@ -64,6 +66,7 @@ public class PatientProxy {
 
     /**
      * Add a new patient
+     *
      * @param newPatient A new patient (without an id)
      * @return The patient full filled (with an id)
      */
@@ -86,6 +89,7 @@ public class PatientProxy {
 
     /**
      * Update an patient - using the PUT HTTP Method.
+     *
      * @param patientToUpdate Existing patient to update
      */
     public Patient updatePatient(Patient patientToUpdate) {
@@ -108,6 +112,7 @@ public class PatientProxy {
     /**
      * Delete an patient using exchange method of RestTemplate
      * instead of delete method in order to log the response status code.
+     *
      * @param id The patient's id to delete
      */
     public void deletePatient(int id) {

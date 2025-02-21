@@ -10,9 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("mytest")
 class PatientServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-		log.info("PatientServiceApplicationTests");
-	}
+    @Test
+    void contextLoads() {
+        log.info("PatientServiceApplicationTests");
+    }
 
 }
