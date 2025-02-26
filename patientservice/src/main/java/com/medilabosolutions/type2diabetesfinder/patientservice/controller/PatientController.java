@@ -102,7 +102,7 @@ public class PatientController {
         //Throw BadRequestException if id not null
         Patient patientSaved = patientService.createPatient(optionalPatient.get());
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patientSaved.toString());
-        return new ResponseEntity<>(patientSaved, HttpStatus.OK);
+        return new ResponseEntity<>(patientSaved, HttpStatus.CREATED);
     }
 
     /**

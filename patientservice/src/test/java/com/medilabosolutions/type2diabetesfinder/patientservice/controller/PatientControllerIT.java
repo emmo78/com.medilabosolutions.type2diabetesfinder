@@ -209,7 +209,7 @@ public class PatientControllerIT {
                     .andReturn();
 
             //THEN
-            assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            assertThat(result.getResponse().getStatus()).isEqualTo(201);
             Patient patientResult = objectMapper.readValue(result.getResponse().getContentAsString(), Patient.class);
             assertThat(patientResult.getId()).isGreaterThanOrEqualTo(1);
             assertThat(patientResult)
