@@ -160,7 +160,7 @@ public class PatientRepositoryIT {
         //WHEN
         //THEN
         assertThat(assertThrows(NullPointerException.class, () -> patientRepository.findAll(pageRequest)).getMessage())
-                .contains("Cannot invoke \"org.springframework.data.domain.Pageable.isUnpaged()\" because \"pageable\" is null");
+                .contains("Cannot invoke \"org.springframework.data.domain.Pageable.getSort()\" because \"pageable\" is null");
     }
 
     @Test
