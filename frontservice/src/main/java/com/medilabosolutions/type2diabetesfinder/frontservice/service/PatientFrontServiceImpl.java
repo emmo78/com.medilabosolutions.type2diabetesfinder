@@ -4,6 +4,7 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @Service
 @Slf4j
 @AllArgsConstructor
+@EnableFeignClients
 public class PatientFrontServiceImpl implements PatientFrontService {
 
     private PatientProxy patientProxy;
@@ -27,7 +29,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
     @Override
     public Page<Patient> getPatients(int index) {
         //throws NullPointerException if pageRequest is null
-        return patientProxy.getPatients(index);
+        return patientProxy.getPatients(Sindex);
     }
 
     /**
