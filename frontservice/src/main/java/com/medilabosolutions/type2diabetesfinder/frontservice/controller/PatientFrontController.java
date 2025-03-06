@@ -35,7 +35,7 @@ public class PatientFrontController {
     public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) throws NumberFormatException { //Principal user
         //with Principal user get user admin ?
         int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
-        Page<Patient> patientPage = patientFrontService.getPatients(index);
+        Page<Patient> patientPage = patientFrontService.getPatients(index, request);
         log.info("{} : patient page number : {} of {}",
                 requestService.requestToString(request),
                 patientPage.getNumber() + 1,
@@ -53,7 +53,7 @@ public class PatientFrontController {
 
     @GetMapping("/updatepatient/{id}")
     public String updatePatient(@PathVariable("id") final Integer id, Model model, WebRequest request) throws HttpClientErrorException.BadRequest {
-        Patient patient = patientFrontService.getPatient(id);
+        Patient patient = patientFrontService.getPatient(id, request);
         // If there is a password, don't let it
         log.info("{} : {} : patient to update = {} gotten", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), patient.toString());
         model.addAttribute("patient", patient);
@@ -62,7 +62,7 @@ public class PatientFrontController {
 
     @GetMapping("/deletepatient/{id}")
     public ModelAndView deletePatient(@PathVariable("id") final int id, WebRequest request) {
-        patientFrontService.deletePatient(id);
+        patientFrontService.deletePatient(id, request);
         log.info("{} : {} : user = {} deleted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), id);
         return new ModelAndView("redirect:/");
     }
@@ -72,11 +72,10 @@ public class PatientFrontController {
         Patient savedPatient;
         if (patient.getId() == null) {
             // If id is null, then it is a new patient.
-            savedPatient = patientFrontService.createPatient(patient);
+            savedPatient = patientFrontService.createPatient(patient, request);
         } else {
-            savedPatient = patientFrontService.updatePatient(patient);
+            savedPatient = patientFrontService.updatePatient(patient, request);
         }
-        ;
 
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
         return new ModelAndView("redirect:/");

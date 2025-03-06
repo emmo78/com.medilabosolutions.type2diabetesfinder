@@ -4,10 +4,13 @@ import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.Optional;
 
 /**
  * Implementation of the PatientService interface for managing patient entities.
@@ -16,10 +19,9 @@ import org.springframework.web.client.HttpClientErrorException;
 @Service
 @Slf4j
 @AllArgsConstructor
-@EnableFeignClients
 public class PatientFrontServiceImpl implements PatientFrontService {
 
-    private PatientProxy patientProxy;
+    private final PatientProxy patientProxy;
 
     /**
      * Retrieves a page of patients based on the provided pagination information.
@@ -27,9 +29,8 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @return A page of patients based on the given pagination information.
      */
     @Override
-    public Page<Patient> getPatients(int index) {
-        //throws NullPointerException if pageRequest is null
-        return patientProxy.getPatients(Sindex);
+    public Page<Patient> getPatients(int index , WebRequest request) {
+        return patientProxy.getPatients(Optional.ofNullable(String.valueOf(index)), request).getBody();
     }
 
     /**
@@ -40,21 +41,20 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @throws HttpClientErrorException.BadRequest if no patient is found with the given identifier
      */
     @Override
-    public Patient getPatient(Integer id) throws HttpClientErrorException.BadRequest {
-        // Throw HttpClientErrorException.BadRequest
-        return patientProxy.getPatient(id);
+    public Patient getPatient(Integer id, WebRequest request) throws HttpClientErrorException.BadRequest {
+        return patientProxy.getPatient(id, request).getBody();
     }
 
     /**
-     * Creates a new patient entity in the repository.
+     * Add a new patient entity in the repository.
      *
      * @param patient the patient entity to be created
      * @return the created patient entity
      * @throws HttpClientErrorException.BadRequest if the patient entity has a non-null ID
      */
     @Override
-    public Patient createPatient(Patient patient) throws HttpClientErrorException.BadRequest {
-        return patientProxy.createPatient(patient);
+    public Patient createPatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+        return patientProxy.createPatient(Optional.ofNullable(patient), request).getBody();
     }
 
     /**
@@ -66,8 +66,8 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      */
 
     @Override
-    public Patient updatePatient(Patient patient) throws HttpClientErrorException.BadRequest {
-        return patientProxy.updatePatient(patient);
+    public Patient updatePatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+        return patientProxy.updatePatient(Optional.ofNullable(patient), request).getBody();
     }
 
     /**
@@ -76,8 +76,8 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @param id the ID of the patient to be deleted. Must not be null.
      */
     @Override
-    public void deletePatient(Integer id) {
+    public HttpStatus deletePatient(Integer id, WebRequest request) {
         // If the entity is not found in the persistence store it is silently ignored.
-        patientProxy.deletePatient(id);
+        return patientProxy.deletePatientById(id, request);
     }
 }
