@@ -29,8 +29,8 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @return A page of patients based on the given pagination information.
      */
     @Override
-    public Page<Patient> getPatients(int index, WebRequest request) {
-        return patientProxy.getPatients(Optional.ofNullable(String.valueOf(index))).getBody();
+    public Page<Patient> getPatients(int index) {
+        return patientProxy.getPatients(Optional.of(String.valueOf(index))).getBody();
     }
 
     /**
@@ -41,7 +41,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @throws HttpClientErrorException.BadRequest if no patient is found with the given identifier
      */
     @Override
-    public Patient getPatient(Integer id, WebRequest request) throws HttpClientErrorException.BadRequest {
+    public Patient getPatient(Integer id) throws HttpClientErrorException.BadRequest {
         return patientProxy.getPatient(id).getBody();
     }
 
@@ -53,7 +53,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @throws HttpClientErrorException.BadRequest if the patient entity has a non-null ID
      */
     @Override
-    public Patient createPatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+    public Patient createPatient(Patient patient) throws HttpClientErrorException.BadRequest {
         return patientProxy.createPatient(Optional.ofNullable(patient)).getBody();
     }
 
@@ -66,7 +66,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      */
 
     @Override
-    public Patient updatePatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+    public Patient updatePatient(Patient patient) throws HttpClientErrorException.BadRequest {
         return patientProxy.updatePatient(Optional.ofNullable(patient)).getBody();
     }
 
@@ -76,7 +76,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @param id the ID of the patient to be deleted. Must not be null.
      */
     @Override
-    public HttpStatus deletePatient(Integer id, WebRequest request) {
+    public HttpStatus deletePatient(Integer id) {
         // If the entity is not found in the persistence store it is silently ignored.
         return patientProxy.deletePatientById(id);
     }
