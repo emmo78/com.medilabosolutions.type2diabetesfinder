@@ -29,8 +29,8 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      * @return A page of patients based on the given pagination information.
      */
     @Override
-    public Page<Patient> getPatients(int index , WebRequest request) {
-        return patientProxy.getPatients(Optional.ofNullable(String.valueOf(index)), request).getBody();
+    public Page<Patient> getPatients(int index, WebRequest request) {
+        return patientProxy.getPatients(Optional.ofNullable(String.valueOf(index))).getBody();
     }
 
     /**
@@ -42,7 +42,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      */
     @Override
     public Patient getPatient(Integer id, WebRequest request) throws HttpClientErrorException.BadRequest {
-        return patientProxy.getPatient(id, request).getBody();
+        return patientProxy.getPatient(id).getBody();
     }
 
     /**
@@ -54,7 +54,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
      */
     @Override
     public Patient createPatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
-        return patientProxy.createPatient(Optional.ofNullable(patient), request).getBody();
+        return patientProxy.createPatient(Optional.ofNullable(patient)).getBody();
     }
 
     /**
@@ -67,7 +67,7 @@ public class PatientFrontServiceImpl implements PatientFrontService {
 
     @Override
     public Patient updatePatient(Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
-        return patientProxy.updatePatient(Optional.ofNullable(patient), request).getBody();
+        return patientProxy.updatePatient(Optional.ofNullable(patient)).getBody();
     }
 
     /**
@@ -78,6 +78,6 @@ public class PatientFrontServiceImpl implements PatientFrontService {
     @Override
     public HttpStatus deletePatient(Integer id, WebRequest request) {
         // If the entity is not found in the persistence store it is silently ignored.
-        return patientProxy.deletePatientById(id, request);
+        return patientProxy.deletePatientById(id);
     }
 }

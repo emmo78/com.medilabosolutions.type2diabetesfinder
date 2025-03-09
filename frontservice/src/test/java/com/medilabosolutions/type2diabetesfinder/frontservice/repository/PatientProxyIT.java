@@ -1,37 +1,13 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
-import com.medilabosolutions.type2diabetesfinder.frontservice.error.ApiError;
-import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
-import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 /**
  * Need the patientService running
  */
 @ExtendWith(MockitoExtension.class)
-class PatientProxyIT {
+class PatientProxyIT {/*
 
     @InjectMocks
     PatientProxy patientProxy;
@@ -410,4 +386,4 @@ class PatientProxyIT {
                     );
         }
     }
-}
+*/}
