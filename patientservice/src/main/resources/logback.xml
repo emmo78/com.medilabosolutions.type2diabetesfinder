@@ -1,6 +1,6 @@
 <configuration>
-    <property name="LOG_ROOT" value="${user.dir}/log" />
-    <property name="LOG_FILE_NAME" value="patientService" />
+    <property name="LOG_ROOT" value="${user.dir}/log"/>
+    <property name="LOG_FILE_NAME" value="patientService"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>

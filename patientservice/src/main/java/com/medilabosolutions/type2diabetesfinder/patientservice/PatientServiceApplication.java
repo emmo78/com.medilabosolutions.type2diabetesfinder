@@ -7,10 +7,10 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * Entry point for the Patient Service Application.
- *
+ * <p>
  * This class is annotated with @SpringBootApplication indicating it is a Spring Boot application.
  * The @PropertySource annotation is used to specify the location of the external properties file db.properties.
- *
+ * <p>
  * Uses the SLF4J Logging API as indicated by the @Slf4j annotation.
  */
 @Slf4j
@@ -18,13 +18,13 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("file:${user.dir}/**/db.properties")
 public class PatientServiceApplication {
 
-	/**
-	 * The main method which serves as the entry point for the Patient Service Application.
-	 *
-	 * @param args command line arguments passed to the application
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(PatientServiceApplication.class, args);
-	}
+    /**
+     * The main method which serves as the entry point for the Patient Service Application.
+     *
+     * @param args command line arguments passed to the application
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(PatientServiceApplication.class, args);
+    }
 
 }

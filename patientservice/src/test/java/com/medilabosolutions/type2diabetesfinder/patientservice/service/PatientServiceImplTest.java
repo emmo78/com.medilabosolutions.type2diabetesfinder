@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * unit test class for the PatientService.
+ *
  * @author olivier morel
  */
 @ExtendWith(MockitoExtension.class)
@@ -76,7 +77,7 @@ public class PatientServiceImplTest {
                             .id(1)
                             .firstName("Test")
                             .lastName("TestNone")
-                            .birthDate(LocalDate.of(1966,12,31))
+                            .birthDate(LocalDate.of(1966, 12, 31))
                             .genre("F")
                             .address("1 Brookside St")
                             .phoneNumber("100-222-3333")
@@ -85,7 +86,7 @@ public class PatientServiceImplTest {
                             .id(2)
                             .firstName("Test")
                             .lastName("TestBorderline")
-                            .birthDate(LocalDate.of(1945,06,24))
+                            .birthDate(LocalDate.of(1945, 06, 24))
                             .genre("M")
                             .address("2 High St")
                             .phoneNumber("200-333-4444")
@@ -94,7 +95,7 @@ public class PatientServiceImplTest {
                             .id(3)
                             .firstName("Test")
                             .lastName("TestDanger")
-                            .birthDate(LocalDate.of(2004,06,18))
+                            .birthDate(LocalDate.of(2004, 06, 18))
                             .genre("M")
                             .address("3 Club Road")
                             .phoneNumber("300-444-5555")
@@ -103,7 +104,7 @@ public class PatientServiceImplTest {
                             .id(4)
                             .firstName("Test")
                             .lastName("TestEarlyOnset")
-                            .birthDate(LocalDate.of(2002,06,28))
+                            .birthDate(LocalDate.of(2002, 06, 28))
                             .genre("F")
                             .address("4 Valley Dr")
                             .phoneNumber("400-555-6666")
@@ -166,7 +167,7 @@ public class PatientServiceImplTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -221,7 +222,7 @@ public class PatientServiceImplTest {
                     .id(null)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -244,7 +245,7 @@ public class PatientServiceImplTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -252,7 +253,7 @@ public class PatientServiceImplTest {
             when(patientRepository.save(any(Patient.class))).thenReturn(patientExpected);
 
             //WHEN
-            Patient resultedPatient = assertDoesNotThrow(()->patientService.createPatient(patient));
+            Patient resultedPatient = assertDoesNotThrow(() -> patientService.createPatient(patient));
 
             //THEN
             assertThat(resultedPatient).extracting(
@@ -300,7 +301,7 @@ public class PatientServiceImplTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -323,7 +324,7 @@ public class PatientServiceImplTest {
                     .id(1)
                     .firstName("TestUpdt")
                     .lastName("TestNoneUpdt")
-                    .birthDate(LocalDate.of(1976,12,31))
+                    .birthDate(LocalDate.of(1976, 12, 31))
                     .genre("M")
                     .address("10 Brookside St")
                     .phoneNumber("200-222-3333")
@@ -380,7 +381,7 @@ public class PatientServiceImplTest {
                     .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -403,7 +404,7 @@ public class PatientServiceImplTest {
 
             //WHEN
             //THEN
-            assertDoesNotThrow(() ->patientService.deletePatient(1));
+            assertDoesNotThrow(() -> patientService.deletePatient(1));
         }
     }
 }

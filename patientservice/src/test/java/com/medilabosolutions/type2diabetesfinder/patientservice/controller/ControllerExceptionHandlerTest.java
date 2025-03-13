@@ -62,6 +62,7 @@ public class ControllerExceptionHandlerTest {
         requestMock = null;
         request = null;
     }
+
     @AfterEach
     public void unsetForEachTest() {
         controllerExceptionHandler = null;
@@ -79,12 +80,12 @@ public class ControllerExceptionHandlerTest {
         MethodParameter methodParameter = new MethodParameter(method, 0);
         MethodArgumentTypeMismatchException methodArgumentTypeMismatchException
                 = new MethodArgumentTypeMismatchException(
-                    "null"
-                    ,Integer.class
-                    ,"id"
-                    ,methodParameter
-                    ,new NumberFormatException("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; For input string: \"null\"")
-                );
+                "null"
+                , Integer.class
+                , "id"
+                , methodParameter
+                , new NumberFormatException("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; For input string: \"null\"")
+        );
         //WHEN
         ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(methodArgumentTypeMismatchException, request);
         //THEN
@@ -119,9 +120,9 @@ public class ControllerExceptionHandlerTest {
         MethodParameter methodParameter = new MethodParameter(method, 0);
         Object patientClass = Patient.class;
         DirectFieldBindingResult bindingResult = new DirectFieldBindingResult(patientClass, "Patient");
-        bindingResult.addError(new FieldError("Patient", "firstName",  "firstName is mandatory"));
+        bindingResult.addError(new FieldError("Patient", "firstName", "firstName is mandatory"));
 
-        MethodArgumentNotValidException manve =  new MethodArgumentNotValidException(methodParameter, bindingResult);
+        MethodArgumentNotValidException manve = new MethodArgumentNotValidException(methodParameter, bindingResult);
 
         //WHEN
         ResponseEntity<ApiError> responseEntity = controllerExceptionHandler.badRequestException(manve, request);

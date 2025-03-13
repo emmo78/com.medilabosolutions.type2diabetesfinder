@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -56,7 +55,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestNone")
-                        .birthDate(LocalDate.of(1966,12,31))
+                        .birthDate(LocalDate.of(1966, 12, 31))
                         .genre("F")
                         .address("1 Brookside St")
                         .phoneNumber("100-222-3333")
@@ -64,7 +63,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestBorderline")
-                        .birthDate(LocalDate.of(1945,06,24))
+                        .birthDate(LocalDate.of(1945, 06, 24))
                         .genre("M")
                         .address("2 High St")
                         .phoneNumber("200-333-4444")
@@ -72,7 +71,7 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestDanger")
-                        .birthDate(LocalDate.of(2004,06,18))
+                        .birthDate(LocalDate.of(2004, 06, 18))
                         .genre("M")
                         .address("3 Club Road")
                         .phoneNumber("300-444-5555")
@@ -80,25 +79,22 @@ public class PatientControllerIT {
                 Patient.builder()
                         .firstName("Test")
                         .lastName("TestEarlyOnset")
-                        .birthDate(LocalDate.of(2002,06,28))
+                        .birthDate(LocalDate.of(2002, 06, 28))
                         .genre("F")
                         .address("4 Valley Dr")
                         .phoneNumber("400-555-6666")
                         .build()
         );
         givenPatients.forEach(patient -> patient.setId(patientRepository.saveAndFlush(patient).getId()));
-        String givenPatientsString = objectMapper.writeValueAsString(givenPatients);
+        String givenPatientsString = objectMapper.writeValueAsString(givenPatients.subList(0, 3));
 
         //WHEN
-        final MvcResult result = mvc.perform(get("/patients"))
-                    .andReturn();
+        final MvcResult result = mvc.perform(get("/patients?pageNumber=0"))
+                .andReturn();
 
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
-        assertThat(
-                assertDoesNotThrow(() ->
-                        result.getResponse().getContentAsString())
-        ).contains(givenPatientsString);
+        assertThat(result.getResponse().getContentAsString()).contains(givenPatientsString);
     }
 
     @Nested
@@ -148,10 +144,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains(givenPatientString);
+            assertThat(result.getResponse().getContentAsString()).contains(givenPatientString);
         }
 
         @SneakyThrows
@@ -162,15 +155,12 @@ public class PatientControllerIT {
 
             //GIVEN
             //WHEN
-            final MvcResult result = mvc.perform(get("/patients/" + id +1))
+            final MvcResult result = mvc.perform(get("/patients/" + id + 1))
                     .andReturn();
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
@@ -219,7 +209,7 @@ public class PatientControllerIT {
                     .andReturn();
 
             //THEN
-            assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            assertThat(result.getResponse().getStatus()).isEqualTo(201);
             Patient patientResult = objectMapper.readValue(result.getResponse().getContentAsString(), Patient.class);
             assertThat(patientResult.getId()).isGreaterThanOrEqualTo(1);
             assertThat(patientResult)
@@ -251,10 +241,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
@@ -316,10 +303,7 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains(patientUpdatedString);
+            assertThat(result.getResponse().getContentAsString()).contains(patientUpdatedString);
         }
 
         @SneakyThrows
@@ -327,8 +311,8 @@ public class PatientControllerIT {
         @NullSource
         @MethodSource("stringArrayProvider")
         @Tag("PatientControllerIT")
-        @DisplayName("updatePatient IT By Id should return a BadRequest Response if id null or not found")
-        public void updatePatientITByIdShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
+        @DisplayName("updatePatient IT should return a BadRequest Response if id null or not found")
+        public void updatePatientITShouldReturnABadRequestResponseIfIdNullOrNotFound(Integer idI) {
             //GIVEN
             Patient patientUpdated = Patient.builder()
                     .id(idI)
@@ -349,15 +333,12 @@ public class PatientControllerIT {
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
 
         private Stream<Arguments> stringArrayProvider() {
             return Stream.of(
-                    arguments(id+1)
+                    arguments(id + 1)
             );
         }
     }
@@ -378,7 +359,7 @@ public class PatientControllerIT {
             Patient givenPatient = Patient.builder()
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966,12,31))
+                    .birthDate(LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -386,7 +367,7 @@ public class PatientControllerIT {
             int id = patientRepository.saveAndFlush(givenPatient).getId();
 
             //WHEN
-            final MvcResult result = mvc.perform(delete("/patients/"+id))
+            final MvcResult result = mvc.perform(delete("/patients/" + id))
                     .andReturn();
             patientRepository.flush();
 
@@ -405,15 +386,12 @@ public class PatientControllerIT {
             Integer id = null;
 
             //WHEN
-            final MvcResult result = mvc.perform(delete("/patients/"+id))
+            final MvcResult result = mvc.perform(delete("/patients/" + id))
                     .andReturn();
 
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat(
-                    assertDoesNotThrow(() ->
-                            result.getResponse().getContentAsString())
-            ).contains("\"message\":\"Bad request\"");
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
     }
 
@@ -426,9 +404,9 @@ public class PatientControllerIT {
     void whenIdIsInvalidThenReturnsBadRequestResponse(String ids) {
 
         //GIVEN
-        Integer id = ids!=null?Integer.valueOf(ids):null;
+        Integer id = ids != null ? Integer.valueOf(ids) : null;
         //WHEN
-        MvcResult result = mvc.perform(get("/patients/"+id))
+        MvcResult result = mvc.perform(get("/patients/" + id))
                 .andReturn();
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
@@ -448,7 +426,7 @@ public class PatientControllerIT {
         Patient invalidPatient = Patient.builder()
                 .firstName(firstName)
                 .lastName("lastName")
-                .birthDate(LocalDate.of(1950,12,31))
+                .birthDate(LocalDate.of(1950, 12, 31))
                 .genre("M")
                 .build();
 
@@ -456,8 +434,8 @@ public class PatientControllerIT {
 
         //WHEN
         MvcResult result = mvc.perform(post("/patients")
-                .contentType("application/json")
-                .content(body))
+                        .contentType("application/json")
+                        .content(body))
                 .andReturn();
         //THEN
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
