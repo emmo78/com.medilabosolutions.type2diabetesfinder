@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.controller;
 
+import com.medilabosolutions.type2diabetesfinder.patientservice.configuration.PatientPerPageProperties;
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.PatientService;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
@@ -38,6 +39,7 @@ public class PatientController {
 
     private final PatientService patientService;
     private final RequestService requestService;
+    private final PatientPerPageProperties patientPerPageProperties;
 
     /**
      * Retrieves a list of all patients.
@@ -51,7 +53,7 @@ public class PatientController {
     public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, WebRequest request) throws IllegalArgumentException {
         int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
         //Throws IllegalException if index < 0
-        Pageable pageRequest = PageRequest.of(index, 3, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageRequest = PageRequest.of(index, patientPerPageProperties.getPatientPerPage(), Sort.by(Sort.Direction.ASC, "id"));
         Page<Patient> patients = patientService.getPatients(pageRequest);
         log.info("{} : {} : patients page number : {} of {}",
                 requestService.requestToString(request),
