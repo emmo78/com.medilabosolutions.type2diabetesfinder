@@ -1,8 +1,11 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice;
 
+import com.netflix.discovery.shared.transport.jersey3.Jersey3TransportClientFactories;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 /**
@@ -16,6 +19,7 @@ import org.springframework.context.annotation.PropertySource;
 @Slf4j
 @SpringBootApplication
 @PropertySource("file:${user.dir}/**/db.properties")
+@EnableDiscoveryClient
 public class PatientServiceApplication {
 
     /**
@@ -25,6 +29,11 @@ public class PatientServiceApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(PatientServiceApplication.class, args);
+    }
+
+    @Bean
+    public Jersey3TransportClientFactories jersey3TransportClientFactories() {
+        return new Jersey3TransportClientFactories();
     }
 
 }
