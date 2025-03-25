@@ -13,7 +13,7 @@
 
 	<artifactId>configservice</artifactId>
 	<name>configService</name>
-	<description>Config Service for Spring Cloud</description>
+	<description>Config service for microServices properties</description>
 
 	<dependencies>
 		<!--<dependency>
