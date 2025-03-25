@@ -15,7 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.Optional;
 
-@FeignClient(name = "gatewayService")//, url = "localhost:9090")
+@FeignClient(name = "gatewayService" , url = "localhost:9103")
 public interface PatientProxy {
 
     //private final UrlApiProperties urlApiProperties;
