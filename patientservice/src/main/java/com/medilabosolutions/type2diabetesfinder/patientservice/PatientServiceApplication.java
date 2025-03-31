@@ -1,7 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice;
 
 import com.netflix.discovery.shared.transport.jersey3.Jersey3TransportClientFactories;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
