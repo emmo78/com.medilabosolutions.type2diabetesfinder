@@ -15,7 +15,7 @@
     <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
     <section>
         <h1>Ajouter un Patient</h1>
-        <form method="POST" action="#" th:action="@{/savepatient}" th:object="${patient}">
+        <form method="POST" action="#" th:action="@{/front/savepatient}" th:object="${patient}">
             <div>
                 <label for="firstName">First name</label><br/>
                 <input type="text" th:field="*{firstName}" required maxlength="35"

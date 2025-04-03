@@ -16,7 +16,7 @@
     <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
         <h1>All Patient Listed By Page</h1>
         <button class="button">
-            <a th:href="@{/createpatient}">Créer un patient</a>
+            <a th:href="@{/front/createpatient}">Créer un patient</a>
 
         </button>
         <table>
@@ -42,8 +42,8 @@
                 <td style="width: 15%" th:text="${patient.address}">address</td>
                 <td style="width: 15%" th:text="${patient.phoneNumber}">phone number</td>
                 <td style="width: 15%">
-                    <a th:href="@{/updatepatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
-                    <a th:href="@{/deletepatient/{id}(id=${patient.id})}">Delete</a>
+                    <a th:href="@{/front/updatepatient/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
+                    <a th:href="@{/front/deletepatient/{id}(id=${patient.id})}">Delete</a>
                 </td>
             </tr>
             </tbody>
@@ -51,15 +51,15 @@
         <div th:if="${pageInterval}" th:with="index = ${patients.getNumber()}">
             <ul id="legendbuttons">
                 <li th:unless="${index}<=0">
-                    <a th:href="@{/(pageNumber=(${index}-1))}">&laquo;</a>
+                    <a th:href="@{/front/home(pageNumber=(${index}-1))}">&laquo;</a>
                 </li>
                 <li th:each="pageNum : ${pageInterval}">
-                    <a th:href="@{/(pageNumber=(${pageNum}-1))}">
+                    <a th:href="@{/front/home(pageNumber=(${pageNum}-1))}">
                         <span th:class="${pageNum}eq(${index}+1)?'currentpage'" th:text="${pageNum}"></span>
                     </a>
                 </li>
                 <li th:if="${index}lt(${patients.getTotalPages()}-1)">
-                    <a th:href="@{/(pageNumber=(${index}+1))}">&raquo;</a>
+                    <a th:href="@{/front/home(pageNumber=(${index}+1))}">&raquo;</a>
                 </li>
             </ul>
         </div>

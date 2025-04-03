@@ -166,14 +166,14 @@ class PatientFrontControllerIT {/*
 
     @Nested
     @Tag("createpatientIT")
-    @DisplayName("Test for \"/createpatient\"")
+    @DisplayName("Test for \"/front/createpatient\"")
     class CreatePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
             requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/createpatient");
+            requestMock.setRequestURI("/front/createpatient");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -190,7 +190,7 @@ class PatientFrontControllerIT {/*
         public void createPatientTestShouldReturnFormView() {
             // GIVEN
             // WHEN
-            final MvcResult result = mvc.perform(get("/createpatient")).andReturn();
+            final MvcResult result = mvc.perform(get("/front/createpatient")).andReturn();
 
             // THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
@@ -214,14 +214,14 @@ class PatientFrontControllerIT {/*
 
     @Nested
     @Tag("updatepatientIT")
-    @DisplayName("Test for \"/updatepatient/{id}\"")
+    @DisplayName("Test for \"/front/updatepatient/{id}\"")
     class UpdatePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
             requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/updatepatient/{id}");
+            requestMock.setRequestURI("/front/updatepatient/{id}");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -249,7 +249,7 @@ class PatientFrontControllerIT {/*
             int id = patientProxy.createPatient(patientToUpdate).getId();
 
             // WHEN
-            final MvcResult result = mvc.perform(get("/updatepatient/" + id)).andReturn();
+            final MvcResult result = mvc.perform(get("/front/updatepatient/" + id)).andReturn();
 
             // THEN
             try {
@@ -282,14 +282,14 @@ class PatientFrontControllerIT {/*
 
     @Nested
     @Tag("deletepatientIT")
-    @DisplayName("Test for \"/deletepatient/{id}\"")
+    @DisplayName("Test for \"/front/deletepatient/{id}\"")
     class DeletePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
             requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/deletepatient/{id}");
+            requestMock.setRequestURI("/front/deletepatient/{id}");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -317,7 +317,7 @@ class PatientFrontControllerIT {/*
             int id = patientProxy.createPatient(patientToDelete).getId();
 
             // WHEN
-            final MvcResult result = mvc.perform(get("/deletepatient/" + id)).andReturn();
+            final MvcResult result = mvc.perform(get("/front/deletepatient/" + id)).andReturn();
 
             // THEN
             try {
