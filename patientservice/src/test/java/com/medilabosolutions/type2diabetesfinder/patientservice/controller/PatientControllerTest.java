@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.patientservice.controller;
 
+import com.medilabosolutions.type2diabetesfinder.patientservice.configuration.PatientPerPageProperties;
 import com.medilabosolutions.type2diabetesfinder.patientservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.PatientService;
 import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestService;
@@ -49,6 +50,9 @@ public class PatientControllerTest {
     @Mock
     private PatientService patientService;
 
+    @Mock
+    private PatientPerPageProperties patientPerPageProperties;
+
     @Spy
     private final RequestService requestService = new RequestServiceImpl();
 
@@ -59,6 +63,7 @@ public class PatientControllerTest {
     @AfterEach
     public void unsetForEachTest() {
         patientService = null;
+        patientPerPageProperties = null;
         patientController = null;
         patient = null;
     }
@@ -132,7 +137,7 @@ public class PatientControllerTest {
                             .phoneNumber("400-555-6666")
                             .build()
             );
-
+            when(patientPerPageProperties.getPatientPerPage()).thenReturn(4);
             when(patientService.getPatients(any(Pageable.class))).thenReturn(new PageImpl<Patient>(givenPatients, pageRequest, 4));
 
             //WHEN

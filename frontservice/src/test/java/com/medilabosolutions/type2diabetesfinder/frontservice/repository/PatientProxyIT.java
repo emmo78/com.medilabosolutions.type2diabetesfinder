@@ -1,29 +1,40 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import com.medilabosolutions.type2diabetesfinder.frontservice.error.ApiError;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 /**
  * Need the patientService running
  */
-@ExtendWith(MockitoExtension.class)
-class PatientProxyIT {/*
+//@ExtendWith(MockitoExtension.class)
+class PatientProxyIT {
 
-    @InjectMocks
+    //Class Under Test
     PatientProxy patientProxy;
-
-    @Mock
-    UrlApiProperties urlApiProperties;
-
-    @BeforeEach
-    public void setUp() {
-        when(urlApiProperties.getApiURL()).thenReturn("http://localhost:9090");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        urlApiProperties = null;
-    }
 
     @Nested
     @Tag("createPatient")
@@ -37,7 +48,7 @@ class PatientProxyIT {/*
             givenPatient = Patient.builder()
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966, 12, 31))
+                    .birthDate(java.time.LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
@@ -56,7 +67,7 @@ class PatientProxyIT {/*
 
             //GIVEN
             //WHEN
-            Patient patientResult = patientProxy.createPatient(givenPatient);
+            Patient patientResult = patientProxy.createPatient(Optional.of(givenPatient)).getBody();
 
             //THEN
             int id = patientResult.getId();
@@ -66,13 +77,13 @@ class PatientProxyIT {/*
                         .extracting(
                                 Patient::getFirstName,
                                 Patient::getLastName,
-                                p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                                p -> p.getBirthDate().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE),
                                 Patient::getGenre,
                                 Patient::getAddress,
                                 Patient::getPhoneNumber)
                         .containsExactly("Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333");
             } finally {
-                patientProxy.deletePatient(id);
+                patientProxy.deletePatientById(id);
             }
         }
 
@@ -86,7 +97,7 @@ class PatientProxyIT {/*
 
             //WHEN
             //THEN
-            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.createPatient(givenPatient));
+            HttpClientErrorException.BadRequest heeB = assertThrows(HttpClientErrorException.BadRequest.class, () -> patientProxy.createPatient(Optional.of(givenPatient)));
             assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(heeB.getResponseBodyAs(ApiError.class))
                     .extracting(
@@ -112,17 +123,17 @@ class PatientProxyIT {/*
             givenPatient = Patient.builder()
                     .firstName("Test")
                     .lastName("TestNone")
-                    .birthDate(LocalDate.of(1966, 12, 31))
+                    .birthDate(java.time.LocalDate.of(1966, 12, 31))
                     .genre("F")
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
                     .build();
-            id = patientProxy.createPatient(givenPatient).getId();
+            id = patientProxy.createPatient(Optional.of(givenPatient)).getBody().getId();
         }
 
         @AfterEach
         public void undefPerTest() {
-            patientProxy.deletePatient(id);
+            patientProxy.deletePatientById(id);
             givenPatient = null;
             id = 0;
         }
@@ -134,14 +145,14 @@ class PatientProxyIT {/*
 
             //GIVEN
             //WHEN
-            Patient patientResult = patientProxy.getPatient(id);
+            Patient patientResult = patientProxy.getPatient(id).getBody();
             //THEN
             assertThat(patientResult).isNotNull();
             assertThat(patientResult)
                     .extracting(
                             Patient::getFirstName,
                             Patient::getLastName,
-                            p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            p -> p.getBirthDate().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE),
                             Patient::getGenre,
                             Patient::getAddress,
                             Patient::getPhoneNumber)
@@ -189,10 +200,10 @@ class PatientProxyIT {/*
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
                     .build();
-            int id = patientProxy.createPatient(givenPatient).getId();
+            int id = patientProxy.createPatient(Optional.of(givenPatient)).getBody().getId();
 
             // WHEN
-            assertDoesNotThrow(() -> patientProxy.deletePatient(id));
+            org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> patientProxy.deletePatientById(id));
 
             // THEN
             HttpClientErrorException.BadRequest heeB =
@@ -258,13 +269,13 @@ class PatientProxyIT {/*
             );
             List<Integer> ids = new ArrayList<>();
             givenPatients.forEach(patient -> {
-                int id = patientProxy.createPatient(patient).getId();
+                int id = patientProxy.createPatient(Optional.of(patient)).getBody().getId();
                 patient.setId(id);
                 ids.add(id);
             });
 
             //WHEN
-            Page<Patient> pagedPatient = patientProxy.getPatients(0);
+            Page<Patient> pagedPatient = patientProxy.getPatients(Optional.of("0")).getBody();
 
             //THEN
             try {
@@ -284,7 +295,7 @@ class PatientProxyIT {/*
                                 //,tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                         );
             } finally {
-                givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
+                givenPatients.forEach(patient -> patientProxy.deletePatientById(patient.getId()));
             }
         }
     }
@@ -307,12 +318,12 @@ class PatientProxyIT {/*
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
                     .build();
-            id = patientProxy.createPatient(givenPatient).getId();
+            id = patientProxy.createPatient(Optional.of(givenPatient)).getBody().getId();
         }
 
         @AfterEach
         public void undefPerTest() {
-            patientProxy.deletePatient(id);
+            patientProxy.deletePatientById(id);
             givenPatient = null;
             id = 0;
         }
@@ -334,7 +345,7 @@ class PatientProxyIT {/*
                     .build();
 
             //WHEN
-            Patient patientResult = patientProxy.updatePatient(patientUpdated);
+            Patient patientResult = patientProxy.updatePatient(Optional.of(patientUpdated)).getBody();
             //THEN
             assertThat(patientResult).isNotNull();
             assertThat(patientResult)
@@ -374,7 +385,7 @@ class PatientProxyIT {/*
             //THEN
             HttpClientErrorException.BadRequest heeB =
                     assertThrows(HttpClientErrorException.BadRequest.class,
-                            () -> patientProxy.updatePatient(patientUpdated));
+                            () -> patientProxy.updatePatient(Optional.of(patientUpdated)));
             assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(heeB.getResponseBodyAs(ApiError.class))
                     .extracting(
@@ -386,4 +397,4 @@ class PatientProxyIT {/*
                     );
         }
     }
-*/}
+}
