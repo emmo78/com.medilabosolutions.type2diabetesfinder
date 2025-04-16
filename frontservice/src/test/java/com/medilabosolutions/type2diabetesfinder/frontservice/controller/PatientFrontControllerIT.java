@@ -8,7 +8,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Need the patientService running
  */
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class PatientFrontControllerIT {/*
@@ -16,7 +15,7 @@ class PatientFrontControllerIT {/*
     @Inject
     private MockMvc mvc;
 
-    @SpyBean
+    @SpyBean // deprecated since Spring boot 3.4.0 use
     UrlApiProperties urlApiProperties;
 
     @SpyBean
