@@ -1,51 +1,46 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
-import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
-import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontServiceImpl;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import static org.mockito.Mockito.when;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import org.springframework.ui.Model;
 import org.springframework.web.context.request.ServletWebRequest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.mockito.Mockito.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import lombok.SneakyThrows;
+import java.util.Optional;
 
 /**
  * Need the patientService running
  */
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class PatientFrontControllerTest {
 
-    @Inject
-    private MockMvc mvc;
+    @Mock
+    PatientFrontServiceImpl patientFrontService;
 
-    @MockitoBean
-    PatientFrontService patientFrontService;
+    @Mock
+    Model model;
 
-    @MockitoSpyBean
+    @Spy
     RequestService requestService;
 
     @InjectMocks
@@ -60,15 +55,28 @@ class PatientFrontControllerTest {
     }
 
     @Nested
-    @Tag("getPatientsTests")
-    @DisplayName("Test for \"/\"")
+    @Tag("getPatients Tests")
+    @DisplayName("Test for home")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class HomeTest {
+
+        private Pageable pageRequest;
+
+        @BeforeAll
+        public void setUpForAllTests() {
+            pageRequest = Pageable.unpaged();
+        }
+
+        @AfterAll
+        public void unSetForAllTests() {
+            pageRequest = null;
+        }
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
-            requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/");
+            requestMock.setServerName("http://localhost:9103");
+            requestMock.setRequestURI("/front/home");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -78,16 +86,27 @@ class PatientFrontControllerTest {
             request = null;
         }
 
-        @SneakyThrows
-        @ParameterizedTest(name = "{0} should show first page of three and then page of one patient")
-        @ValueSource(strings = {"0", "1"})
-        @Tag("PatientFrontControllerIT")
-        @DisplayName("getPatients Test should return selected page of patients")
-        public void homeTestPatientsShouldReturnSelectedPageOfPatients(String pageNumber) {
+        @Test
+        @Tag(PatientFrontControllerTest)
+        @DisplayName("homePage should redirect to \"/front/home\"")
+        public void homePageShouldRedirectToHome() {
+            // GIVEN
+            // WHEN
+            String page = patientFrontController.homePage();
+            // THEN
+            assertThat(page).isEqualTo("redirect:/front/home");
+
+        }
+
+        @Test
+        @Tag("PatientFrontControllerTest")
+        @DisplayName("getPatients Test should return page of patients")
+        public void homeTestPatientsShouldReturnPageOfPatients() {
 
             //GIVEN
             List<Patient> givenPatients = List.of(
                     Patient.builder()
+                            .id(1)
                             .firstName("Test")
                             .lastName("TestNone")
                             .birthDate(LocalDate.of(1966, 12, 31))
@@ -96,6 +115,7 @@ class PatientFrontControllerTest {
                             .phoneNumber("100-222-3333")
                             .build(),
                     Patient.builder()
+                            .id(2)
                             .firstName("Test")
                             .lastName("TestBorderline")
                             .birthDate(LocalDate.of(1945, 06, 24))
@@ -104,6 +124,7 @@ class PatientFrontControllerTest {
                             .phoneNumber("200-333-4444")
                             .build(),
                     Patient.builder()
+                            .id(3)
                             .firstName("Test")
                             .lastName("TestDanger")
                             .birthDate(LocalDate.of(2004, 06, 18))
@@ -112,6 +133,7 @@ class PatientFrontControllerTest {
                             .phoneNumber("300-444-5555")
                             .build(),
                     Patient.builder()
+                            .id(4)
                             .firstName("Test")
                             .lastName("TestEarlyOnset")
                             .birthDate(LocalDate.of(2002, 06, 28))
@@ -120,74 +142,44 @@ class PatientFrontControllerTest {
                             .phoneNumber("400-555-6666")
                             .build()
             );
-            List<Integer> ids = new ArrayList<>();
-            givenPatients.forEach(patient -> {
-                int id = patientProxy.createPatient(patient).getId();
-                patient.setId(id);
-                ids.add(id);
-            });
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Iterable<Object>> iterableArgumentCaptor = ArgumentCaptor.forClass(Iterable.class);
+            when(patientFrontService.getPatients(anyInt())).thenReturn(new PageImpl<>(givenPatients, pageRequest, 4));
 
-            List<Tuple> expectedResult = "0".equals(pageNumber) ?
-                    List.of(
-                            tuple(ids.get(0), "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
-                            , tuple(ids.get(1), "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
-                            , tuple(ids.get(2), "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+            //WHEN
+            String page = patientFrontController.home(Optional.of("0"), model, request);
 
-                    ) :
-                    List.of(
-                            tuple(ids.get(3), "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
+            //THEN
+            assertThat(page).isEqualTo("home");
+            verify(model, times(2)).addAttribute(stringArgumentCaptor.capture(), iterableArgumentCaptor.capture()); //times(1) is used by default
+            assertThat(stringArgumentCaptor.getAllValues()).containsExactly("patients", "pageInterval");
+            assertThat(iterableArgumentCaptor.getAllValues().get(0))
+                    .extracting(
+                            o -> ((Patient)o).getId(),
+                            o -> ((Patient)o).getFirstName(),
+                            o -> ((Patient)o).getLastName(),
+                            o -> ((Patient)o).getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            o -> ((Patient)o).getGenre(),
+                            o -> ((Patient)o).getAddress(),
+                            o -> ((Patient)o).getPhoneNumber())
+                    .contains(
+                            tuple(1, "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333")
+                            , tuple(2, "Test", "TestBorderline", "19450624", "M", "2 High St", "200-333-4444")
+                            , tuple(3, "Test", "TestDanger", "20040618", "M", "3 Club Road", "300-444-5555")
+                            , tuple(4, "Test", "TestEarlyOnset", "20020628", "F", "4 Valley Dr", "400-555-6666")
                     );
-
-            //WHEN
-            final MvcResult result = mvc.perform(get("/?pageNumber=" + pageNumber))
-                    .andReturn();
-
-            //THEN
-            try {
-                assertThat(result.getResponse().getStatus()).isEqualTo(200);
-                assertThat((result.getResponse().getContentAsString())).contains("<title>home</title>");
-                Page<Patient> resultPatients = (Page) result.getModelAndView().getModel().get("patients");
-                assertThat(resultPatients).extracting(
-                                Patient::getId,
-                                Patient::getFirstName,
-                                Patient::getLastName,
-                                p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
-                                Patient::getGenre,
-                                Patient::getAddress,
-                                Patient::getPhoneNumber)
-                        .containsExactlyElementsOf(expectedResult);
-            } finally {
-                givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
-            }
-        }
-
-        @SneakyThrows
-        @ParameterizedTest(name = "{0} should return error page")
-        @ValueSource(strings = {"-1", "a", ""})
-        @Tag("PatientFrontControllerIT&ControllerExceptionHandlerIT")
-        @DisplayName("getPatients Test should return error page")
-        public void homeTestPatientsShouldReturnErrorPage(String pageNumber) {
-
-            //GIVEN
-            //WHEN
-            final MvcResult result = mvc.perform(get("/?pageNumber=" + pageNumber))
-                    .andReturn();
-
-            //THEN
-            assertThat(result.getResponse().getStatus()).isEqualTo(400);
-            assertThat((result.getResponse().getContentAsString())).contains("<title>Error page</title>");
         }
     }
 
     @Nested
-    @Tag("createpatientIT")
-    @DisplayName("Test for \"/front/createpatient\"")
+    @Tag("createpatient Test")
+    @DisplayName("Test for createpatient")
     class CreatePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
-            requestMock.setServerName("http://localhost:8080");
+            requestMock.setServerName("http://localhost:9103");
             requestMock.setRequestURI("/front/createpatient");
             request = new ServletWebRequest(requestMock);
         }
@@ -198,45 +190,29 @@ class PatientFrontControllerTest {
             request = null;
         }
 
-        @SneakyThrows
+
         @Test
-        @Tag("PatientFrontControllerIT")
+        @Tag("PatientFrontControllerTest")
         @DisplayName("createPatient Test should return a valid form view")
         public void createPatientTestShouldReturnFormView() {
             // GIVEN
             // WHEN
-            final MvcResult result = mvc.perform(get("/front/createpatient")).andReturn();
-
+            String page = patientFrontController.createPatient(new Patient());
             // THEN
-            assertThat(result.getResponse().getStatus()).isEqualTo(200);
-            assertThat(result.getResponse().getContentAsString()).contains("<title>formNewPatient</title>");
-            assertThat((Patient) result.getModelAndView().getModel().get("patient"))
-                    .isNotNull()
-                    .extracting(
-                            Patient::getId,
-                            Patient::getFirstName,
-                            Patient::getLastName,
-                            Patient::getBirthDate,
-                            Patient::getGenre,
-                            Patient::getAddress,
-                            Patient::getPhoneNumber
-                    )
-                    .containsExactly(
-                            null, null, null, null, null, null, null
-                    );
+            assertThat(page).isEqualTo("formnewpatient");
         }
     }
 
     @Nested
-    @Tag("updatepatientIT")
-    @DisplayName("Test for \"/front/updatepatient/{id}\"")
+    @Tag("updatePatient Test")
+    @DisplayName("Test for updatepatient")
     class UpdatePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
-            requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/front/updatepatient/{id}");
+            requestMock.setServerName("http://localhost:9103");
+            requestMock.setRequestURI("updatepatientTest");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -246,14 +222,14 @@ class PatientFrontControllerTest {
             request = null;
         }
 
-        @SneakyThrows
         @Test
-        @Tag("PatientFrontControllerIT")
-        @DisplayName("updatepatient Test should return a valid form view completed with patient to update")
+        @Tag("PatientFrontControllerTest")
+        @DisplayName("updatePatient Test should return a valid form view")
         void updatePatientTestShouldReturnFormView() {
 
             // GIVEN
-            Patient patientToUpdate = Patient.builder()
+            Patient givenPatient = Patient.builder()
+                    .id(1)
                     .firstName("Test")
                     .lastName("TestNone")
                     .birthDate(LocalDate.of(1966, 12, 31))
@@ -261,43 +237,36 @@ class PatientFrontControllerTest {
                     .address("1 Brookside St")
                     .phoneNumber("100-222-3333")
                     .build();
-            int id = patientProxy.createPatient(patientToUpdate).getId();
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+            when(patientFrontService.getPatient(anyInt())).thenReturn(givenPatient);
+
 
             // WHEN
-            final MvcResult result = mvc.perform(get("/front/updatepatient/" + id)).andReturn();
+            String page = patientFrontController.updatePatient(1, model, request);
 
             // THEN
-            try {
-                assertThat(result.getResponse().getStatus()).isEqualTo(200);
-                assertThat(result.getResponse().getContentAsString()).contains("<title>formUpdatePatient</title>");
-                Patient patientResult = (Patient) result.getModelAndView().getModel().get("patient");
-                assertThat(patientResult)
-                        .extracting(
-                                Patient::getId
-                                , Patient::getFirstName
-                                , Patient::getLastName
-                                , p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-                                , Patient::getGenre
-                                , Patient::getAddress
-                                , Patient::getPhoneNumber
-                        ).containsExactly(
-                                id
-                                , "Test"
-                                , "TestNone"
-                                , "19661231"
-                                , "F"
-                                , "1 Brookside St"
-                                , "100-222-3333"
-                        );
-            } finally {
-                patientProxy.deletePatient(id);
-            }
+            assertThat(page).isEqualTo("formupdatepatient");
+            verify(model).addAttribute(stringArgumentCaptor.capture(), patientArgumentCaptor.capture()); //times(1) is used by default
+            assertThat(stringArgumentCaptor.getValue()).isEqualTo("patient");
+            assertThat(patientArgumentCaptor.getValue())
+                    .extracting(
+                            Patient::getId,
+                            Patient::getFirstName,
+                            Patient::getLastName,
+                    p -> p.getBirthDate().format(DateTimeFormatter.BASIC_ISO_DATE),
+                            Patient::getGenre,
+                            Patient::getAddress,
+                            Patient::getPhoneNumber)
+                    .contains(
+                            1, "Test", "TestNone", "19661231", "F", "1 Brookside St", "100-222-3333"
+                    );
         }
     }
 
     @Nested
-    @Tag("deletepatientIT")
-    @DisplayName("Test for \"/front/deletepatient/{id}\"")
+    @Tag("deletepatient Test")
+    @DisplayName("Test for deletepatient")
     class DeletePatientTest {
 
         @BeforeEach
@@ -314,11 +283,10 @@ class PatientFrontControllerTest {
             request = null;
         }
 
-        @SneakyThrows
         @Test
-        @Tag("PatientFrontControllerIT")
-        @DisplayName("deletePatient Test should remove patient from system and redirect to home page")
-        void deletePatientTestShouldRemovePatientFromSystem() {
+        @Tag("PatientFrontController Test")
+        @DisplayName("deletePatient Test should remove patient from system silently")
+        void deletePatientTestShouldRemovePatientFromSystemSilently() {
 
             // GIVEN
             Patient patientToDelete = Patient.builder()
