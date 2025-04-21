@@ -66,14 +66,14 @@ public class PatientFrontController {
     }
 
     @GetMapping("/front/deletepatient/{id}")
-    public ModelAndView deletePatient(@PathVariable("id") final int id, WebRequest request) {
+    public String deletePatient(@PathVariable("id") final int id, WebRequest request) {
         patientFrontService.deletePatient(id);
         log.info("{} : {} : user = {} deleted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), id);
-        return new ModelAndView("redirect:/front/home");
+        return "redirect:/front/home";
     }
 
     @PostMapping("/front/savepatient")
-    public ModelAndView savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+    public String savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient savedPatient;
         if (patient.getId() == null) {
             // If id is null, then it is a new patient.
@@ -83,7 +83,7 @@ public class PatientFrontController {
         }
 
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
-        return new ModelAndView("redirect:/front/home");
+        return "redirect:/front/home";
     }
 
     /**
@@ -93,7 +93,7 @@ public class PatientFrontController {
      * @param lastPage
      * @return
      */
-    private List<Integer> pageInterval(int index, int lastPage) {
+    private List<Integer> pageInterval(Integer index, Integer lastPage) {
         if (lastPage >= 0) {
             if (index - 2 <= 0) {
                 return createInterval(1, lastPage + 1);

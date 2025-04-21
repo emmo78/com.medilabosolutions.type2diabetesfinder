@@ -3,30 +3,35 @@ package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontServiceImpl;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-
-import static org.mockito.ArgumentMatchers.anyInt;
-
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpServletRequest;
-
 import org.springframework.ui.Model;
 import org.springframework.web.context.request.ServletWebRequest;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 /**
  * Need the patientService running
@@ -55,7 +60,7 @@ class PatientFrontControllerTest {
     }
 
     @Nested
-    @Tag("getPatients Tests")
+    @Tag("getPatientsTests")
     @DisplayName("Test for home")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class HomeTest {
@@ -87,7 +92,7 @@ class PatientFrontControllerTest {
         }
 
         @Test
-        @Tag(PatientFrontControllerTest)
+        @Tag("PatientFrontControllerTest")
         @DisplayName("homePage should redirect to \"/front/home\"")
         public void homePageShouldRedirectToHome() {
             // GIVEN
@@ -172,8 +177,8 @@ class PatientFrontControllerTest {
     }
 
     @Nested
-    @Tag("createpatient Test")
-    @DisplayName("Test for createpatient")
+    @Tag("createPatientTest")
+    @DisplayName("Test for createPatient")
     class CreatePatientTest {
 
         @BeforeEach
@@ -204,15 +209,15 @@ class PatientFrontControllerTest {
     }
 
     @Nested
-    @Tag("updatePatient Test")
-    @DisplayName("Test for updatepatient")
+    @Tag("updatePatientTest")
+    @DisplayName("Test for updatePatient")
     class UpdatePatientTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
             requestMock.setServerName("http://localhost:9103");
-            requestMock.setRequestURI("updatepatientTest");
+            requestMock.setRequestURI("/front/updatepatient/1");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -265,8 +270,8 @@ class PatientFrontControllerTest {
     }
 
     @Nested
-    @Tag("deletepatient Test")
-    @DisplayName("Test for deletepatient")
+    @Tag("deletePatientTest")
+    @DisplayName("Test for deletePatient")
     class DeletePatientTest {
 
         @BeforeEach
@@ -284,48 +289,90 @@ class PatientFrontControllerTest {
         }
 
         @Test
-        @Tag("PatientFrontController Test")
-        @DisplayName("deletePatient Test should remove patient from system silently")
+        @Tag("PatientFrontControllerTest")
+        @DisplayName("deletePatient Test should be silently and redirect to home")
         void deletePatientTestShouldRemovePatientFromSystemSilently() {
 
             // GIVEN
-            Patient patientToDelete = Patient.builder()
-                    .firstName("ToDelete")
-                    .lastName("Patient")
-                    .birthDate(LocalDate.of(1980, 1, 1))
-                    .genre("M")
-                    .address("123 Delete St")
-                    .phoneNumber("555-666-7777")
-                    .build();
-            int id = patientProxy.createPatient(patientToDelete).getId();
-
             // WHEN
-            final MvcResult result = mvc.perform(get("/front/deletepatient/" + id)).andReturn();
-
             // THEN
-            try {
-                // The 302 Found redirect response status code indicates that the resource is temporarily moved to the home URL
-                assertThat(result.getResponse().getStatus()).isEqualTo(302);
-                assertThat(result.getResponse().getHeader("Location")).isEqualTo("/");
-
-                // Verify the patient no longer exists
-                HttpClientErrorException.BadRequest heeB =
-                        assertThrows(HttpClientErrorException.BadRequest.class,
-                                () -> patientProxy.getPatient(id));
-                assertThat(heeB.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                assertThat(heeB.getResponseBodyAs(ApiError.class))
-                        .extracting(
-                                ApiError::getMessage,
-                                ApiError::getStatus
-                        ).containsExactly(
-                                "Bad request"
-                                , HttpStatus.BAD_REQUEST
-                        );
-
-            } finally {
-                patientProxy.deletePatient(id);
-            }
+            assertDoesNotThrow(() -> assertThat(patientFrontController.deletePatient(1, request)).isEqualTo("redirect:/front/home"));
         }
     }
-*/}
+
+    @Nested
+    @Tag("savePatientTest")
+    @DisplayName("Test for savePatient")
+    class SavePatientTest {
+
+        @BeforeEach
+        public void setUpForEachTests() {
+            requestMock = new MockHttpServletRequest();
+            requestMock.setServerName("http://localhost:8080");
+            requestMock.setRequestURI("/front/deletepatient/{id}");
+            request = new ServletWebRequest(requestMock);
+        }
+
+        @AfterEach
+        public void unSetForEachTests() {
+            requestMock = null;
+            request = null;
+        }
+
+        @ParameterizedTest(name = "id : {0} if null should save else update")
+        @NullSource
+        @ValueSource(ints = {1})
+        @Tag("PatientFrontControllerTest")
+        @DisplayName("savePatient Test should save patient if Id null, else update it")
+        public void savePatientTestShouldSaveItIfIdNullElseUpdateIt(Integer id) {
+
+            // GIVEN
+            Patient givenPatient = Patient.builder()
+                    .id(id)
+                    .firstName("Test")
+                    .lastName("TestNone")
+                    .birthDate(LocalDate.of(1966, 12, 31))
+                    .genre("F")
+                    .address("1 Brookside St")
+                    .phoneNumber("100-222-3333")
+                    .build();
+
+            ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+            if (id == null) {
+                when(patientFrontService.createPatient(any(Patient.class))).thenReturn(givenPatient);
+            } else {
+                when(patientFrontService.updatePatient(any(Patient.class))).thenReturn(givenPatient);
+            }
+
+            // WHEN
+            String page = patientFrontController.savePatient(givenPatient, request);
+            // THEN
+            assertThat(page).isEqualTo("redirect:/front/home");
+            verify(patientFrontService, times(id==null?1:0)).createPatient(patientArgumentCaptor.capture()); //times(1) is used by default
+            verify(patientFrontService, times(id==null?0:1)).updatePatient(patientArgumentCaptor.capture()); //times(1) is used by default
+        }
+    }
+
+    @SneakyThrows
+    @ParameterizedTest(name = "index = {0} , lastPage = {1} should return interval {2}")
+    @CsvSource(
+            value = {
+                "0, -1, null"
+                ,"1, 20, '1-2-3-4-5'"
+                ,"19, 20, '17-18-19-20-21'"
+                ,"1, 3, '1-2-3-4'"
+                ,"17, 20, '16-17-18-19-20'"}
+            ,nullValues = {"null"})
+    @Tag("PatientFrontControllerTest")
+    @DisplayName("pageIntervalTestShouldReturnExpectedPageInterval")
+    void pageIntervalTestShouldReturnExpectedPageInterval (int lastpage, int index, String expectedInterval ) {
+        //GIVEN
+        Method pageIntervalMethod = PatientFrontController.class.getDeclaredMethod("pageInterval", Integer.class, Integer.class);
+        pageIntervalMethod.setAccessible(true);
+        //WHEN
+        List<Integer> intervalResult = (List<Integer>) pageIntervalMethod.invoke(patientFrontController, lastpage, index);
+        //THEN
+        assertThat(intervalResult).isEqualTo(expectedInterval==null?null:List.of(expectedInterval.split("-")).stream().map(Integer::parseInt).toList());
+    }
+}
 
