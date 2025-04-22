@@ -31,7 +31,12 @@ public class PatientFrontController {
     private final PatientFrontService patientFrontService;
     private final RequestService requestService;
 
-    @GetMapping("/")
+    @GetMapping({"/front","/front/"})
+    public String homePage() {
+        return "redirect:/front/home";
+    }
+
+    @GetMapping("/front/home")
     public String home(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, Model model, WebRequest request) throws NumberFormatException { //Principal user
         //with Principal user get user admin ?
         int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
@@ -46,12 +51,12 @@ public class PatientFrontController {
         return "home";
     }
 
-    @GetMapping("/createpatient")
+    @GetMapping("/front/createpatient")
     public String createPatient(Patient patient) {
         return "formnewpatient";
     }
 
-    @GetMapping("/updatepatient/{id}")
+    @GetMapping("/front/updatepatient/{id}")
     public String updatePatient(@PathVariable("id") final Integer id, Model model, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient patient = patientFrontService.getPatient(id);
         // If there is a password, don't let it
@@ -60,15 +65,15 @@ public class PatientFrontController {
         return "formupdatepatient";
     }
 
-    @GetMapping("/deletepatient/{id}")
-    public ModelAndView deletePatient(@PathVariable("id") final int id, WebRequest request) {
+    @GetMapping("/front/deletepatient/{id}")
+    public String deletePatient(@PathVariable("id") final int id, WebRequest request) {
         patientFrontService.deletePatient(id);
         log.info("{} : {} : user = {} deleted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), id);
-        return new ModelAndView("redirect:/");
+        return "redirect:/front/home";
     }
 
-    @PostMapping("/savepatient")
-    public ModelAndView savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
+    @PostMapping("/front/savepatient")
+    public String savePatient(@ModelAttribute Patient patient, WebRequest request) throws HttpClientErrorException.BadRequest {
         Patient savedPatient;
         if (patient.getId() == null) {
             // If id is null, then it is a new patient.
@@ -78,7 +83,7 @@ public class PatientFrontController {
         }
 
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
-        return new ModelAndView("redirect:/");
+        return "redirect:/front/home";
     }
 
     /**
@@ -88,7 +93,7 @@ public class PatientFrontController {
      * @param lastPage
      * @return
      */
-    private List<Integer> pageInterval(int index, int lastPage) {
+    private List<Integer> pageInterval(Integer index, Integer lastPage) {
         if (lastPage >= 0) {
             if (index - 2 <= 0) {
                 return createInterval(1, lastPage + 1);

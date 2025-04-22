@@ -1,7 +1,32 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.UrlApiProperties;
+import com.medilabosolutions.type2diabetesfinder.frontservice.error.ApiError;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 /**
  * Need the patientService running
@@ -50,7 +75,7 @@ class PatientProxyIT {/*
         }
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("createPatient Test should return saved patient with id")
         public void createPatientTestShouldReturnSaveAndReturnPatientWithId() {
 
@@ -77,7 +102,7 @@ class PatientProxyIT {/*
         }
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("createPatient Test should throw HttpClientErrorException$BadRequest if id not null")
         public void createPatientTestShouldThrowAHttpClientErrorException$BadRequestIfIdNotNull() {
 
@@ -128,7 +153,7 @@ class PatientProxyIT {/*
         }
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("getPatient Test should return patient")
         public void getPatientTestShouldReturnPatient() {
 
@@ -151,7 +176,7 @@ class PatientProxyIT {/*
         }
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("getPatient Test should throw a HttpClientErrorException.BadRequest if patient not found")
         public void getPatientTestShouldThrowHttpClientErrorException$BadRequestIfNotFound() {
 
@@ -177,7 +202,7 @@ class PatientProxyIT {/*
     class DeletePatientTest {
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("deletePatient Test should delete the patient")
         public void deletePatientTestShouldDeleteIt() {
             // GIVEN
@@ -216,7 +241,7 @@ class PatientProxyIT {/*
     class GetPatientsTest {
 
         @Test
-        @Tag("PatientProxyTest")
+        @Tag("PatientProxyIT")
         @DisplayName("getPatients Test should return patients")
         public void getPatientsITShouldReturnPatients() {
 
@@ -318,7 +343,7 @@ class PatientProxyIT {/*
         }
 
         @Test
-        @Tag("PatientControllerTest")
+        @Tag("PatientProxyTest")
         @DisplayName("updatePatient Test should return updated patient")
         public void updatePatientTestShouldReturnSaveAndReturnPatientWithId() {
 

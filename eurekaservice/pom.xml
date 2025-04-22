@@ -13,7 +13,7 @@
 
 	<artifactId>eurekaservice</artifactId>
 	<name>eurekaService</name>
-	<description>Eureka microservice to find microservice instances</description>
+	<description>Eureka service to find microservice instances</description>
 
 	<build>
 		<plugins>

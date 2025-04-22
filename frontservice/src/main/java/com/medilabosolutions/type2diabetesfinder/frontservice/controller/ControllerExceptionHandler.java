@@ -35,7 +35,7 @@ public class ControllerExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({HttpClientErrorException.BadRequest.class, NumberFormatException.class})
-    public String unexpectedRollbackException(RuntimeException badRequestException, WebRequest request, Model model) {
+    public String badRequestAndNumberFormatException(RuntimeException badRequestException, WebRequest request, Model model) {
         String errorMessage = badRequestException.getMessage();
         log.error("{} : {} : {}",
                 requestService.requestToString(request),

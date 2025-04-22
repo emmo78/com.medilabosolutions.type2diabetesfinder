@@ -6,7 +6,7 @@
     <link rel="stylesheet"
           type="text/css"
           href="../static/css/formPatient.css"
-          th:href="@{/css/formPatient.css}">
+          th:href="@{/frontservice/css/formPatient.css}">
     <title>formUpdatePatient</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
     <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
     <section>
         <h1>Modifier un Patient</h1>
-        <form method="POST" action="#" th:action="@{/savepatient}" th:object="${patient}">
+        <form method="POST" action="#" th:action="@{/front/savepatient}" th:object="${patient}">
             <div>
                 <!-- Champ ID caché pour l'update -->
                 <input type="hidden" th:field="*{id}"/>
