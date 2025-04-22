@@ -1,30 +1,53 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import com.medilabosolutions.type2diabetesfinder.frontservice.repository.PatientProxy;
+import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
+import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
+import jakarta.inject.Inject;
+import lombok.SneakyThrows;
+import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.context.request.ServletWebRequest;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * Need the patientService running
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class PatientFrontControllerIT {/*
+@Disabled
+class PatientFrontControllerIT {
 
     @Inject
     private MockMvc mvc;
 
-    @SpyBean // deprecated since Spring boot 3.4.0 use
-    UrlApiProperties urlApiProperties;
-
-    @SpyBean
+    @MockitoSpyBean
     PatientProxy patientProxy;
 
-    @SpyBean
+    @MockitoSpyBean
     PatientFrontService patientFrontService;
 
-    @SpyBean
+    @MockitoSpyBean
     RequestService requestService;
 
     @InjectMocks
@@ -33,26 +56,17 @@ class PatientFrontControllerIT {/*
     private MockHttpServletRequest requestMock;
     private ServletWebRequest request;
 
-    @BeforeEach
-    public void setUpPerTest() {
-        when(urlApiProperties.getApiURL()).thenReturn("http://localhost:9090");
-    }
-
-    @AfterEach
-    public void tearDownPerTest() {
-        urlApiProperties = null;
-    }
 
     @Nested
     @Tag("getPatientsIT")
-    @DisplayName("Test for \"/\"")
+    @DisplayName("Test for \"/front/home\"")
     class HomeTest {
 
         @BeforeEach
         public void setUpForEachTests() {
             requestMock = new MockHttpServletRequest();
-            requestMock.setServerName("http://localhost:8080");
-            requestMock.setRequestURI("/");
+            requestMock.setServerName("http://localhost:9103");
+            requestMock.setRequestURI("/front/home");
             request = new ServletWebRequest(requestMock);
         }
 
@@ -106,7 +120,7 @@ class PatientFrontControllerIT {/*
             );
             List<Integer> ids = new ArrayList<>();
             givenPatients.forEach(patient -> {
-                int id = patientProxy.createPatient(patient).getId();
+                int id = patientProxy.createPatient(Optional.ofNullable(patient)).getBody().getId();
                 patient.setId(id);
                 ids.add(id);
             });
@@ -123,7 +137,7 @@ class PatientFrontControllerIT {/*
                     );
 
             //WHEN
-            final MvcResult result = mvc.perform(get("/?pageNumber=" + pageNumber))
+            MvcResult result = mvc.perform(get("http://localhost:9103/front/home/?pageNumber=" + pageNumber))
                     .andReturn();
 
             //THEN
@@ -141,11 +155,11 @@ class PatientFrontControllerIT {/*
                                 Patient::getPhoneNumber)
                         .containsExactlyElementsOf(expectedResult);
             } finally {
-                givenPatients.forEach(patient -> patientProxy.deletePatient(patient.getId()));
+                givenPatients.forEach(patient -> patientProxy.deletePatientById(patient.getId()));
             }
         }
 
-        @SneakyThrows
+        /*@SneakyThrows
         @ParameterizedTest(name = "{0} should return error page")
         @ValueSource(strings = {"-1", "a", ""})
         @Tag("PatientFrontControllerIT&ControllerExceptionHandlerIT")
@@ -160,9 +174,9 @@ class PatientFrontControllerIT {/*
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(400);
             assertThat((result.getResponse().getContentAsString())).contains("<title>Error page</title>");
-        }
+        }*/
     }
-
+/*
     @Nested
     @Tag("createpatientIT")
     @DisplayName("Test for \"/front/createpatient\"")
@@ -342,6 +356,6 @@ class PatientFrontControllerIT {/*
                 patientProxy.deletePatient(id);
             }
         }
-    }
-*/}
+    }*/
+}
 
