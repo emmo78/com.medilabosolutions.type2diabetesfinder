@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
+import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.FeignClientConfig;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import feign.Body;
 import jakarta.validation.ConstraintViolationException;
@@ -16,7 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Optional;
 
 //@FeignClient(name = "patientService")// , url = "localhost:9090")
-@FeignClient(name = "gatewayService")
+@FeignClient(name = "gatewayService", configuration = FeignClientConfig.class)
 public interface PatientProxy {
 
     //private final UrlApiProperties urlApiProperties;
@@ -51,7 +52,7 @@ public interface PatientProxy {
     ResponseEntity<Patient> createPatient(@RequestBody Optional<@Valid Patient> optionalPatient); //throws MethodArgumentNotValidException, BadRequestException;
 
     /**
-     * Update an patient - using the PUT HTTP Method.
+     * Update a patient - using the PUT HTTP Method.
      *
      * @param optionalPatient Existing patient to update
      */
