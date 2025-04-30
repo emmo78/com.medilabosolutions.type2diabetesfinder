@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Collections;
 
 /**
  * Class for security configuration of the application.
@@ -22,6 +26,7 @@ import java.net.URI;
  * @author olivier morel
  */
 @Configuration
+@EnableWebFluxSecurity
 @Slf4j
 public class SecurityConfiguration {
 
@@ -30,7 +35,7 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+/*    @Bean
     public ReactiveUserDetailsService userDetailsService() {
         UserDetails user = User.builder()
                 .username("user")
@@ -38,20 +43,40 @@ public class SecurityConfiguration {
                 .roles("USER")
                 .build();
         return new MapReactiveUserDetailsService(user);
-    }
+    } */
 
     /**
      * sets up the authentication manager bean for reactive applications
      *
      * @return an instance of {@link ReactiveAuthenticationManager}
      */
-    @Bean
+/*    @Bean
     public ReactiveAuthenticationManager reactiveAuthenticationManager() {
         UserDetailsRepositoryReactiveAuthenticationManager manager =
             new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService());
         manager.setPasswordEncoder(passwordEncoder());
         return manager;
     }
+*/
+    /**
+     * Fournit un gestionnaire d'authentification pour vérifier les informations d'identification
+     * de l'utilisateur test-user.
+     *
+     * @return une instance de ReactiveAuthenticationManager pour l'authentification
+     */
+    @Bean
+    public ReactiveAuthenticationManager testUserAuthenticationManager() {
+        return authentication -> {
+            final String name = authentication.getName();
+            final String password = authentication.getCredentials().toString();
+            if (("user".equals(name) && "user".equals(password))) {
+                return Mono.just(new UsernamePasswordAuthenticationToken(name, password, Collections.singletonList(new SimpleGrantedAuthority("USER"))
+                ));
+            }
+            return Mono.empty(); // Retourner Mono.empty() au lieu de null pour respecter les principes réactifs
+        };
+    }
+
 
     /**
      * builds a SecurityFilterChain bean for the provided HttpSecurity.
@@ -67,10 +92,10 @@ public class SecurityConfiguration {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/front", "/front/", "/front/home").permitAll()
                         .pathMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                        .pathMatchers("/front/**", "/patients", "/patients/**").hasRole("USER")
+                        .pathMatchers("/front/**", "/patients", "/patients/**").hasAuthority("USER")
                         .anyExchange().authenticated())
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        //.loginPage("/login")
                         .authenticationSuccessHandler((webFilterExchange, authentication) -> {
                             webFilterExchange.getExchange().getResponse()
                                     .setStatusCode(org.springframework.http.HttpStatus.FOUND);
@@ -79,8 +104,8 @@ public class SecurityConfiguration {
                             return Mono.empty();
                         }))
                 .httpBasic(Customizer.withDefaults())
-                .logout(logout -> logout
-                        .logoutUrl("/app-logout"))
+                /*.logout(logout -> logout
+                        .logoutUrl("/app-logout"))*/
                 .build();
     }
 }

@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
         @Bean
         public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
-            return new BasicAuthRequestInterceptor("user", "password");
+            return new BasicAuthRequestInterceptor("user", "user");
         }
     }
 
+// Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
