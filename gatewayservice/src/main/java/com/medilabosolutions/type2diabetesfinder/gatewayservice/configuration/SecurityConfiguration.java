@@ -1,8 +1,10 @@
 package com.medilabosolutions.type2diabetesfinder.gatewayservice.configuration;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,12 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
+import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -28,12 +36,12 @@ import java.util.Collections;
 @Configuration
 @EnableWebFluxSecurity
 @Slf4j
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final PasswordEncoder passwordEncoder;
+
+    private final ReactiveUserDetailsService userDetailsService;
 
 /*    @Bean
     public ReactiveUserDetailsService userDetailsService() {
@@ -50,21 +58,21 @@ public class SecurityConfiguration {
      *
      * @return an instance of {@link ReactiveAuthenticationManager}
      */
-/*    @Bean
+    @Bean
     public ReactiveAuthenticationManager reactiveAuthenticationManager() {
         UserDetailsRepositoryReactiveAuthenticationManager manager =
-            new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService());
-        manager.setPasswordEncoder(passwordEncoder());
+            new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        manager.setPasswordEncoder(passwordEncoder);
         return manager;
     }
-*/
+
     /**
      * Fournit un gestionnaire d'authentification pour vérifier les informations d'identification
      * de l'utilisateur test-user.
      *
      * @return une instance de ReactiveAuthenticationManager pour l'authentification
      */
-    @Bean
+    /*@Bean
     public ReactiveAuthenticationManager testUserAuthenticationManager() {
         return authentication -> {
             final String name = authentication.getName();
@@ -75,37 +83,96 @@ public class SecurityConfiguration {
             }
             return Mono.empty(); // Retourner Mono.empty() au lieu de null pour respecter les principes réactifs
         };
-    }
+    }*/
 
 
     /**
-     * builds a SecurityFilterChain bean for the provided HttpSecurity.
+     * Authentication success handler bean
+     * Redirects to home page after successful login
+     * 
+     * @return ServerAuthenticationSuccessHandler
+     */
+    @Bean
+    public ServerAuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (webFilterExchange, authentication) -> {
+            webFilterExchange.getExchange().getResponse()
+                    .setStatusCode(HttpStatus.FOUND);
+            webFilterExchange.getExchange().getResponse()
+                    .getHeaders().setLocation(URI.create("/front/home"));
+            log.info("User {} successfully authenticated", authentication.getName());
+            return Mono.empty();
+        };
+    }
+
+    /**
+     * Authentication failure handler bean
+     * Redirects to login page with error parameter after failed login
+     * 
+     * @return ServerAuthenticationFailureHandler
+     */
+    @Bean
+    public ServerAuthenticationFailureHandler authenticationFailureHandler() {
+        return (webFilterExchange, exception) -> {
+            webFilterExchange.getExchange().getResponse()
+                    .setStatusCode(HttpStatus.FOUND);
+            webFilterExchange.getExchange().getResponse()
+                    .getHeaders().setLocation(URI.create("/login?error"));
+            log.warn("Authentication failed: {}", exception.getMessage());
+            return Mono.empty();
+        };
+    }
+
+    /**
+     * Logout success handler bean
+     * Redirects to login page with logout parameter after successful logout
+     * 
+     * @return ServerLogoutSuccessHandler
+     */
+    @Bean
+    public ServerLogoutSuccessHandler logoutSuccessHandler() {
+        return (webFilterExchange, authentication) -> {
+            webFilterExchange.getExchange().getResponse()
+                    .setStatusCode(HttpStatus.FOUND);
+            webFilterExchange.getExchange().getResponse()
+                    .getHeaders().setLocation(URI.create("/login?logout"));
+            log.info("User successfully logged out");
+            return Mono.empty();
+        };
+    }
+
+    /**
+     * Builds a SecurityWebFilterChain bean for the provided ServerHttpSecurity.
+     * Configures security rules, authentication, and authorization for the application.
      *
-     * @param http the HttpSecurity object to build the SecurityFilterChain for
-     * @return the built SecurityFilterChain
-     * @throws Exception
+     * @param http the ServerHttpSecurity object to build the SecurityWebFilterChain for
+     * @return the built SecurityWebFilterChain
      */
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)  // Généralement désactivé pour les API Gateway
+                .csrf(csrf -> csrf.disable()) //ou ServerHttpSecurity.CsrfSpec::disable
+                // Configure authorization rules
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/front", "/front/", "/front/home").permitAll()
+                        .pathMatchers("/login", "/logout").permitAll()
                         .pathMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                        .pathMatchers("/front/**", "/patients", "/patients/**").hasAuthority("USER")
-                        .anyExchange().authenticated())
+                        .pathMatchers("/front", "/front/", "/front/**", "/patients", "/patients/**").hasAuthority("USER")
+                        .anyExchange().authenticated()
+                )
+                // Configure form login
                 .formLogin(form -> form
-                        //.loginPage("/login")
-                        .authenticationSuccessHandler((webFilterExchange, authentication) -> {
-                            webFilterExchange.getExchange().getResponse()
-                                    .setStatusCode(org.springframework.http.HttpStatus.FOUND);
-                            webFilterExchange.getExchange().getResponse()
-                                    .getHeaders().setLocation(URI.create("/front/home"));
-                            return Mono.empty();
-                        }))
+                        .loginPage("/login")
+                        .authenticationSuccessHandler(authenticationSuccessHandler())
+                        .authenticationFailureHandler(authenticationFailureHandler())
+                )
+                // Set the authentication manager
+                //.authenticationManager(reactiveAuthenticationManager())
+                // Configure HTTP Basic authentication as fallback for API clients
                 .httpBasic(Customizer.withDefaults())
-                /*.logout(logout -> logout
-                        .logoutUrl("/app-logout"))*/
+                // Configure logout
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                )
                 .build();
     }
 }
