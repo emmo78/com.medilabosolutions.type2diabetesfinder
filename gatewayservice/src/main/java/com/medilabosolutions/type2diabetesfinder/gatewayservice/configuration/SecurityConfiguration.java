@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -34,6 +32,11 @@ public class SecurityConfiguration {
 
     private final PasswordEncoder passwordEncoder;
 
+
+    /**
+     * in-memory implementation of the user details service bean
+     * @return UserDetailsService implementation.
+     */
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
         UserDetails user = User.builder()

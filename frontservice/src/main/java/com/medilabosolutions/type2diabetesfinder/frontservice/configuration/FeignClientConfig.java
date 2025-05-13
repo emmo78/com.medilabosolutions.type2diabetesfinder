@@ -12,5 +12,3 @@ import org.springframework.context.annotation.Configuration;
             return new BasicAuthRequestInterceptor("user", "user");
         }
     }
-
-// Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
