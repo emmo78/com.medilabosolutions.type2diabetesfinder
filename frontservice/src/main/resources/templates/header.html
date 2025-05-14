@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/header.css" th:href="@{/frontservice/css/header.css}"/>
+    <title>Header</title>
+</head>
+<body>
+<header th:fragment="header(page)">
+    <div class="type2DiabetesFinder">Type 2 Diabetes Finder</div>
+    <nav sec:authorize="isAuthenticated()">
+        <ul>
+            <li><a th:class="${#strings.equals(page, 'home')}?'athis'" href="/front/home" th:href="@{/front/home}">Home</a></li>
+            <li>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">Log&nbsp;Out</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <nav sec:authorize="!isAuthenticated()" th:if="${#strings.equals(page, 'home')}">
+        <ul>
+            <li><a th:class="${#strings.equals(page, 'login')}?'athis'" href="/login" th:href="@{/login}">Login</a></li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>
