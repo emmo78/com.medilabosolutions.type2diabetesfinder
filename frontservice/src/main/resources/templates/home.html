@@ -12,8 +12,7 @@
 <body>
 <div id="main_wrapper" class="color" th:with="page='home'">
     <header th:replace="~{header::header(${page})}"></header>
-    <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
-    <section><!--sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"-->
+    <section>
         <h1>All Patient Listed By Page</h1>
         <button class="button">
             <a th:href="@{/front/createpatient}">Créer un patient</a>

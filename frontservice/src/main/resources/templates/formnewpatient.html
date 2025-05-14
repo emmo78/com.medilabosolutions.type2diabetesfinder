@@ -12,7 +12,6 @@
 <body>
 <div id="main_wrapper" class="color" th:with="page='formNewPatient'">
     <header th:replace="~{header::header(${page})}"></header>
-    <!--ToDo <h1><span th:text="${user.firstName}+' '+${user.lastName}+', '"></span>Welcome !</h1>-->
     <section>
         <h1>Ajouter un Patient</h1>
         <form method="POST" action="#" th:action="@{/front/savepatient}" th:object="${patient}">
