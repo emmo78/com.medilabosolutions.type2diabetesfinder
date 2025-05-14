@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <link  rel="stylesheet"
+               type="text/css"
+               href="../static/css/login.css"
+               th:href="@{/gatewayservice/css/login.css}" />
+        <title>Log In</title>
+    </head>
+    <body>
+        <div id="main_wrapper"  class="color">
+                <div class="type2DiabetesFinder">Type 2 Diabetes Finder</div>
+                <h1>Log In</h1>
+                <form  method="post" th:action="@{/login}">
+                    <div class="form">
+                        <input type="text" name="username" th:placeholder="${param.isEmpty()}?'Name':'Wrong name'"/><br/>
+                        <input type="password" name="password" th:placeholder="${param.isEmpty()}?'Password':'or password'" id="password"/><br/>
+                        <input class="button" type="submit" value="Log in" />
+                        <a th:href="@{/front/home}"><button class="button" type="button">Home</button></a>
+                    </div>
+                </form>
+                <div class="paramerror">
+                    <span th:if="${param.logout != null}">You have been logged out.</span>
+                </div>
+        </div>
+    </body>
+</html>
