@@ -42,13 +42,12 @@ public class PatientController {
     private final PatientPerPageProperties patientPerPageProperties;
 
     /**
-     * Retrieves a list of all patients.
+     * Retrieves a list of all patients with pagination.
      *
-     * @param request the current web request containing request data
-     * @return a ResponseEntity containing an Iterable of Patient objects and an HTTP status code
-     * @throws NullPointerException if the pageRequest is null
+     * @param pageNumberOpt optional page number for pagination
+     * @param request the current web request
+     * @return a ResponseEntity containing a Page of Patient objects and an HTTP status code
      */
-    // Retrieve all patients
     @GetMapping("/patients")
     public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, WebRequest request) throws IllegalArgumentException {
         int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
@@ -94,8 +93,6 @@ public class PatientController {
      * @throws MethodArgumentNotValidException if the patient details provided are invalid.
      * @throws BadRequestException             if the patient object is null or contains an ID.
      */
-    // Create a new patient
-    // Throw MethodArgumentNotValidException by @Valid in @RequestBody
     @PostMapping("/patients")
     public ResponseEntity<Patient> createPatient(@RequestBody Optional<@Valid Patient> optionalPatient, WebRequest request) throws MethodArgumentNotValidException, BadRequestException {
         if (optionalPatient.isEmpty()) {
