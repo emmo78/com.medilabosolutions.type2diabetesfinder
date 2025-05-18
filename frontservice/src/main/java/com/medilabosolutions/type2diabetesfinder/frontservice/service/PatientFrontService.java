@@ -1,8 +1,11 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.service;
 
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Note;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 
@@ -51,5 +54,14 @@ public interface PatientFrontService {
      * @param id the ID of the patient to be deleted. Must not be null.
      */
     HttpStatus deletePatient(Integer id);
+
+    /**
+     * Creates a new patient Note in the system.
+     *
+     * @param note the patient entity to be created
+     * @return the created patient entity
+     * @throws HttpClientErrorException.BadRequest if the patient entity has a non-null id or any validation fails
+     */
+    Note createNote(Note note) throws HttpClientErrorException.BadRequest;
 
 }

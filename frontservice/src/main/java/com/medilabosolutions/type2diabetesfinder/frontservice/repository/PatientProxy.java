@@ -1,19 +1,24 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.repository;
 
 import com.medilabosolutions.type2diabetesfinder.frontservice.configuration.FeignClientConfig;
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Note;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import feign.Body;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.apache.coyote.BadRequestException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.List;
 import java.util.Optional;
 
 //@FeignClient(name = "patientService")// , url = "localhost:9090")
@@ -60,11 +65,31 @@ public interface PatientProxy {
     ResponseEntity<Patient> updatePatient(@RequestBody Optional<@Valid Patient> optionalPatient); //throws MethodArgumentNotValidException, BadRequestException;
 
     /**
-     * Delete an patient using exchange method of RestTemplate
-     * instead of delete method in order to log the response status code.
+     * Delete a patient
      *
      * @param id The patient's id to delete
      */
     @DeleteMapping("/patients/{id}")
     HttpStatus deletePatientById(@PathVariable("id") @Min(1) @Max(2147483647) Integer id) throws MethodArgumentTypeMismatchException, ConstraintViolationException;
+
+    /**
+     * Retrieves all notes for a specific patient, ordered by date time in descending order.
+     *
+     * @param patientId the ID of the patient
+     * @return ResponseEntity containing a list of notes for the patient, with HTTP status 200
+     * @throws MethodArgumentTypeMismatchException if the patient ID is not a valid integer
+     * @throws ConstraintViolationException if the patient ID does not meet the defined constraints
+     */
+    @GetMapping("/notes/patient/{patientId}")
+    ResponseEntity<List<Note>> getNotesByPatientId(@PathVariable("patientId") @Min(1) @Max(2147483647) Integer patientId) throws MethodArgumentTypeMismatchException, ConstraintViolationException;
+
+    /**
+     * Creates a new note for a patient.
+     * @param optionalNote
+     * @return
+     * @throws MethodArgumentNotValidException
+     * @throws BadRequestException
+     */
+    @PostMapping("/notes")
+    public ResponseEntity<Note> createNote(@RequestBody Optional<@Valid Note> optionalNote);//throws MethodArgumentNotValidException, BadRequestException;
 }
