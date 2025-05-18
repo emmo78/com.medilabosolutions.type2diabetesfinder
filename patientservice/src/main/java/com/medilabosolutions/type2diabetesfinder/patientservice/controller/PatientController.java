@@ -51,7 +51,7 @@ public class PatientController {
     @GetMapping("/patients")
     public ResponseEntity<Page<Patient>> getPatients(@RequestParam(name = "pageNumber") Optional<String> pageNumberOpt, WebRequest request) throws IllegalArgumentException {
         int index = Integer.parseInt(pageNumberOpt.orElseGet(() -> "0"));
-        //Throws IllegalException if index < 0
+        //Throws IllegalArgumentException if index < 0
         Pageable pageRequest = PageRequest.of(index, patientPerPageProperties.getPatientPerPage(), Sort.by(Sort.Direction.ASC, "id"));
         Page<Patient> patients = patientService.getPatients(pageRequest);
         log.info("{} : {} : patients page number : {} of {}",

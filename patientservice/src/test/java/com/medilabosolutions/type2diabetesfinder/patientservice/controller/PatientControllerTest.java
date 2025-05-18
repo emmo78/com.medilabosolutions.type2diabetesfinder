@@ -8,6 +8,8 @@ import com.medilabosolutions.type2diabetesfinder.patientservice.service.RequestS
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -239,7 +241,7 @@ public class PatientControllerTest {
 
         @Test
         @Tag("PatientControllerTest")
-        @DisplayName("test getPatientById should throw (ResourceNotFoundException")
+        @DisplayName("test getPatientById should throw ResourceNotFoundException")
         public void getPatientByIdTestShouldThrowResourceNotFoundException() {
 
             //GIVEN

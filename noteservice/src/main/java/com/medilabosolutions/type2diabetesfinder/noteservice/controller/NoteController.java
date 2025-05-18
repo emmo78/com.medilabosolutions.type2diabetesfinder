@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,29 +30,11 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Validated
+@Validated //for constraints on PathVariable
 public class NoteController {
 
     private final NoteService noteService;
     private final RequestService requestService;
-
-    /**
-     * Récupère une note par son identifiant unique.
-     *
-     * @param id l'identifiant de la note à récupérer
-     * @param request l'objet de requête web contenant les détails de la requête
-     * @return ResponseEntity contenant la note trouvée avec un statut HTTP 200
-     * @throws ResourceNotFoundException si aucune note n'est trouvée avec l'identifiant fourni
-     */
-    @GetMapping("/notes/{id}")
-    public ResponseEntity<Note> getNoteById(@PathVariable("id") String id, WebRequest request) throws ResourceNotFoundException {
-        Note note = noteService.getNote(id);
-        log.info("{} : {} : note récupérée avec l'ID {}",
-                requestService.requestToString(request),
-                ((ServletWebRequest) request).getHttpMethod(),
-                id);
-        return new ResponseEntity<>(note, HttpStatus.OK);
-    }
 
     /**
      * Retrieves all notes for a specific patient, ordered by date time in descending order.
@@ -64,14 +46,34 @@ public class NoteController {
      * @throws ConstraintViolationException if the patient ID does not meet the defined constraints
      */
     @GetMapping("/notes/patient/{patientId}")
-    public ResponseEntity<List<Note>> getNotesByPatientId(@PathVariable("patientId") @Min(1) @Max(2147483647) Integer patientId, WebRequest request) throws MethodArgumentTypeMismatchException, ConstraintViolationException, RessourceNotFoundException {
+    public ResponseEntity<List<Note>> getNotesByPatientId(@PathVariable("patientId") @Min(1) @Max(2147483647) Integer patientId, WebRequest request) throws MethodArgumentTypeMismatchException, ConstraintViolationException {
         List<Note> notes = noteService.getNotesByPatientId(patientId);
-        log.info("{} : {} : {} notes found for patient ID {}", 
-                requestService.requestToString(request), 
+        log.info("{} : {} : {} notes found for patient ID {}",
+                requestService.requestToString(request),
                 ((ServletWebRequest) request).getHttpMethod(),
                 notes.size(),
                 patientId);
         return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
+
+    /**
+     * Récupère une note par son identifiant unique.
+     *
+     * @param id l'identifiant de la note à récupérer
+     * @param request l'objet de requête web contenant les détails de la requête
+     * @return ResponseEntity contenant la note trouvée avec un statut HTTP 200
+     * @throws MethodArgumentTypeMismatchException if the patient ID is not a valid integer
+     * @throws ConstraintViolationException        if the ID does not meet the defined constraints.
+     * @throws RessourceNotFoundException si aucune note n'est trouvée avec l'identifiant fourni
+     */
+    @GetMapping("/notes/{id}")
+    public ResponseEntity<Note> getNoteById(@PathVariable("id") String id, WebRequest request) throws RessourceNotFoundException {
+        Note note = noteService.getNote(id);
+        log.info("{} : {} : note récupérée avec l'ID {}",
+                requestService.requestToString(request),
+                ((ServletWebRequest) request).getHttpMethod(),
+                id);
+        return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
     /**
@@ -101,10 +103,11 @@ public class NoteController {
      * @return ResponseEntity containing the updated note object and HTTP status OK
      * @throws MethodArgumentNotValidException if the note object is not valid
      * @throws BadRequestException if the request body is missing or invalid
-     * @throws ResourceNotFoundException if the note does not exist
+     * @throws RessourceNotFoundException if the note does not exist
+     * @throws InvalidDataAccessApiUsageException if the patient id is null
      */
     @PutMapping("/notes")
-    public ResponseEntity<Note> updateNote(@RequestBody Optional<@Valid Note> optionalNote, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, ResourceNotFoundException {
+    public ResponseEntity<Note> updateNote(@RequestBody Optional<@Valid Note> optionalNote, WebRequest request) throws MethodArgumentNotValidException, BadRequestException, RessourceNotFoundException {
         if (optionalNote.isEmpty()) {
             throw new BadRequestException("Correct request should be a json Note body");
         }

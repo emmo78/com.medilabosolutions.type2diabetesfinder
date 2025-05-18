@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.noteservice.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -28,23 +29,20 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true, includeFieldNames = true)
+@ToString(includeFieldNames = true)
 public class Note {
 
     @Id
-    @ToString.Include
     private String id;
 
     @Indexed(unique = true)
     @NotNull(message = "Patient ID is mandatory")
-    @ToString.Include
     private Integer patientId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "Date is mandatory")
-    @ToString.Include
     private LocalDateTime dateTime;
 
     @NotBlank(message = "Content is mandatory")
-    @ToString.Include
     private String content;
 }
