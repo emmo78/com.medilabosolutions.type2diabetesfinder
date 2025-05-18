@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          type="text/css"
+          href="../static/css/formPatient.css"
+          th:href="@{/frontservice/css/formPatient.css}"/>
+    <title>New Medical Note</title>
+</head>
+<body>
+<div id="main_wrapper" class="color" th:with="page='formNewNote'">
+    <header th:replace="~{header::header(${page})}"></header>
+    <section>
+        <div>
+            <h1>Add a medical note</h1>
+            </div>
+            <form method="POST" action="#" th:action="@{/front/savenote}" th:object="${note}">
+                <div>
+                    <!-- Champ patientId caché pour lier la note au patient -->
+                    <input type="hidden" name="patientId" th:field="*{patientId}"/>
+
+                    <label for="content">Medical Note</label><br/>
+                    <textarea id="content" name="content" th:field="*{content}" required
+                              rows="10" cols="60" placeholder="Saisissez la note médicale ici..."
+                              class="note-content-input"></textarea><br/>
+
+                    <div class="button-group">
+                        <input class="button" type="submit" value="Save"/>
+                        <a class="button cancel" th:href="@{/front/updatepatient/{id}(id=${note.patientId})}">Annuler</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+<!-- CSS spécifique pour cette page -->
+<style>
+    .patient-info {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        border-left: 4px solid #5d2573;
+    }
+
+    .note-content-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+        min-height: 150px;
+        font-family: verdana, serif;
+    }
+
+    .button-group {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .cancel {
+        background-color: #f0f0f0;
+        color: #333;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+</body>
+</html>
