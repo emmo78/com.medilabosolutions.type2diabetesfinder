@@ -1,5 +1,6 @@
 package com.medilabosolutions.type2diabetesfinder.frontservice.controller;
 
+import com.medilabosolutions.type2diabetesfinder.frontservice.model.Note;
 import com.medilabosolutions.type2diabetesfinder.frontservice.model.Patient;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.PatientFrontService;
 import com.medilabosolutions.type2diabetesfinder.frontservice.service.RequestService;
@@ -12,9 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +86,31 @@ public class PatientFrontController {
         log.info("{} : {} : patient = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedPatient.toString());
         return "redirect:/front/home";
     }
+
+    @GetMapping("/front/createnote/{idPatient}")
+    public String createNote(@PathVariable("idPatient") final Integer id, Note note, WebRequest request, Model model) {
+        note.setPatientId(id);
+        model.addAttribute("note", note);
+        return "formnewnote";
+    }
+
+    @PostMapping("/front/savenote")
+    public String saveNote(@ModelAttribute Note note, WebRequest request) throws HttpClientErrorException.BadRequest {
+        Note savedNote = null;
+        if (note.getDateTime() == null) {
+            note.setDateTime(LocalDateTime.now());
+        }
+        if (note.getId() == null) {
+            // If id is null, then it is a new note.
+            savedNote = patientFrontService.createNote(note);
+        } else {
+            // ToDo savedNote = patientFrontService.updateNote(note);
+        }
+
+        log.info("{} : {} : note = {} persisted", requestService.requestToString(request), ((ServletWebRequest) request).getHttpMethod(), savedNote.toString());
+        return "redirect:/front/updatepatient/" + note.getPatientId() ;
+    }
+
 
     /**
      * Calculation of the parameters for the creation of the page interval

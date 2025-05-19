@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author olivier morel
  */
 @ExtendWith(MockitoExtension.class)
-public class PatientServiceImplTest {
+public class PatientServiceTest {
 
     @InjectMocks
     private PatientServiceImpl patientService;

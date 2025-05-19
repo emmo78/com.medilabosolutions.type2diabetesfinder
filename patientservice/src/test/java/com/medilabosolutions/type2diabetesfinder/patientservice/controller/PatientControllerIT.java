@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -146,6 +148,29 @@ public class PatientControllerIT {
             //THEN
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
             assertThat(result.getResponse().getContentAsString()).contains(givenPatientString);
+        }
+
+        @SneakyThrows
+        @ParameterizedTest(name = "{0} should throw a {1} exception")
+        @CsvSource(
+                value = {
+                        "null, 'MethodArgumentTypeMismatchException'"
+                        ,"-1, 'ConstraintViolationException'"
+                        ,"0, 'ConstraintViolationException'"
+                        ,"2147483648, 'ConstraintViolationException'"}
+                ,nullValues = {"null"})
+        @Tag("PatientControllerIT")
+        @DisplayName("test getPatientById should throw Expected Exception")
+        public void getPatientByIdTestShouldThrowExpectedException(Integer id, String exceptionName) {
+
+            //GIVEN
+            //WHEN
+            final MvcResult result = mvc.perform(get("/patients/" + id))
+                    .andReturn();
+
+            //THEN
+            assertThat(result.getResponse().getStatus()).isEqualTo(400);
+            assertThat(result.getResponse().getContentAsString()).contains("\"message\":\"Bad request\"");
         }
 
         @SneakyThrows

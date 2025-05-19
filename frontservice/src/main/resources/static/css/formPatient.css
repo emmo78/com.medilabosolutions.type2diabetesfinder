@@ -1,3 +1,40 @@
 @charset "UTF-8";
 
 @import url("home.css");
+
+section {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 1.3em;
+}
+
+.medical-notes-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.note-entry {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.note-date {
+    margin-bottom: 5px;
+    width: 10%;
+    font-size: 0.8em;
+    color: #999;
+    text-wrap: nowrap;
+}
+
+.note-textarea {
+    width: 90%;
+    min-height: 80px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    resize: vertical;
+}
