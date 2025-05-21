@@ -15,6 +15,18 @@ import org.springframework.security.web.SecurityFilterChain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Configuration class that sets up the security configuration for the application.
+ *
+ * This class enables web security using Spring Security, providing necessary
+ * beans and configurations to handle authentication and authorization.
+ *
+ * An in-memory user details service is configured with a default user and
+ * encoded password. Security filters are also defined to handle HTTP security
+ * rules and disable CSRF protection.
+ *
+ * @author olivier morel
+ */
 @Configuration
 @EnableWebSecurity
 @Slf4j

@@ -14,11 +14,16 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * ControlExceptionHandlerController class handles All Exception thrown by all classes annotated @Controller
+ * A global exception handler for the controller layer.
+ * This class handles exceptions thrown by controller methods and provides appropriate
+ * response statuses and view names for rendering error pages.
+ * Exceptions are logged with additional request details for debugging purposes.
+ * Utilizes Spring's {@code @ControllerAdvice} to apply globally to all controllers
+ * and {@code @ExceptionHandler} to handle specific exceptions.
  *
  * @author olivier morel
  */
-@ControllerAdvice(annotations = Controller.class)
+@ControllerAdvice
 @Slf4j
 @AllArgsConstructor
 public class ControllerExceptionHandler {

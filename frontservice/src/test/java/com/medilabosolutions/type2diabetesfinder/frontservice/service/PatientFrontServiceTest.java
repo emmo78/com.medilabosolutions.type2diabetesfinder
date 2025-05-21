@@ -15,6 +15,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -158,6 +159,7 @@ public class PatientFrontServiceTest {
 
             //GIVEN
             when(patientProxy.getPatient(anyInt())).thenReturn(new ResponseEntity<>(givenPatient, HttpStatus.OK));
+            when(patientProxy.getNotesByPatientId(anyInt())).thenReturn(new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK));
             //WHEN
             Patient patientResult = patientFrontService.getPatient(1);
             //THEN
